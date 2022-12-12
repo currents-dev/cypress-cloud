@@ -16,7 +16,7 @@
     "@types/lodash": "^4.14.191",
     "@types/randomstring": "^1.1.8",
     "@types/stack-utils": "^2.0.1",
-    "cypress": "^12.0.2",
+    "@types/ws": "^8.5.3",
     "eslint": "^7.32.0",
     "eslint-config-custom": "*",
     "tsconfig": "*",
@@ -36,6 +36,8 @@
     "lodash": "^4.17.21",
     "nanoid": "^3.3.4",
     "randomstring": "^1.2.3",
-    "stack-utils": "^2.0.6"
+    "stack-utils": "^2.0.6",
+    "tmp-promise": "^3.0.3",
+    "ws": "^8.11.0"
   }
 }
