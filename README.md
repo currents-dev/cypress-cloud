@@ -23,14 +23,24 @@ To run an example, make sure that currents is running locally and then:
 
 ```
 cd packages/cypress-runner
-yarn build
+nvm use # OR nvm install
+yarn watch
 ```
 
 ... then in another terminal
 
 ```
 cd examples/nextjs
-node ../../packages/cypress-runner --parallel --record --key xxx --ci-build-id `date +%s`
+cp .env.example .env
+export CURRENTS_RECORD_KEY=YOUR_CURRENTS_RECORD_KEY
+```
+
+Once you created new `.env` file please fill in all env variales from example file by using currents dashboard.
+
+Use the command bellow to run currents runner:
+
+```
+yarn cypress
 ```
 
 ## What's inside?
