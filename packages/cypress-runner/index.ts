@@ -14,6 +14,11 @@ import {
 } from "./lib/results";
 import { findSpecs } from "./lib/specMatcher";
 import { Platform, TestingType } from "./types";
+import {
+  getCommitDefaults,
+  getCiParams,
+  getCiProvider,
+} from "./lib/ciProvider";
 
 const stdout = capture.stdout();
 
@@ -77,21 +82,18 @@ export async function run() {
     browserName: "Electron",
     browserVersion: "106.0.5249.51",
   };
+  const ci = {
+    params: getCiParams(),
+    provider: getCiProvider(),
+  };
+  console.log("CI info", ci);
   const res = await makeRequest({
     method: "POST",
     url: "runs",
     data: {
-      ci: {
-        params: null,
-        provider: null,
-      },
+      ci,
       specs: specs.map((spec) => spec.relative),
-      commit: {
-        ...commit,
-        remoteOrigin: commit.remote,
-        authorEmail: commit.email,
-        authorName: commit.author,
-      },
+      commit: getCommitDefaults(commit),
       group,
       platform,
       parallel,

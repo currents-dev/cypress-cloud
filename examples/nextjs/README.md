@@ -23,6 +23,24 @@ To learn more about Next.js, take a look at the following resources:
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
 
+## Run Currents runner
+
+In order to run currents runner you can use the following command:
+
+> Make sure that .env file created and you have `CURRENTS_RECORD_KEY` env variable set up
+
+```
+yarn cypress
+```
+
+### Simulate currents runner execution from CI
+
+- Github Actions
+
+```
+bash ./test/run-from-github-actions.sh
+```
+
 ## Deploy on Vercel
 
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_source=github.com&utm_medium=referral&utm_campaign=turborepo-readme) from the creators of Next.js.
