@@ -1,0 +1,27 @@
+{
+  "name": "@currents/cypress-cloud",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "author": "",
+  "license": "ISC",
+  "workspaces": [
+    "examples/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev --parallel",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+  },
+  "devDependencies": {
+    "eslint-config-custom": "*",
+    "prettier": "latest",
+    "turbo": "latest"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "packageManager": "yarn@3.3.0"
+}
