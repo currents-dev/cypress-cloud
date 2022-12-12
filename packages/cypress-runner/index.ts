@@ -27,7 +27,7 @@ program
 program.parse();
 const options = program.opts();
 
-async function main() {
+export async function run() {
   const commit = await git.commitInfo();
   const { parallel, record, key, ciBuildId, group } = options;
 
@@ -306,8 +306,3 @@ async function uploadFile(file: string, url: string) {
   await axios.put(url, f);
   console.log("Done uploading file", file);
 }
-
-main().catch((error) => {
-  console.error(error);
-  process.exit(1);
-});

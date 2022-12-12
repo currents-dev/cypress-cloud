@@ -7,10 +7,10 @@ function loadEnvVariables() {
 }
 
 loadEnvVariables();
-const projectId = process.env.CYPRESS_PROJECT_ID;
+// const projectId = process.env.CYPRESS_PROJECT_ID;
 
 module.exports = defineConfig({
-  projectId,
+  // projectId,
   e2e: {
     supportFile: false,
     setupNodeEvents(on, config) {
