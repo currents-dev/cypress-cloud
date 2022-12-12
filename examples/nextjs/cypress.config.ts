@@ -13,6 +13,7 @@ module.exports = defineConfig({
   // projectId,
   e2e: {
     supportFile: false,
+    specPattern: "cypress/e2e/*.spec.js",
     setupNodeEvents(on, config) {
       // implement node event listeners here
     },
