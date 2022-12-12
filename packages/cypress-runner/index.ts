@@ -36,13 +36,17 @@ export async function run() {
   const testingType: TestingType = options.component ? "component" : "e2e";
   const config = await getConfig(testingType);
 
+  console.log("Config", config);
+  // const port = getRandomPort();
+  // const server = await createWSServer(port);
+
   if (!config.projectId) {
     console.error("Missing projectId in config file");
     process.exit(1);
   }
 
   const specPattern = options.spec || config.specPattern;
-  console.log({ specPattern });
+
   const specs = await findSpecs({
     projectRoot: process.cwd(),
     testingType,
@@ -61,6 +65,7 @@ export async function run() {
   // I expect this to be a source of trouble untils we polish the implementation
   if (specs.length === 0) {
     console.error("No spec matching the spec pattern found");
+    // server.close();
     process.exit(0);
   }
 
@@ -103,6 +108,8 @@ export async function run() {
     machineId: run.machineId,
     platform,
   });
+
+  // server.close();
 }
 
 type InstanceRequestArgs = {
@@ -210,6 +217,28 @@ async function processCypressResults(
 
   await uploadStdout(instanceId, stdout.toString());
 }
+
+// function createWSServer(port: number) {
+//   // Create the WebSocket server
+//   const server = new WebSocket.Server({ port });
+
+//   // Listen for new connections
+//   server.on("connection", (socket: any) => {
+//     console.log("New connection!");
+
+//     socket.send("Hello from the server!");
+//     // Listen for messages from the client
+//     socket.on("message", (data: string) => {
+//       console.log(`Received message: ${data}`);
+//     });
+//   });
+
+//   server.on("close", () => {
+//     console.log("Server closed");
+//   });
+
+//   return server;
+// }
 
 run().catch((err) => {
   console.error(err);
