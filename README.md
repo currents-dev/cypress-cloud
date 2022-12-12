@@ -1,6 +1,18 @@
 # Cypress Cloud
 
-This is an official Yarn (Berry) starter turborepo.
+### Currents Example
+
+```
+cd packages/cypress-runner
+yarn dev
+```
+
+... then in another terminal
+
+```
+cd packages/cypress-runner
+node ../../packages/cypress-runner --parallel --record --key xxx --ci-build-id parallel-05
+```
 
 ## What's inside?
 

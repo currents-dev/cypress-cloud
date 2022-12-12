@@ -1710,7 +1710,7 @@ fast-deep-equal@^3.1.1, fast-deep-equal@^3.1.3:
   resolved "https://registry.yarnpkg.com/fast-deep-equal/-/fast-deep-equal-3.1.3.tgz#3a7d56b559d6cbc3eb512325244e619a65c6c525"
   integrity sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==
 
-fast-glob@^3.2.11, fast-glob@^3.2.9:
+fast-glob@^3.2.9:
   version "3.2.12"
   resolved "https://registry.yarnpkg.com/fast-glob/-/fast-glob-3.2.12.tgz#7f39ec99c2e6ab030337142da9e0c18f37afae80"
   integrity sha512-DVj4CQIYYow0BlaelwK1pHl5n5cRSJfM60UA0zK891sVInoPri2Ekj7+e1CT3/3qxXenpI+nBBmQAcJPJgaj4w==
@@ -1968,17 +1968,6 @@ globby@^11.1.0:
     ignore "^5.2.0"
     merge2 "^1.4.1"
     slash "^3.0.0"
-
-globby@^13.1.2:
-  version "13.1.2"
-  resolved "https://registry.yarnpkg.com/globby/-/globby-13.1.2.tgz#29047105582427ab6eca4f905200667b056da515"
-  integrity sha512-LKSDZXToac40u8Q1PQtZihbNdTYSNMuWe+K5l+oa6KgDzSvVrHXlJy40hUP522RjAIoNLJYBJi7ow+rbFpIhHQ==
-  dependencies:
-    dir-glob "^3.0.1"
-    fast-glob "^3.2.11"
-    ignore "^5.2.0"
-    merge2 "^1.4.1"
-    slash "^4.0.0"
 
 gopd@^1.0.1:
   version "1.0.1"
@@ -2539,11 +2528,6 @@ nanoid@^3.3.4:
   resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.3.4.tgz#730b67e3cd09e2deacf03c027c81c9d9dbc5e8ab"
   integrity sha512-MqBkQh/OHTS2egovRtLk45wEyNXwF+cokD+1YPf9u5VfJiRdAiRwB2froX5Co9Rh20xs4siNPm8naNotSD6RBw==
 
-nanoid@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-4.0.0.tgz#6e144dee117609232c3f415c34b0e550e64999a5"
-  integrity sha512-IgBP8piMxe/gf73RTQx7hmnhwz0aaEXYakvqZyE302IXW3HyVNhdNGC+O2MwMAVhLEnvXlvKtGbtJf6wvHihCg==
-
 natural-compare@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/natural-compare/-/natural-compare-1.4.0.tgz#4abebfeed7541f2c27acfb29bdbbd15c8d5ba4f7"
@@ -3072,11 +3056,6 @@ slash@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/slash/-/slash-3.0.0.tgz#6539be870c165adbd5240220dbe361f1bc4d4634"
   integrity sha512-g9Q1haeby36OSStwb4ntCGGGaKsaVSjQ68fBxoQcutl5fS1vuY18H3wSt3jFyFtrkx+Kz0V1G85A4MyAdDMi2Q==
-
-slash@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/slash/-/slash-4.0.0.tgz#2422372176c4c6c5addb5e2ada885af984b396a7"
-  integrity sha512-3dOsAHXXUkQTpOYcoAxLIorMTp4gIQr5IW3iVb7A7lFIp0VHhnynm9izx6TssdrIcVIESAlVjtnO2K8bg+Coew==
 
 slice-ansi@^3.0.0:
   version "3.0.0"

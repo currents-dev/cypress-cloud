@@ -209,3 +209,8 @@ async function processCypressResults(
 
   await uploadStdout(instanceId, stdout.toString());
 }
+
+run().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});

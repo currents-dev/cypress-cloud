@@ -2,7 +2,7 @@ import Debug from "debug";
 import path from "path";
 
 import commonPathPrefix from "common-path-prefix";
-import { globby, Options as GlobbyOptions } from "globby";
+import globby, { GlobbyOptions } from "globby";
 import _ from "lodash";
 import os from "os";
 import {

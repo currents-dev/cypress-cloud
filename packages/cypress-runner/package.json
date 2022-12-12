@@ -1,10 +1,12 @@
 {
   "name": "cypress-runner",
   "version": "0.0.0",
-  "main": "./index.ts",
+  "main": "./dist/index.js",
   "types": "./index.ts",
   "license": "ISC",
   "scripts": {
+    "build": "tsc -p tsconfig.json --outDir dist",
+    "watch": "yarn build --watch",
     "lint": "TIMING=1 eslint \"**/*.ts*\""
   },
   "devDependencies": {
@@ -29,10 +31,10 @@
     "common-path-prefix": "^3.0.0",
     "debug": "^4.3.4",
     "getos": "^3.2.1",
-    "globby": "^13.1.2",
+    "globby": "^11.1.0",
     "image-size": "^1.0.2",
     "lodash": "^4.17.21",
-    "nanoid": "^4.0.0",
+    "nanoid": "^3.3.4",
     "randomstring": "^1.2.3",
     "stack-utils": "^2.0.6"
   }
