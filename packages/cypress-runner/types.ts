@@ -1,6 +1,15 @@
 export type TestingType = "component" | "e2e";
 export type SpecType = "component" | "integration";
 
+export type CypressResult =
+  | CypressCommandLine.CypressRunResult
+  | CypressCommandLine.CypressFailedRunResult;
+export type Platform = {
+  osName: string;
+  osVersion: string;
+  browserName: string;
+  browserVersion: string;
+};
 export interface FindSpecs<T> {
   projectRoot: string;
   testingType: TestingType;

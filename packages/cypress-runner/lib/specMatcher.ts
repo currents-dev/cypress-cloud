@@ -22,7 +22,7 @@ type GlobPattern = string | string[];
  * https://github.com/cypress-io/cypress/blob/bc9edb44523d62ca934827b8e870f38f86634ca4/packages/data-context/src/actions/ProjectActions.ts#L417
  */
 // @ts-disable
-async function findSpecs({
+export async function findSpecs({
   projectRoot,
   testingType,
   specPattern,
@@ -243,7 +243,3 @@ function transformSpec({
     absolute,
   };
 }
-
-module.exports = {
-  findSpecs,
-};

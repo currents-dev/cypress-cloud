@@ -1,10 +1,19 @@
+// @ts-ignore
+import git from "@cypress/commit-info";
+import axios from "axios";
 import { program } from "commander";
+import cypress from "cypress";
 import fs from "fs";
 import { nanoid } from "nanoid";
 import * as capture from "./lib/capture";
 import { getConfig } from "./lib/config";
+import { isSuccessResult } from "./lib/results";
+import { findSpecs } from "./lib/specMatcher";
+import { Platform } from "./types";
 
+const stdout = capture.stdout();
 const readFile = fs.promises.readFile;
+
 program
   .option("--parallel", "Run tests in parallel", false)
   .option("--record", "Record test run", true)
@@ -16,14 +25,7 @@ program
   .option("--group <value>", "Group test run", "");
 
 program.parse();
-
 const options = program.opts();
-const cypress = require("cypress");
-const axios = require("axios");
-const git = require("@cypress/commit-info");
-const { findSpecs } = require("./lib/specMatcher");
-
-const stdout = capture.stdout();
 
 async function main() {
   const commit = await git.commitInfo();
@@ -100,7 +102,18 @@ async function main() {
   });
 }
 
-async function getSpecFile({ runId, groupId, machineId, platform }) {
+type InstanceRequestArgs = {
+  runId: string;
+  groupId: string;
+  machineId: string;
+  platform: Platform;
+};
+async function getSpecFile({
+  runId,
+  groupId,
+  machineId,
+  platform,
+}: InstanceRequestArgs) {
   console.log(`POST http://localhost:1234/runs/${runId}/instances`);
   const res = await axios.post(
     `http://localhost:1234/runs/${runId}/instances`,
@@ -114,16 +127,21 @@ async function getSpecFile({ runId, groupId, machineId, platform }) {
   return res.data;
 }
 
-async function runSpecFile({ spec }) {
+async function runSpecFile({ spec }: { spec: string }) {
   const result = await cypress.run({
     // TODO: add other configuratiun based on CLI flags and the config file
+    // trashAssetsBeforeRuns: false,
     spec,
-    trashAssetsBeforeRuns: false,
   });
   return result;
 }
 
-async function runTillDone({ runId, groupId, machineId, platform }) {
+async function runTillDone({
+  runId,
+  groupId,
+  machineId,
+  platform,
+}: InstanceRequestArgs) {
   let hasMore = true;
   while (hasMore) {
     const currentSpecFile = await getSpecFile({
@@ -147,11 +165,19 @@ async function runTillDone({ runId, groupId, machineId, platform }) {
       "Sending cypress results to server....",
       currentSpecFile.instanceId
     );
+    if (!isSuccessResult(cypressResult)) {
+      // TODO: handle failure
+      console.log("Cypress run failed");
+      process.exit(1);
+    }
     await processCypressResults(currentSpecFile.instanceId, cypressResult);
   }
 }
 
-async function processCypressResults(instanceId, results) {
+async function processCypressResults(
+  instanceId: string,
+  results: CypressCommandLine.CypressRunResult
+) {
   await axios.post(
     `http://localhost:1234/instances/${instanceId}/tests`,
     getInstanceTestsPayload(results.runs[0], results.config)
@@ -202,7 +228,7 @@ async function uploadArtifacts({
   }
 }
 
-const uploadStdout = async (instanceId, stdout) => {
+const uploadStdout = async (instanceId: string, stdout: string) => {
   console.log("Uploading stdout...", instanceId);
   const res = await axios.put(
     `http://localhost:1234/instances/${instanceId}/stdout`,
@@ -274,7 +300,7 @@ const getTestAttempts = (attempt) => {
   };
 };
 
-async function uploadFile(file, url) {
+async function uploadFile(file: string, url: string) {
   console.log("Uploading file...", file);
   const f = await readFile(file);
   await axios.put(url, f);
