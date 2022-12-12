@@ -3,6 +3,7 @@ import git from "@cypress/commit-info";
 import axios from "axios";
 import { program } from "commander";
 import cypress from "cypress";
+import cypressPckg from "cypress/package.json";
 import { uploadArtifacts, uploadStdout } from "./lib/artifacts";
 import * as capture from "./lib/capture";
 import { getConfig } from "./lib/config";
@@ -16,6 +17,7 @@ import { Platform, TestingType } from "./types";
 
 const stdout = capture.stdout();
 
+console.log(cypressPckg.version);
 program
   .option("--parallel", "Run tests in parallel", false)
   .option("--record", "Record test run", true)
