@@ -9,9 +9,12 @@
   },
   "devDependencies": {
     "@types/babel__code-frame": "^7.0.3",
+    "@types/debug": "^4.1.7",
     "@types/getos": "^3.0.1",
+    "@types/lodash": "^4.14.191",
     "@types/randomstring": "^1.1.8",
     "@types/stack-utils": "^2.0.1",
+    "cypress": "^12.0.2",
     "eslint": "^7.32.0",
     "eslint-config-custom": "*",
     "tsconfig": "*",
@@ -22,8 +25,14 @@
     "@cypress/commit-info": "^2.2.0",
     "axios": "^1.2.0",
     "colors": "^1.4.0",
+    "command": "^0.0.5",
+    "common-path-prefix": "^3.0.0",
+    "debug": "^4.3.4",
     "getos": "^3.2.1",
+    "globby": "^13.1.2",
     "image-size": "^1.0.2",
+    "lodash": "^4.17.21",
+    "nanoid": "^4.0.0",
     "randomstring": "^1.2.3",
     "stack-utils": "^2.0.6"
   }
