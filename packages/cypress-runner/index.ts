@@ -23,8 +23,8 @@ program
   .option("--component", "", false)
   .option("--e2e", "", true)
   .option("--ci-build-id <value>")
-  .option("--spec <value>", "Run specific spec", "")
-  .option("--group <value>", "Group test run", "");
+  .option("--spec <value>", "Run specific spec", false)
+  .option("--group <value>", "Group test run", false);
 
 program.parse();
 const options = program.opts();
@@ -41,7 +41,8 @@ export async function run() {
     process.exit(1);
   }
 
-  const specPattern = options.spec ?? config.specPattern;
+  const specPattern = options.spec || config.specPattern;
+  console.log({ specPattern });
   const specs = await findSpecs({
     projectRoot: process.cwd(),
     testingType,
