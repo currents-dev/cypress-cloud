@@ -4,13 +4,13 @@
 
 ```
 cd packages/cypress-runner
-yarn dev
+yarn build
 ```
 
 ... then in another terminal
 
 ```
-cd packages/cypress-runner
+cd examples/nextjs
 node ../../packages/cypress-runner --parallel --record --key xxx --ci-build-id parallel-05
 ```
 
