@@ -5,11 +5,17 @@ import commonPathPrefix from "common-path-prefix";
 import { globby, Options as GlobbyOptions } from "globby";
 import _ from "lodash";
 import os from "os";
-import { FindSpecs, SpecWithRelativeRoot } from "../types";
+import {
+  FindSpecs,
+  SpecType,
+  SpecWithRelativeRoot,
+  TestingType,
+} from "../types";
 import { toArray, toPosix } from "./utils";
 
 const debug = Debug("currents:specMatcher");
 
+type GlobPattern = string | string[];
 /**
  * Replicate how cypress is discovering spec files
  * https://github.com/cypress-io/cypress/blob/bc9edb44523d62ca934827b8e870f38f86634ca4/packages/data-context/src/sources/ProjectDataSource.ts#L250
@@ -88,7 +94,7 @@ async function findSpecs({
 
 async function getFilesByGlob(
   cwd: string,
-  glob: string | string[],
+  glob: GlobPattern,
   globOptions: GlobbyOptions
 ) {
   const globs = ([] as string[]).concat(glob).map((globPattern) => {
@@ -140,11 +146,22 @@ async function getFilesByGlob(
   }
 }
 
-const matchGlobs = async (globs, globbyOptions: GlobbyOptions) => {
+const matchGlobs = async (globs: GlobPattern, globbyOptions: GlobbyOptions) => {
   return await globby(globs, globbyOptions);
 };
 
-function matchedSpecs({ projectRoot, testingType, specAbsolutePaths }) {
+interface MatchedSpecs {
+  projectRoot: string;
+  testingType: TestingType;
+  specAbsolutePaths: string[];
+  specPattern: string | string[];
+}
+
+function matchedSpecs({
+  projectRoot,
+  testingType,
+  specAbsolutePaths,
+}: MatchedSpecs) {
   debug("found specs %o", specAbsolutePaths);
 
   let commonRoot = "";
@@ -169,6 +186,15 @@ function matchedSpecs({ projectRoot, testingType, specAbsolutePaths }) {
   return specs;
 }
 
+export interface TransformSpec {
+  projectRoot: string;
+  absolute: string;
+  testingType: TestingType;
+  commonRoot: string;
+  platform: NodeJS.Platform;
+  sep: string;
+}
+
 function transformSpec({
   projectRoot,
   absolute,
@@ -176,7 +202,7 @@ function transformSpec({
   commonRoot,
   platform,
   sep,
-}) {
+}: TransformSpec) {
   if (platform === "win32") {
     absolute = toPosix(absolute, sep);
     projectRoot = toPosix(projectRoot, sep);
@@ -209,7 +235,9 @@ function transformSpec({
     fileName: parsedFile.base.replace(specFileExtension, ""),
     specFileExtension,
     relativeToCommonRoot,
-    specType: testingType === "component" ? "component" : "integration",
+    specType: (testingType === "component"
+      ? "component"
+      : "integration") as SpecType,
     name,
     relative,
     absolute,
