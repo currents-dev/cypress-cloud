@@ -3,16 +3,18 @@ import git from "@cypress/commit-info";
 import axios from "axios";
 import { program } from "commander";
 import cypress from "cypress";
-import fs from "fs";
-import { nanoid } from "nanoid";
+import { uploadArtifacts, uploadStdout } from "./lib/artifacts";
 import * as capture from "./lib/capture";
 import { getConfig } from "./lib/config";
-import { isSuccessResult } from "./lib/results";
+import {
+  getInstanceResultPayload,
+  getInstanceTestsPayload,
+  isSuccessResult,
+} from "./lib/results";
 import { findSpecs } from "./lib/specMatcher";
-import { Platform } from "./types";
+import { Platform, TestingType } from "./types";
 
 const stdout = capture.stdout();
-const readFile = fs.promises.readFile;
 
 program
   .option("--parallel", "Run tests in parallel", false)
@@ -31,7 +33,7 @@ export async function run() {
   const commit = await git.commitInfo();
   const { parallel, record, key, ciBuildId, group } = options;
 
-  const testingType = options.component ? "component" : "e2e";
+  const testingType: TestingType = options.component ? "component" : "e2e";
   const config = await getConfig(testingType);
 
   if (!config.projectId) {
@@ -178,11 +180,16 @@ async function processCypressResults(
   instanceId: string,
   results: CypressCommandLine.CypressRunResult
 ) {
+  const runResult = results.runs[0];
+  if (!runResult) {
+    throw new Error("No run found in Cypress results");
+  }
+
   await axios.post(
     `http://localhost:1234/instances/${instanceId}/tests`,
     getInstanceTestsPayload(results.runs[0], results.config)
   );
-  const resultPayload = getInstanceResultPayload(results.runs[0]);
+  const resultPayload = getInstanceResultPayload(runResult);
   const uploadInstructions = await axios.post(
     `http://localhost:1234/instances/${instanceId}/results`,
     resultPayload
@@ -191,118 +198,14 @@ async function processCypressResults(
   console.log(uploadInstructions.data);
   const { videoUploadUrl, screenshotUploadUrls } = uploadInstructions.data;
 
-  console.log("Uploading video", videoUploadUrl, results.runs[0].video);
+  console.log("Uploading video", videoUploadUrl, runResult.video);
+
   await uploadArtifacts({
     videoUploadUrl,
-    videoPath: results.runs[0].video,
+    videoPath: runResult.video,
     screenshotUploadUrls,
     screenshots: resultPayload.screenshots,
   });
 
   await uploadStdout(instanceId, stdout.toString());
-}
-
-async function uploadArtifacts({
-  videoPath,
-  videoUploadUrl,
-  screenshots,
-  screenshotUploadUrls,
-}) {
-  // upload video
-  if (videoUploadUrl) {
-    await uploadFile(videoPath, videoUploadUrl);
-  }
-  // upload screenshots
-  if (screenshotUploadUrls.length) {
-    await Promise.all(
-      screenshots.map((screenshot, i) => {
-        const url = screenshotUploadUrls.find(
-          (urls) => urls.screenshotId === screenshot.screenshotId
-        ).uploadUrl;
-        if (!url) {
-          console.warn("Cannot find upload url for screenshot", screenshot);
-        }
-        return uploadFile(screenshot.path, url);
-      })
-    );
-  }
-}
-
-const uploadStdout = async (instanceId: string, stdout: string) => {
-  console.log("Uploading stdout...", instanceId);
-  const res = await axios.put(
-    `http://localhost:1234/instances/${instanceId}/stdout`,
-    {
-      stdout,
-    }
-  );
-  console.log("Done uploading stdout", instanceId);
-  return res.data;
-};
-// this one need testing with real data
-const getInstanceTestsPayload = (runResult, config) => {
-  return {
-    config,
-    tests:
-      runResult.tests?.map((test, i) => ({
-        title: test.title,
-        config: test.config ?? {},
-        body: test.body,
-        clientId: `r${i}`,
-      })) ?? [],
-  };
-};
-
-const getInstanceResultPayload = (runResult) => {
-  return {
-    stats: getStats(runResult.stats),
-    reporterStats: runResult.reporterStats,
-    exception: runResult.error ?? null,
-    video: runResult.video,
-    screenshots: getScreenshotsSummary(runResult.tests ?? []),
-    tests:
-      runResult.tests?.map((test, i) => ({
-        diplayError: test.displayError,
-        state: test.state,
-        attempts: test.attempts?.map(getTestAttempts) ?? [],
-        clientId: `r${i}`,
-      })) ?? [],
-  };
-};
-
-const getScreenshotsSummary = (tests = []) => {
-  return tests.flatMap((test, i) =>
-    test.attempts.flatMap((a, ai) =>
-      a.screenshots.flatMap((s) => ({
-        ...s,
-        testId: `r${i}`,
-        testAttemptIndex: ai,
-        screenshotId: nanoid(),
-      }))
-    )
-  );
-};
-
-const getStats = (stats) => {
-  return {
-    ...stats,
-    wallClockDuration: stats.duration,
-    wallClockStartedAt: stats.startedAt,
-    wallClockEndedAt: stats.endedAt,
-  };
-};
-
-const getTestAttempts = (attempt) => {
-  return {
-    ...attempt,
-    wallClockDuration: attempt.duration,
-    wallClockStartedAt: attempt.startedAt,
-  };
-};
-
-async function uploadFile(file: string, url: string) {
-  console.log("Uploading file...", file);
-  const f = await readFile(file);
-  await axios.put(url, f);
-  console.log("Done uploading file", file);
 }

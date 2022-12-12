@@ -4,6 +4,7 @@ export type SpecType = "component" | "integration";
 export type CypressResult =
   | CypressCommandLine.CypressRunResult
   | CypressCommandLine.CypressFailedRunResult;
+
 export type Platform = {
   osName: string;
   osVersion: string;
@@ -53,3 +54,15 @@ export interface FoundSpec extends SpecFile {
 export interface SpecWithRelativeRoot extends FoundSpec {
   relativeToCommonRoot: string;
 }
+
+export interface ScreenshotUploadInstruction {
+  screenshotId: string;
+  uploadUrl: string;
+  readUrl: string;
+}
+
+export type ScreenshotArtifact = CypressCommandLine.ScreenshotInformation & {
+  testId: string;
+  testAttemptIndex: number;
+  screenshotId: string;
+};
