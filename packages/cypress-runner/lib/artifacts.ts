@@ -1,5 +1,5 @@
-import axios from "axios";
 import { ScreenshotArtifact, ScreenshotUploadInstruction } from "../types";
+import { makeRequest } from "./httpClient";
 import { uploadFile } from "./upload";
 
 interface UploadArtifacts {
@@ -37,12 +37,13 @@ export async function uploadArtifacts({
 
 export async function uploadStdout(instanceId: string, stdout: string) {
   console.log("Uploading stdout...", instanceId);
-  const res = await axios.put(
-    `http://localhost:1234/instances/${instanceId}/stdout`,
-    {
+  const res = await makeRequest({
+    method: "PUT",
+    url: `instances/${instanceId}/stdout`,
+    data: {
       stdout,
-    }
-  );
+    },
+  });
   console.log("Done uploading stdout", instanceId);
   return res.data;
 }

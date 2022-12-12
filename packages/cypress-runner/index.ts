@@ -1,12 +1,12 @@
 // @ts-ignore
 import git from "@cypress/commit-info";
-import axios from "axios";
 import { program } from "commander";
 import cypress from "cypress";
 import cypressPckg from "cypress/package.json";
 import { uploadArtifacts, uploadStdout } from "./lib/artifacts";
 import * as capture from "./lib/capture";
 import { getConfig } from "./lib/config";
+import { makeRequest } from "./lib/httpClient";
 import {
   getInstanceResultPayload,
   getInstanceTestsPayload,
@@ -77,27 +77,31 @@ export async function run() {
     browserName: "Electron",
     browserVersion: "106.0.5249.51",
   };
-  const res = await axios.post("http://localhost:1234/runs", {
-    ci: {
-      params: null,
-      provider: null,
+  const res = await makeRequest({
+    method: "POST",
+    url: "runs",
+    data: {
+      ci: {
+        params: null,
+        provider: null,
+      },
+      specs: specs.map((spec) => spec.relative),
+      commit: {
+        ...commit,
+        remoteOrigin: commit.remote,
+        authorEmail: commit.email,
+        authorName: commit.author,
+      },
+      group,
+      platform,
+      parallel,
+      ciBuildId,
+      projectId: config.projectId,
+      recordKey: key,
+      specPattern,
+      tags: [],
+      testingType,
     },
-    specs: specs.map((spec) => spec.relative),
-    commit: {
-      ...commit,
-      remoteOrigin: commit.remote,
-      authorEmail: commit.email,
-      authorName: commit.author,
-    },
-    group,
-    platform,
-    parallel,
-    ciBuildId,
-    projectId: config.projectId,
-    recordKey: key,
-    specPattern,
-    tags: [],
-    testingType,
   });
 
   const run = res.data;
@@ -127,15 +131,16 @@ async function getSpecFile({
   platform,
 }: InstanceRequestArgs) {
   console.log(`POST http://localhost:1234/runs/${runId}/instances`);
-  const res = await axios.post(
-    `http://localhost:1234/runs/${runId}/instances`,
-    {
+  const res = await makeRequest({
+    method: "POST",
+    url: `runs/${runId}/instances`,
+    data: {
       runId,
       groupId,
       machineId,
       platform,
-    }
-  );
+    },
+  });
   return res.data;
 }
 
@@ -195,15 +200,18 @@ async function processCypressResults(
     throw new Error("No run found in Cypress results");
   }
 
-  await axios.post(
-    `http://localhost:1234/instances/${instanceId}/tests`,
-    getInstanceTestsPayload(results.runs[0], results.config)
-  );
+  await makeRequest({
+    method: "POST",
+    url: `instances/${instanceId}/tests`,
+    data: getInstanceTestsPayload(results.runs[0], results.config),
+  });
+
   const resultPayload = getInstanceResultPayload(runResult);
-  const uploadInstructions = await axios.post(
-    `http://localhost:1234/instances/${instanceId}/results`,
-    resultPayload
-  );
+  const uploadInstructions = await makeRequest({
+    method: "POST",
+    url: `instances/${instanceId}/results`,
+    data: resultPayload,
+  });
 
   console.log(uploadInstructions.data);
   const { videoUploadUrl, screenshotUploadUrls } = uploadInstructions.data;
