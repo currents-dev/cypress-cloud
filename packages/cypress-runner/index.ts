@@ -20,6 +20,7 @@ import {
   getCiProvider,
   getCommitDefaults,
 } from "./lib/ciProvider";
+import { getPlatformInfo } from "./lib/platform";
 
 const stdout = capture.stdout();
 setCypressVersion(cypressPckg.version);
@@ -66,9 +67,10 @@ export async function run() {
     process.exit(0);
   }
 
+  const osPlatformInfo = await getPlatformInfo();
+
   const platform = {
-    osName: "darwin",
-    osVersion: "22.1.0",
+    ...osPlatformInfo,
     browserName: "Electron",
     browserVersion: "106.0.5249.51",
   };
