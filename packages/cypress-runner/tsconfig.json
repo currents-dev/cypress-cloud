@@ -23,5 +23,10 @@
     "resolveJsonModule": true
   },
   "lib": ["es2016"],
-  "exclude": ["node_modules", "./**/__tests__/*.ts", "dist"]
+  "exclude": [
+    "node_modules",
+    "./**/__tests__/*.ts",
+    "./**/__tests__/**/*.ts",
+    "dist"
+  ]
 }

@@ -35,6 +35,7 @@ yarn-error.log*
 
 # Cypress test outputs
 **/cypress/videos/
+**/cypress/screenshots/
 
 # ENV file
 .env

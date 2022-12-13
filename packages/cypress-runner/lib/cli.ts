@@ -21,9 +21,11 @@ const program = new Command()
     "the unique identifier for a run, this value is automatically detected for most CI providers"
   )
   .addOption(
-    new Option("--component", "runs Cypress component test").implies({
-      e2e: false,
-    })
+    new Option("--component", "runs Cypress component test")
+      .default(false)
+      .implies({
+        e2e: false,
+      })
   )
   .option(
     "-c, --config <config>",
@@ -72,12 +74,13 @@ const program = new Command()
   )
   .option(
     "-s, --spec <spec-pattern>",
-    'define specific glob pattern for running the spec file(s), Defaults to the "specMatch" entry from the "cypress.config.{js,ts,mjs,cjs}" file'
+    'define specific glob pattern for running the spec file(s), Defaults to the "specMatch" entry from the "cypress.config.{js,ts,mjs,cjs}" file',
+    parseCommaSeparatedList
   )
   .option(
     "-t, --tag <tag>",
     "comma-separated tag(s) for recorded runs in Currents",
-    parseTags
+    parseCommaSeparatedList
   );
 
 export function parseOptions(...args: Parameters<typeof program.parse>) {
@@ -85,7 +88,7 @@ export function parseOptions(...args: Parameters<typeof program.parse>) {
   return program.opts();
 }
 
-function parseTags(value?: string, previous: string[] = []) {
+function parseCommaSeparatedList(value?: string, previous: string[] = []) {
   if (value) {
     return previous.concat(value.split(",").map((t) => t.trim()));
   }
