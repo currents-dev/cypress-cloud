@@ -6,7 +6,7 @@ import { uploadArtifacts, uploadStdout } from "./lib/artifacts";
 import * as capture from "./lib/capture";
 import { getCypressOptions, parseOptions } from "./lib/cli";
 import { getConfig } from "./lib/config";
-import { makeRequest } from "./lib/httpClient";
+import { makeRequest, setCypressVersion, setRunId } from "./lib/httpClient";
 import {
   getInstanceResultPayload,
   getInstanceTestsPayload,
@@ -14,9 +14,15 @@ import {
 } from "./lib/results";
 import { findSpecs } from "./lib/specMatcher";
 import { Platform, TestingType } from "./types";
-const stdout = capture.stdout();
 
-console.log(cypressPckg.version);
+import {
+  getCiParams,
+  getCiProvider,
+  getCommitDefaults,
+} from "./lib/ciProvider";
+
+const stdout = capture.stdout();
+setCypressVersion(cypressPckg.version);
 
 export async function run() {
   const options = parseOptions();
@@ -66,21 +72,17 @@ export async function run() {
     browserName: "Electron",
     browserVersion: "106.0.5249.51",
   };
+  const ci = {
+    params: getCiParams(),
+    provider: getCiProvider(),
+  };
   const res = await makeRequest({
     method: "POST",
     url: "runs",
     data: {
-      ci: {
-        params: null,
-        provider: null,
-      },
+      ci,
       specs: specs.map((spec) => spec.relative),
-      commit: {
-        ...commit,
-        remoteOrigin: commit.remote,
-        authorEmail: commit.email,
-        authorName: commit.author,
-      },
+      commit: getCommitDefaults(commit),
       group,
       platform,
       parallel,
@@ -94,8 +96,8 @@ export async function run() {
   });
 
   const run = res.data;
-  console.log(run);
   console.log("Run created", run.runUrl);
+  setRunId(run.runId);
 
   await runTillDone({
     runId: run.runId,
