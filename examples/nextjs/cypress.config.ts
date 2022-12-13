@@ -18,7 +18,17 @@ module.exports = defineConfig({
     })(),
     setupNodeEvents(on, config) {
       currents(on, config);
-      // implement node event listeners here
+    },
+  },
+
+  component: {
+    specPattern: "cypress/component/*.spec.js",
+    setupNodeEvents(on, config) {
+      currents(on, config);
+    },
+    devServer: {
+      framework: "next",
+      bundler: "webpack",
     },
   },
 });

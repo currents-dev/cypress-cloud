@@ -16,6 +16,7 @@ export const getConfig = async (testingType: TestingType) => {
   );
   const configFile = await getConfigFile();
   let config: Record<string, unknown> = {};
+
   try {
     config = require(configFile);
   } catch (e) {
