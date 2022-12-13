@@ -9,28 +9,33 @@
     },
     "build": {
       "dependsOn": [
-        "^build",
-        "$CURRENTS_PROJECT_ID",
-        "$TF_BUILD",
-        "$TF_BUILD_BUILDNUMBER",
-        "$AZURE_HTTP_USER_AGENT",
-        "$bamboo_buildNumber",
-        "$CI_NAME",
-        "$CODESHIP",
-        "$GITLAB_CI",
-        "$CI_SERVER_NAME",
-        "$GCP_PROJECT",
-        "$GCLOUD_PROJECT",
-        "$GOOGLE_CLOUD_PROJECT",
-        "$JENKINS_URL",
-        "$JENKINS_HOME",
-        "$JENKINS_VERSION",
-        "$HUDSON_URL",
-        "$HUDSON_HOME",
-        "$WERCKER",
-        "$WERCKER_MAIN_PIPELINE_STARTED"
+        "^build"
       ],
-      "outputs": ["dist/**", ".next/**"]
+      "outputs": [
+        "dist/**",
+        ".next/**"
+      ],
+      "env": [
+        "CURRENTS_PROJECT_ID",
+        "TF_BUILD",
+        "TF_BUILD_BUILDNUMBER",
+        "AZURE_HTTP_USER_AGENT",
+        "bamboo_buildNumber",
+        "CI_NAME",
+        "CODESHIP",
+        "GITLAB_CI",
+        "CI_SERVER_NAME",
+        "GCP_PROJECT",
+        "GCLOUD_PROJECT",
+        "GOOGLE_CLOUD_PROJECT",
+        "JENKINS_URL",
+        "JENKINS_HOME",
+        "JENKINS_VERSION",
+        "HUDSON_URL",
+        "HUDSON_HOME",
+        "WERCKER",
+        "WERCKER_MAIN_PIPELINE_STARTED"
+      ]
     },
     "lint": {
       "outputs": []
