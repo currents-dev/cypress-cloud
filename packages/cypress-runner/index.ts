@@ -1,5 +1,4 @@
 // @ts-ignore
-import git from "@cypress/commit-info";
 import cypress from "cypress";
 import cypressPckg from "cypress/package.json";
 import { uploadArtifacts, uploadStdout } from "./lib/artifacts";
@@ -15,11 +14,8 @@ import {
 import { findSpecs } from "./lib/specMatcher";
 import { Platform, TestingType } from "./types";
 
-import {
-  getCiParams,
-  getCiProvider,
-  getCommitDefaults,
-} from "./lib/ciProvider";
+import { getCiParams, getCiProvider } from "./lib/ciProvider";
+import { getGitInfo } from "./lib/git";
 import { getPlatformInfo } from "./lib/platform";
 
 const stdout = capture.stdout();
@@ -27,17 +23,13 @@ setCypressVersion(cypressPckg.version);
 
 export async function run() {
   const options = parseOptions();
-
-  const commit = await git.commitInfo();
   const { parallel, key, ciBuildId, group, tag: tags } = options;
-
   const testingType: TestingType = options.component ? "component" : "e2e";
-  const config = await getConfig(testingType);
-
   // console.log("Config", config);
   // const port = getRandomPort();
   // const server = await createWSServer(port);
 
+  const config = await getConfig(testingType);
   if (!config.projectId) {
     console.error("Missing projectId in config file");
     process.exit(1);
@@ -78,13 +70,14 @@ export async function run() {
     params: getCiParams(),
     provider: getCiProvider(),
   };
+  const commit = await getGitInfo();
   const res = await makeRequest({
     method: "POST",
     url: "runs",
     data: {
       ci,
       specs: specs.map((spec) => spec.relative),
-      commit: getCommitDefaults(commit),
+      commit,
       group,
       platform,
       parallel,

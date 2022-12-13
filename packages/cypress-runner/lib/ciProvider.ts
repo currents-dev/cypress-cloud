@@ -1,19 +1,19 @@
-import {
-  transform,
-  set,
-  chain,
-  camelCase,
-  keys,
-  defaultTo,
-  isNull,
-  omitBy,
-  findKey,
-  isString,
-  isFunction,
-  some,
-} from "lodash";
-import isCi from "is-ci";
 import debugFn from "debug";
+// @ts-ignore
+import isCi from "is-ci";
+import {
+  camelCase,
+  chain,
+  defaultTo,
+  findKey,
+  isFunction,
+  isNull,
+  isString,
+  keys,
+  set,
+  some,
+  transform,
+} from "lodash";
 
 const debug = debugFn("cypress:ci-info");
 
