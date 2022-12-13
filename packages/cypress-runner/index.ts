@@ -6,7 +6,7 @@ import cypressPckg from "cypress/package.json";
 import { uploadArtifacts, uploadStdout } from "./lib/artifacts";
 import * as capture from "./lib/capture";
 import { getConfig } from "./lib/config";
-import { makeRequest } from "./lib/httpClient";
+import { makeRequest, setCypressVersion, setRunId } from "./lib/httpClient";
 import {
   getInstanceResultPayload,
   getInstanceTestsPayload,
@@ -23,6 +23,8 @@ import {
 const stdout = capture.stdout();
 
 console.log(cypressPckg.version);
+setCypressVersion(cypressPckg.version);
+
 program
   .option("--parallel", "Run tests in parallel", false)
   .option("--record", "Record test run", true)
@@ -109,6 +111,8 @@ export async function run() {
   const run = res.data;
   console.log(run);
   console.log("Run created", run.runUrl);
+
+  setRunId(run.runId);
 
   await runTillDone({
     runId: run.runId,
