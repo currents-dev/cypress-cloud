@@ -6,7 +6,7 @@ import cypressPckg from "cypress/package.json";
 import { uploadArtifacts, uploadStdout } from "./lib/artifacts";
 import * as capture from "./lib/capture";
 import { getConfig } from "./lib/config";
-import { makeRequest } from "./lib/httpClient";
+import { makeRequest, setRunId } from "./lib/httpClient";
 import {
   getInstanceResultPayload,
   getInstanceTestsPayload,
@@ -109,6 +109,8 @@ export async function run() {
   const run = res.data;
   console.log(run);
   console.log("Run created", run.runUrl);
+
+  setRunId(run.runId);
 
   await runTillDone({
     runId: run.runId,

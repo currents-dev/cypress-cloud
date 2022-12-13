@@ -1,5 +1,10 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 
+let _runId: string | undefined = undefined;
+export const setRunId = (runId: string) => {
+  _runId = runId;
+};
+
 type RetryOptions = {
   delays?: number[];
   isRetriableError?: (...args: any[]) => boolean;
@@ -15,6 +20,7 @@ export const makeRequest = <T = any, D = any>(
         baseURL: "http://localhost:1234/",
         headers: {
           "x-cypress-request-attempt": retryIndex,
+          "x-cypress-run-id": _runId,
           ...config.headers,
         },
         ...config,
