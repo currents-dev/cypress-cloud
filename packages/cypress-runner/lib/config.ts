@@ -3,28 +3,29 @@ import { TestingType } from "../types";
 import { bootCypress } from "./bootstrap";
 import { getRandomPort } from "./utils";
 
-const getConfigFile = async (explicitLocation = null) => {
-  if (explicitLocation) {
-    return "explicit location";
-  }
-  return path.resolve(process.cwd(), "currents.config.js");
-};
-
-export const getConfig = async (testingType: TestingType) => {
-  const cypressConfigFile: Cypress.ResolvedConfigOptions = await bootCypress(
-    getRandomPort()
-  );
+type CurrentsConfig = Record<string, unknown>;
+export async function getCurrentsConfig(): Promise<CurrentsConfig> {
   const configFile = await getConfigFile();
-  let config: Record<string, unknown> = {};
+  let config: CurrentsConfig = {};
 
   try {
     config = require(configFile);
   } catch (e) {
     console.warn(
-      "Cannot load loading config file from '%s' using defaults",
+      "Cannot load loading config file from '%s', using defaults",
       configFile
     );
   }
+  return config;
+}
+
+export async function mergeConfig(
+  testingType: TestingType,
+  currentsConfig: CurrentsConfig
+) {
+  const cypressConfigFile: Cypress.ResolvedConfigOptions = await bootCypress(
+    getRandomPort()
+  );
 
   // @ts-ignore
   const rawE2EPattern = cypressConfigFile.rawJson?.e2e?.specPattern;
@@ -34,7 +35,7 @@ export const getConfig = async (testingType: TestingType) => {
     additionalIgnorePattern = rawE2EPattern;
   }
   return {
-    projectId: config.projectId,
+    projectId: currentsConfig.projectId,
     specPattern: cypressConfigFile.specPattern,
     // @ts-ignore
     excludeSpecPattern: cypressConfigFile.resolved.excludeSpecPattern.value,
@@ -75,4 +76,11 @@ export const getConfig = async (testingType: TestingType) => {
     return resolvedConfig.e2e;
   }
   return resolvedConfig.component;
-};
+}
+
+async function getConfigFile(explicitLocation = null) {
+  if (explicitLocation) {
+    return "explicit location";
+  }
+  return path.resolve(process.cwd(), "currents.config.js");
+}

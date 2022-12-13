@@ -76,19 +76,12 @@ const program = new Command()
   )
   .option(
     "-t, --tag <tag>",
-    "named comma-separated tag(s) for recorded runs in Currents",
+    "comma-separated tag(s) for recorded runs in Currents",
     parseTags
   );
 
 export function parseOptions(...args: Parameters<typeof program.parse>) {
   program.parse(...args);
-
-  const options = program.opts();
-  if (options.e2e === false && options.component === false) {
-  }
-  if (options.e2e === true && options.component === true) {
-  }
-  console.log(program.opts());
   return program.opts();
 }
 
@@ -99,10 +92,25 @@ function parseTags(value?: string, previous: string[] = []) {
   return previous;
 }
 
-export function getCypressOptions(filterKeys: string[] = []) {
+/**
+ *
+ * @returns Cypress options without the ones that are not relevant for the runner
+ */
+function getScopedCypressOptions() {
+  return omit(program.opts(), [
+    "record",
+    "key",
+    "group",
+    "parallel",
+    "tag",
+    "ciBuildId",
+  ]);
+}
+
+export function getStrippedCypressOptions(filterExtraKeys: string[] = []) {
   return pickBy(
     getScopedCypressOptions(),
-    (value, key) => value !== undefined && !filterKeys.includes(key)
+    (value, key) => value !== undefined && !filterExtraKeys.includes(key)
   );
 }
 export function serializeOptions(options: Record<string, unknown>) {
@@ -115,15 +123,4 @@ export function serializeOptions(options: Record<string, unknown>) {
       return `--${key} ${value.toString()}`;
     })
     .filter(Boolean);
-}
-
-function getScopedCypressOptions() {
-  return omit(program.opts(), [
-    "record",
-    "key",
-    "group",
-    "parallel",
-    "tag",
-    "ciBuildId",
-  ]);
 }

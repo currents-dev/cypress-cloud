@@ -2,7 +2,7 @@ import cp from "child_process";
 import { getBinPath } from "cy2";
 import fs from "fs";
 import { nanoid } from "nanoid";
-import { getCypressOptions, serializeOptions } from "./cli";
+import { getStrippedCypressOptions, serializeOptions } from "./cli";
 import { createTempFile } from "./fs";
 
 export const bootCypress = async (port: number) => {
@@ -17,7 +17,7 @@ export const bootCypress = async (port: number) => {
     nanoid(),
     "--env",
     `currents_port=${port},currents_temp_file=${tempFilePath}`,
-    ...serializeOptions(getCypressOptions(["spec"])).flatMap((arg) =>
+    ...serializeOptions(getStrippedCypressOptions(["spec"])).flatMap((arg) =>
       arg.split(" ")
     ),
   ];

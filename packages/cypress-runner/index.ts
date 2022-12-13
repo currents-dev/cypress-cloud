@@ -1,10 +1,8 @@
-// @ts-ignore
-import cypress from "cypress";
 import cypressPckg from "cypress/package.json";
 import { uploadArtifacts, uploadStdout } from "./lib/artifacts";
 import * as capture from "./lib/capture";
-import { getCypressOptions, parseOptions } from "./lib/cli";
-import { getConfig } from "./lib/config";
+import { parseOptions } from "./lib/cli";
+import { getCurrentsConfig, mergeConfig } from "./lib/config";
 import { makeRequest, setCypressVersion, setRunId } from "./lib/httpClient";
 import {
   getInstanceResultPayload,
@@ -15,6 +13,7 @@ import { findSpecs } from "./lib/specMatcher";
 import { Platform, TestingType } from "./types";
 
 import { getCiParams, getCiProvider } from "./lib/ciProvider";
+import { runSpecFile } from "./lib/cypress";
 import { getGitInfo } from "./lib/git";
 import { getPlatformInfo } from "./lib/platform";
 
@@ -23,17 +22,16 @@ setCypressVersion(cypressPckg.version);
 
 export async function run() {
   const options = parseOptions();
-  const { parallel, key, ciBuildId, group, tag: tags } = options;
-  const testingType: TestingType = options.component ? "component" : "e2e";
-  // console.log("Config", config);
-  // const port = getRandomPort();
-  // const server = await createWSServer(port);
 
-  const config = await getConfig(testingType);
-  if (!config.projectId) {
+  const { component, parallel, key, ciBuildId, group, tag: tags } = options;
+  const testingType: TestingType = component ? "component" : "e2e";
+
+  const currentsConfig = await getCurrentsConfig();
+  if (!currentsConfig.projectId) {
     console.error("Missing projectId in config file");
     process.exit(1);
   }
+  const config = await mergeConfig(testingType, currentsConfig);
 
   const specPattern = options.spec || config.specPattern;
 
@@ -130,14 +128,6 @@ async function getSpecFile({
   return res.data;
 }
 
-async function runSpecFile({ spec }: { spec: string }) {
-  const result = await cypress.run({
-    ...getCypressOptions(),
-    spec,
-  });
-  return result;
-}
-
 async function runTillDone({
   runId,
   groupId,
@@ -212,28 +202,6 @@ async function processCypressResults(
 
   await uploadStdout(instanceId, stdout.toString());
 }
-
-// function createWSServer(port: number) {
-//   // Create the WebSocket server
-//   const server = new WebSocket.Server({ port });
-
-//   // Listen for new connections
-//   server.on("connection", (socket: any) => {
-//     console.log("New connection!");
-
-//     socket.send("Hello from the server!");
-//     // Listen for messages from the client
-//     socket.on("message", (data: string) => {
-//       console.log(`Received message: ${data}`);
-//     });
-//   });
-
-//   server.on("close", () => {
-//     console.log("Server closed");
-//   });
-
-//   return server;
-// }
 
 run().catch((err) => {
   console.error(err);
