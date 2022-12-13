@@ -22,7 +22,6 @@ setCypressVersion(cypressPckg.version);
 
 export async function run() {
   const options = parseOptions();
-
   const { component, parallel, key, ciBuildId, group, tag: tags } = options;
   const testingType: TestingType = component ? "component" : "e2e";
 
