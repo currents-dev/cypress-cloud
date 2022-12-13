@@ -29,6 +29,7 @@
     "axios": "^1.2.0",
     "colors": "^1.4.0",
     "command": "^0.0.5",
+    "commander": "^9.4.1",
     "common-path-prefix": "^3.0.0",
     "cy2": "^3.4.2",
     "debug": "^4.3.4",
