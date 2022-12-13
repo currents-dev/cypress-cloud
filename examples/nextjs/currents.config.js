@@ -8,5 +8,5 @@ function loadEnvVariables() {
 loadEnvVariables();
 
 module.exports = {
-  projectId: process.env.CURRENTS_PROJECT_ID ?? "IjH22B",
+  projectId: process.env.CURRENTS_PROJECT_ID,
 };

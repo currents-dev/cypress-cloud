@@ -4,6 +4,7 @@
     "build": {
       "dependsOn": [
         "^build",
+        "$CURRENTS_PROJECT_ID",
         "$TF_BUILD",
         "$TF_BUILD_BUILDNUMBER",
         "$AZURE_HTTP_USER_AGENT",
@@ -23,10 +24,7 @@
         "$WERCKER",
         "$WERCKER_MAIN_PIPELINE_STARTED"
       ],
-      "outputs": [
-        "dist/**",
-        ".next/**"
-      ]
+      "outputs": ["dist/**", ".next/**"]
     },
     "lint": {
       "outputs": []
