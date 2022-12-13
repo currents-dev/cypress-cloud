@@ -6,8 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "cypress": "bash cypress-runner.sh"
+    "lint": "next lint"
   },
   "dependencies": {
     "cypress-runner": "*",

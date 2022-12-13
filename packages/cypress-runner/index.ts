@@ -1,10 +1,10 @@
 // @ts-ignore
 import git from "@cypress/commit-info";
-import { program } from "commander";
 import cypress from "cypress";
 import cypressPckg from "cypress/package.json";
 import { uploadArtifacts, uploadStdout } from "./lib/artifacts";
 import * as capture from "./lib/capture";
+import { getCypressOptions, parseOptions } from "./lib/cli";
 import { getConfig } from "./lib/config";
 import { makeRequest } from "./lib/httpClient";
 import {
@@ -14,31 +14,20 @@ import {
 } from "./lib/results";
 import { findSpecs } from "./lib/specMatcher";
 import { Platform, TestingType } from "./types";
-
 const stdout = capture.stdout();
 
 console.log(cypressPckg.version);
-program
-  .option("--parallel", "Run tests in parallel", false)
-  .option("--record", "Record test run", true)
-  .option("--key <value>")
-  .option("--component", "", false)
-  .option("--e2e", "", true)
-  .option("--ci-build-id <value>")
-  .option("--spec <value>", "Run specific spec", false)
-  .option("--group <value>", "Group test run", false);
-
-program.parse();
-const options = program.opts();
 
 export async function run() {
+  const options = parseOptions();
+
   const commit = await git.commitInfo();
-  const { parallel, record, key, ciBuildId, group } = options;
+  const { parallel, key, ciBuildId, group, tag: tags } = options;
 
   const testingType: TestingType = options.component ? "component" : "e2e";
   const config = await getConfig(testingType);
 
-  console.log("Config", config);
+  // console.log("Config", config);
   // const port = getRandomPort();
   // const server = await createWSServer(port);
 
@@ -99,7 +88,7 @@ export async function run() {
       projectId: config.projectId,
       recordKey: key,
       specPattern,
-      tags: [],
+      tags,
       testingType,
     },
   });
@@ -146,8 +135,7 @@ async function getSpecFile({
 
 async function runSpecFile({ spec }: { spec: string }) {
   const result = await cypress.run({
-    // TODO: add other configuratiun based on CLI flags and the config file
-    // trashAssetsBeforeRuns: false,
+    ...getCypressOptions(),
     spec,
   });
   return result;
@@ -174,10 +162,10 @@ async function runTillDone({
       break;
     }
 
-    console.log("Running spec file", currentSpecFile);
+    console.log("Running spec file...", currentSpecFile);
     const cypressResult = await runSpecFile({ spec: currentSpecFile.spec });
 
-    console.dir(cypressResult, { depth: null });
+    // console.dir(cypressResult, { depth: null });
     console.log(
       "Sending cypress results to server....",
       currentSpecFile.instanceId
