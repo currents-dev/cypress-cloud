@@ -1,6 +1,5 @@
 import { Command } from "commander";
-import { attachOptions, parseOptions } from "../cli";
-import { findSpecs } from "../specMatcher";
+import { attachOptions, parseOptions } from "..";
 
 const getProgram = () =>
   attachOptions(new Command())
@@ -91,22 +90,4 @@ describe("CLI", () => {
       e2e: true,
     });
   });
-
-  xit("runs multiple spec files when comma separated", async () => {
-    console.log(__dirname);
-    const actual = await findSpecs({
-      projectRoot: __dirname,
-      testingType: "e2e",
-      specPattern: ["fixtures/*.cy.ts"],
-      configSpecPattern: ["fixtures/*.cy.ts"],
-      excludeSpecPattern: [],
-      additionalIgnorePattern: [],
-    });
-    console.log(actual);
-  });
 });
-
-/**
- * - [ ] Test single spec file
- * - [ ] Test multiple spec files
- */

@@ -1,5 +1,7 @@
 import { Command, Option } from "commander";
 import { omit, pickBy } from "lodash";
+import { CypressModuleAPIRunOptions } from "../../types";
+import { sanitizeAndConvertNestedArgs } from "./parser";
 
 /**
  Ignored values - those are irrelevant for the CI runner
@@ -15,6 +17,7 @@ const program = new Command()
 
 attachOptions(program);
 
+// https://docs.cypress.io/guides/guides/command-line#Options
 export function attachOptions(program: Command) {
   return program
     .option(
@@ -107,25 +110,53 @@ function parseCommaSeparatedList(value?: string, previous: string[] = []) {
 
 /**
  *
- * @returns Cypress options without the ones that are not relevant for the runner
+ * @returns Cypress non-empty options without the ones that are not relevant for the runner
  */
-function getScopedCypressOptions() {
-  return omit(program.opts(), [
-    "record",
-    "key",
-    "group",
-    "parallel",
-    "tag",
-    "ciBuildId",
-  ]);
-}
-
-export function getStrippedCypressOptions(filterExtraKeys: string[] = []) {
+export function getStrippedCypressOptions(excludeKeys: string[] = []) {
   return pickBy(
-    getScopedCypressOptions(),
-    (value, key) => value !== undefined && !filterExtraKeys.includes(key)
+    omit(program.opts(), [
+      "record",
+      "key",
+      "group",
+      "parallel",
+      "tag",
+      "ciBuildId",
+      "spec",
+      "exit",
+      "headed",
+      "headless",
+      ...excludeKeys,
+    ]),
+    Boolean
   );
 }
+
+// https://docs.cypress.io/guides/guides/module-api#Options
+export function getCypressModuleAPIOptions(
+  cliOptions: Record<string, unknown>
+): CypressModuleAPIRunOptions {
+  // module API uses "testingType" instead of "e2e" and "component"
+  const result = omit({ ...cliOptions }, "e2e", "component");
+
+  if (cliOptions.config) {
+    result.config = sanitizeAndConvertNestedArgs(cliOptions.config, "config");
+  }
+  if (cliOptions.env) {
+    result.env = sanitizeAndConvertNestedArgs(cliOptions.env, "env");
+  }
+  if (cliOptions.reporterOptions) {
+    result.reporterOptions = sanitizeAndConvertNestedArgs(
+      cliOptions.reporterOptions,
+      "reporterOptions"
+    );
+  }
+
+  return {
+    ...result,
+    testingType: cliOptions.component ? "component" : "e2e",
+  };
+}
+
 export function serializeOptions(options: Record<string, unknown>) {
   return Object.entries(options)
     .map(([key, value]) => {

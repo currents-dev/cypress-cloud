@@ -1,7 +1,7 @@
 import cypressPckg from "cypress/package.json";
 import { uploadArtifacts, uploadStdout } from "./lib/artifacts";
 import * as capture from "./lib/capture";
-import { parseOptions } from "./lib/cli";
+import { parseOptions } from "./lib/cli/";
 import { getCurrentsConfig, mergeConfig } from "./lib/config";
 import { makeRequest, setCypressVersion, setRunId } from "./lib/httpClient";
 import {
@@ -68,6 +68,7 @@ export async function run() {
     provider: getCiProvider(),
   };
   const commit = await getGitInfo();
+  console.log(commit);
   const res = await makeRequest({
     method: "POST",
     url: "runs",
