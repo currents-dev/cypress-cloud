@@ -1,4 +1,5 @@
 {
+  "$schema": "https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/tsconfig.json",
   "compilerOptions": {
     "composite": false,
     "declarationMap": true,
@@ -13,6 +14,7 @@
     "strict": true,
     "outDir": "dist",
     "module": "commonjs",
+    "types": ["jest"],
     "target": "es2016",
     "declaration": true,
     "emitDeclarationOnly": false,
@@ -21,5 +23,5 @@
     "resolveJsonModule": true
   },
   "lib": ["es2016"],
-  "exclude": ["node_modules", "./src/__tests__/*.ts", "dist"]
+  "exclude": ["node_modules", "./**/__tests__/*.ts", "dist"]
 }

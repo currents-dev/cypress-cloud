@@ -1,6 +1,12 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "pipeline": {
+    "test": {
+      "outputs": []
+    },
+    "test:watch": {
+      "cache": false
+    },
     "build": {
       "dependsOn": [
         "^build",
