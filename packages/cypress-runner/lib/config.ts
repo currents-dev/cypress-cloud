@@ -10,6 +10,7 @@ export async function getCurrentsConfig(): Promise<CurrentsConfig> {
 
   try {
     config = require(configFile);
+    config.projectId = config.projectId ?? process.env.CURRENTS_PROJECT_ID;
   } catch (e) {
     console.warn(
       "Cannot load loading config file from '%s', using defaults",
