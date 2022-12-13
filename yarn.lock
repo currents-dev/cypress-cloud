@@ -2362,7 +2362,7 @@ cy2@^3.4.2:
     npm-which "^3.0.1"
     slash "3.0.0"
 
-cypress@^12.0.2:
+cypress@^12.1.0:
   version "12.1.0"
   resolved "https://registry.yarnpkg.com/cypress/-/cypress-12.1.0.tgz#1fdaa631bc30df466dc9505154616f4cf69dbd4b"
   integrity sha512-7fz8N84uhN1+ePNDsfQvoWEl4P3/VGKKmAg+bJQFY4onhA37Ys+6oBkGbNdwGeC7n2QqibNVPhk8x3YuQLwzfw==

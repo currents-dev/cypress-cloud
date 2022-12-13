@@ -13,6 +13,18 @@ export type Platform = {
   browserName: string;
   browserVersion: string;
 };
+
+export type DetectedBrowser = {
+  name: string; // or enum? not sure
+  family: string;
+  channel: string;
+  displayName: string;
+  version: string;
+  path: string;
+  minSupportedVersion: number;
+  majorVersion: string;
+};
+
 export interface FindSpecs<T> {
   projectRoot: string;
   testingType: TestingType;

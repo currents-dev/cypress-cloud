@@ -12,6 +12,7 @@ import {
 import { findSpecs } from "./lib/specMatcher";
 import { Platform, TestingType } from "./types";
 
+import { guessBrowser } from "./lib/browser";
 import { getCiParams, getCiProvider } from "./lib/ciProvider";
 import { runSpecFile } from "./lib/cypress";
 import { getGitInfo } from "./lib/git";
@@ -49,10 +50,9 @@ export async function run() {
   );
 
   // TODO: clarify the message here, and show the configuration details to allow troubleshooting
-  // I expect this to be a source of trouble untils we polish the implementation
+  // I expect this to be a source of trouble until we polish the implementation
   if (specs.length === 0) {
     console.error("No spec matching the spec pattern found");
-    // server.close();
     process.exit(0);
   }
 
@@ -60,15 +60,13 @@ export async function run() {
 
   const platform = {
     ...osPlatformInfo,
-    browserName: "Electron",
-    browserVersion: "106.0.5249.51",
+    ...guessBrowser(options.browser ?? "electron", config.resolved.browsers),
   };
   const ci = {
     params: getCiParams(),
     provider: getCiProvider(),
   };
   const commit = await getGitInfo();
-  console.log(commit);
   const res = await makeRequest({
     method: "POST",
     url: "runs",
@@ -98,8 +96,6 @@ export async function run() {
     machineId: run.machineId,
     platform,
   });
-
-  // server.close();
 }
 
 type InstanceRequestArgs = {

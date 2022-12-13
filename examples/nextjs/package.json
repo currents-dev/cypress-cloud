@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "cypress": "^12.1.0",
     "cypress-runner": "*",
     "next": "13.0.0",
     "react": "^18.2.0",
