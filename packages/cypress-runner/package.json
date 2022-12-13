@@ -25,7 +25,6 @@
     "@types/lodash": "^4.14.191",
     "@types/randomstring": "^1.1.8",
     "@types/stack-utils": "^2.0.1",
-    "@types/ws": "^8.5.3",
     "eslint": "^7.32.0",
     "eslint-config-custom": "*",
     "jest": "^29.3.1",
