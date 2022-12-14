@@ -5,9 +5,11 @@ import { getCommitDefaults } from "./ciProvider";
 export const getGitInfo = async () => {
   const commitInfo = await git.commitInfo();
   return getCommitDefaults({
-    remoteOrigin: commitInfo.branch,
+    branch: commitInfo.branch,
+    remoteOrigin: commitInfo.remote,
     authorEmail: commitInfo.email,
     authorName: commitInfo.author,
-    ...commitInfo,
+    message: commitInfo.message,
+    sha: commitInfo.sha,
   });
 };

@@ -68,7 +68,9 @@ export async function run() {
     params: getCiParams(),
     provider: getCiProvider(),
   };
+
   const commit = await getGitInfo();
+  console.log("Commit info", commit);
   const res = await makeRequest({
     method: "POST",
     url: "runs",

@@ -7,7 +7,7 @@
   "license": "GPL-3.0-or-later",
   "scripts": {
     "build": "tsc -p tsconfig.json --outDir dist",
-    "watch": "yarn build --watch",
+    "watch": "esbuild ./index.ts ./bin/*.ts  ./plugin/*.ts --bundle --watch --platform=node --packages=external --outdir=out --external:'../index'",
     "lint": "TIMING=1 eslint \"**/*.ts*\"",
     "test": "jest",
     "release": "release-it",
