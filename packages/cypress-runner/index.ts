@@ -1,3 +1,5 @@
+import "./lib/stdout";
+
 import cypressPckg from "cypress/package.json";
 import { uploadArtifacts, uploadStdout } from "./lib/artifacts";
 import * as capture from "./lib/capture";
@@ -18,7 +20,7 @@ import { runSpecFile } from "./lib/cypress";
 import { getGitInfo } from "./lib/git";
 import { getPlatformInfo } from "./lib/platform";
 
-const stdout = capture.stdout();
+let stdout = capture.stdout();
 setCypressVersion(cypressPckg.version);
 
 export async function run() {
@@ -144,6 +146,9 @@ async function runTillDone({
       hasMore = false;
       break;
     }
+
+    capture.restore();
+    stdout = capture.stdout();
 
     console.log("Running spec file...", currentSpecFile);
     const cypressResult = await runSpecFile({ spec: currentSpecFile.spec });
