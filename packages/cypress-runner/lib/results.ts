@@ -75,7 +75,7 @@ export const getInstanceTestsPayload = (
   };
 };
 
-interface SummarizedResult {
+export interface SummarizedResult {
   pending: number;
   failed: number;
   skipped: number;

@@ -31,13 +31,11 @@ export async function run() {
 
   const currentsConfig = await getCurrentsConfig();
   if (!currentsConfig.projectId) {
-    console.error("Missing projectId in config file");
-    process.exit(1);
+    throw new Error("Missing projectId in currents.config.js");
   }
+
   const config = await mergeConfig(testingType, currentsConfig);
-
   const specPattern = options.spec || config.specPattern;
-
   const specs = await findSpecs({
     projectRoot: config.projectRoot,
     testingType,
