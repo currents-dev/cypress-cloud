@@ -8,7 +8,7 @@ export const restore = function () {
 };
 
 export const stdout = function () {
-  const logs: any[] = [];
+  const logs: string[] = [];
 
   // lazily backup write to enable injection
   const { write } = process.stdout;
@@ -27,7 +27,7 @@ export const stdout = function () {
     };
   }
 
-  process.stdout.write = function (str) {
+  process.stdout.write = function (str: string) {
     logs.push(str);
 
     // @ts-ignore

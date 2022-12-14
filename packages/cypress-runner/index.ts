@@ -1,3 +1,5 @@
+import "./lib/stdout";
+
 import cypressPckg from "cypress/package.json";
 import { uploadArtifacts, uploadStdout } from "./lib/artifacts";
 import * as capture from "./lib/capture";
