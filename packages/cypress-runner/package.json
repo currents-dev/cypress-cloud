@@ -70,12 +70,14 @@
     "./package.json": "./package.json"
   },
   "release-it": {
+    "hooks": {
+      "after:bump": "yarn run build:release"
+    },
     "git": {
       "commitMessage": "chore: release v${version}"
     },
     "npm": {
-      "ignoreVersion": true,
-      "publishPath": "out"
+      "ignoreVersion": true
     }
   }
 }
