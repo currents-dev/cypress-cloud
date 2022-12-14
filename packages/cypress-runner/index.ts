@@ -8,6 +8,7 @@ import {
   getInstanceResultPayload,
   getInstanceTestsPayload,
   isSuccessResult,
+  summarizeResults,
 } from "./lib/results";
 import { findSpecs } from "./lib/specMatcher";
 import { Platform, TestingType } from "./types";
@@ -99,26 +100,7 @@ export async function run() {
     platform,
   });
 
-  const failedTestsNumber = results.reduce(
-    (acc, result) => (acc += result.totalFailed),
-    0
-  );
-
-  const skippedTestsNumber = results.reduce(
-    (acc, result) => (acc += result.totalSkipped),
-    0
-  );
-
-  const failedAndSkippedTestsNumber = failedTestsNumber + skippedTestsNumber;
-
-  if (failedAndSkippedTestsNumber > 0) {
-    console.log(
-      `Run finished with "${failedTestsNumber}" failed and "${skippedTestsNumber}" skipped tests`
-    );
-    process.exit(failedAndSkippedTestsNumber);
-  }
-
-  // server.close();
+  return summarizeResults(results);
 }
 
 type InstanceRequestArgs = {
@@ -171,15 +153,17 @@ async function runTillDone({
 
     console.log("Running spec file...", currentSpecFile);
     const cypressResult = await runSpecFile({ spec: currentSpecFile.spec });
-    // console.dir(cypressResult, { depth: null });
+
     console.log(
       "Sending cypress results to server....",
       currentSpecFile.instanceId
     );
     if (!isSuccessResult(cypressResult)) {
       // TODO: handle failure
+      // do not exit
+      // skip the spec file, go to next
       console.log("Cypress run failed");
-      process.exit(1);
+      continue;
     }
 
     cypressResults.push(cypressResult);
@@ -216,7 +200,6 @@ async function processCypressResults(
   const { videoUploadUrl, screenshotUploadUrls } = uploadInstructions.data;
 
   console.log("Uploading video", videoUploadUrl, runResult.video);
-
   await uploadArtifacts({
     videoUploadUrl,
     videoPath: runResult.video,
