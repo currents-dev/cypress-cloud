@@ -19,10 +19,17 @@ export const makeRequest = <T = any, D = any>(
   config: AxiosRequestConfig<D>,
   retryOptions?: RetryOptions
 ) => {
+  const baseURL =
+    process.env.CURRENTS_API_BASE_URL || "https://cy.currents.dev";
+
+  console.log(
+    "Currents API Request:",
+    `${config.method || "GET"} ${baseURL}/${config.url || ""}`
+  );
   return retryWithBackoff(
     (retryIndex: number) =>
       axios({
-        baseURL: "https://cy.currents.dev",
+        baseURL,
         ...config,
         headers: {
           "x-cypress-request-attempt": retryIndex,

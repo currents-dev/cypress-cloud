@@ -8,15 +8,11 @@
       "cache": false
     },
     "build": {
-      "dependsOn": [
-        "^build"
-      ],
-      "outputs": [
-        "dist/**",
-        ".next/**"
-      ],
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", ".next/**"],
       "env": [
         "CURRENTS_PROJECT_ID",
+        "CURRENTS_API_BASE_URL",
         "TF_BUILD",
         "TF_BUILD_BUILDNUMBER",
         "AZURE_HTTP_USER_AGENT",
