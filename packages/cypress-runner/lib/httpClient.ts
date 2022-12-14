@@ -22,7 +22,7 @@ export const makeRequest = <T = any, D = any>(
   return retryWithBackoff(
     (retryIndex: number) =>
       axios({
-        baseURL: "https://cy.curretns.dev",
+        baseURL: "https://cy.currents.dev",
         ...config,
         headers: {
           "x-cypress-request-attempt": retryIndex,
