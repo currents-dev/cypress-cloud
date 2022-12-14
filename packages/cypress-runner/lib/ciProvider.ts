@@ -15,7 +15,7 @@ import {
   transform,
 } from "lodash";
 
-const debug = debugFn("cypress:ci-info");
+const debug = debugFn("currents:ci-info");
 
 const join = (char: string, ...pieces: (string | undefined)[]) => {
   return chain(pieces).compact().join(char).value();
@@ -501,7 +501,7 @@ const _providerCommitParams = (): ProviderCommitParamsRes => {
       // message: ???
       authorName: env.CIRCLE_USERNAME,
       // authorEmail: ???
-      // remoteOrigin: ???
+      remoteOrigin: env.CIRCLE_REPOSITORY_URL,
       // defaultBranch: ???
     },
     codeshipBasic: {

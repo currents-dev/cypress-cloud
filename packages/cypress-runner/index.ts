@@ -1,7 +1,9 @@
+import "./lib/stdout";
+
 import cypressPckg from "cypress/package.json";
 import { uploadArtifacts, uploadStdout } from "./lib/artifacts";
 import * as capture from "./lib/capture";
-import { parseOptions } from "./lib/cli";
+import { parseOptions } from "./lib/cli/";
 import { getCurrentsConfig, mergeConfig } from "./lib/config";
 import { makeRequest, setCypressVersion, setRunId } from "./lib/httpClient";
 import {
@@ -13,17 +15,17 @@ import {
 import { findSpecs } from "./lib/specMatcher";
 import { Platform, TestingType } from "./types";
 
+import { guessBrowser } from "./lib/browser";
 import { getCiParams, getCiProvider } from "./lib/ciProvider";
 import { runSpecFile } from "./lib/cypress";
 import { getGitInfo } from "./lib/git";
 import { getPlatformInfo } from "./lib/platform";
 
-const stdout = capture.stdout();
+let stdout = capture.stdout();
 setCypressVersion(cypressPckg.version);
 
 export async function run() {
   const options = parseOptions();
-
   const { component, parallel, key, ciBuildId, group, tag: tags } = options;
   const testingType: TestingType = component ? "component" : "e2e";
 
@@ -37,7 +39,7 @@ export async function run() {
   const specPattern = options.spec || config.specPattern;
 
   const specs = await findSpecs({
-    projectRoot: process.cwd(),
+    projectRoot: config.projectRoot,
     testingType,
     specPattern,
     configSpecPattern: config.specPattern,
@@ -51,10 +53,9 @@ export async function run() {
   );
 
   // TODO: clarify the message here, and show the configuration details to allow troubleshooting
-  // I expect this to be a source of trouble untils we polish the implementation
+  // I expect this to be a source of trouble until we polish the implementation
   if (specs.length === 0) {
     console.error("No spec matching the spec pattern found");
-    // server.close();
     process.exit(0);
   }
 
@@ -62,14 +63,16 @@ export async function run() {
 
   const platform = {
     ...osPlatformInfo,
-    browserName: "Electron",
-    browserVersion: "106.0.5249.51",
+    ...guessBrowser(options.browser ?? "electron", config.resolved.browsers),
   };
   const ci = {
     params: getCiParams(),
     provider: getCiProvider(),
   };
-  const commit = await getGitInfo();
+
+  const commit = await getGitInfo(config.projectRoot);
+  console.log("Commit info", commit);
+
   const res = await makeRequest({
     method: "POST",
     url: "runs",
@@ -146,10 +149,13 @@ async function runTillDone({
     });
     if (!currentSpecFile.spec) {
       console.log("No more spec files");
-      console.log("Run URL", `http://localhost:8080/runs/${runId}`);
+      console.log("Run URL", `https://app.currents.dev/runs/${runId}`);
       hasMore = false;
       break;
     }
+
+    capture.restore();
+    stdout = capture.stdout();
 
     console.log("Running spec file...", currentSpecFile);
     const cypressResult = await runSpecFile({ spec: currentSpecFile.spec });
@@ -209,8 +215,3 @@ async function processCypressResults(
 
   await uploadStdout(instanceId, stdout.toString());
 }
-
-run().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});

@@ -22,14 +22,14 @@ export const makeRequest = <T = any, D = any>(
   return retryWithBackoff(
     (retryIndex: number) =>
       axios({
-        baseURL: "http://localhost:1234/",
+        baseURL: "https://cy.currents.dev",
+        ...config,
         headers: {
           "x-cypress-request-attempt": retryIndex,
           "x-cypress-run-id": _runId,
           "x-cypress-version": _cypressVersion,
           ...config.headers,
         },
-        ...config,
       }),
     retryOptions
   ) as Promise<AxiosResponse<T, D>>;

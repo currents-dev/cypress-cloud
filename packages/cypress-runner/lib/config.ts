@@ -10,6 +10,7 @@ export async function getCurrentsConfig(): Promise<CurrentsConfig> {
 
   try {
     config = require(configFile);
+    config.projectId = process.env.CURRENTS_PROJECT_ID ?? config.projectId;
   } catch (e) {
     console.warn(
       "Cannot load loading config file from '%s', using defaults",
@@ -23,12 +24,11 @@ export async function mergeConfig(
   testingType: TestingType,
   currentsConfig: CurrentsConfig
 ) {
-  const cypressConfigFile: Cypress.ResolvedConfigOptions = await bootCypress(
-    getRandomPort()
-  );
+  const cypressResolvedConfig: Cypress.ResolvedConfigOptions =
+    await bootCypress(getRandomPort());
 
   // @ts-ignore
-  const rawE2EPattern = cypressConfigFile.rawJson?.e2e?.specPattern;
+  const rawE2EPattern = cypressResolvedConfig.rawJson?.e2e?.specPattern;
   let additionalIgnorePattern: string[] = [];
   if (testingType === "component" && rawE2EPattern) {
     // @ts-ignore
@@ -36,10 +36,11 @@ export async function mergeConfig(
   }
   return {
     projectId: currentsConfig.projectId,
-    specPattern: cypressConfigFile.specPattern,
+    specPattern: cypressResolvedConfig.specPattern,
     // @ts-ignore
-    excludeSpecPattern: cypressConfigFile.resolved.excludeSpecPattern.value,
+    excludeSpecPattern: cypressResolvedConfig.resolved.excludeSpecPattern.value,
     additionalIgnorePattern,
+    resolved: cypressResolvedConfig,
   };
 
   // see https://github.com/cypress-io/cypress/blob/ed0668e24c2ee6753bbd25ae467ce94ae5857741/packages/config/src/options.ts#L457

@@ -1,9 +1,11 @@
-export type TestingType = "component" | "e2e";
+export type TestingType = Cypress.TestingType;
 export type SpecType = "component" | "integration";
 
 export type CypressResult =
   | CypressCommandLine.CypressRunResult
   | CypressCommandLine.CypressFailedRunResult;
+export type CypressModuleAPIRunOptions =
+  Partial<CypressCommandLine.CypressRunOptions>;
 
 export type Platform = {
   osName: string;
@@ -11,6 +13,27 @@ export type Platform = {
   browserName: string;
   browserVersion: string;
 };
+
+export interface CommitData {
+  sha: string;
+  branch?: string;
+  authorName?: string;
+  authorEmail?: string;
+  message?: string;
+  remoteOrigin?: string;
+}
+
+export type DetectedBrowser = {
+  name: string; // or enum? not sure
+  family: string;
+  channel: string;
+  displayName: string;
+  version: string;
+  path: string;
+  minSupportedVersion: number;
+  majorVersion: string;
+};
+
 export interface FindSpecs<T> {
   projectRoot: string;
   testingType: TestingType;
