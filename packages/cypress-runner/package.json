@@ -6,13 +6,12 @@
   "author": "Currents Software Inc",
   "license": "GPL-3.0-or-later",
   "scripts": {
-    "build": "tsc -p tsconfig.json --outDir dist",
-    "watch": "esbuild ./index.ts ./bin/*.ts  ./plugin/*.ts --bundle --watch --platform=node --packages=external --outdir=out --external:'../index'",
     "lint": "TIMING=1 eslint \"**/*.ts*\"",
     "test": "jest",
+    "test:watch": "jest --watch",
     "release": "release-it",
-    "build:release": "esbuild ./index.ts ./bin/*.ts  ./plugin/*.ts --bundle --minify --platform=node --packages=external --outdir=out --external:'../index'",
-    "test:watch": "jest --watch"
+    "watch": "yarn build --watch",
+    "build": "esbuild ./index.ts ./bin/*.ts  ./plugin/*.ts --bundle --minify --platform=node --packages=external --outdir=out --external:'../index'"
   },
   "peerDependencies": {
     "cypress": ">= 10.0.0"
@@ -71,7 +70,7 @@
   },
   "release-it": {
     "hooks": {
-      "after:bump": "yarn run build:release"
+      "after:bump": "yarn run build"
     },
     "git": {
       "commitMessage": "chore: release v${version}"
