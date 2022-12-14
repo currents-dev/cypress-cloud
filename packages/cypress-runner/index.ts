@@ -155,33 +155,57 @@ async function runTillDone({
     capture.restore();
     stdout = capture.stdout();
 
-    console.log("Running spec file...", currentSpecFile);
-    const cypressResult = await runSpecFile({ spec: currentSpecFile.spec });
-
-    console.log(
-      "Sending cypress results to server....",
+    const cypressResult = await runCypressSpecFile(
+      currentSpecFile.spec,
       currentSpecFile.instanceId
     );
-    if (!isSuccessResult(cypressResult)) {
-      // TODO: handle failure
-      // do not exit
-      // skip the spec file, go to next
-      console.log("Cypress run failed");
-      continue;
-    }
-
-    cypressResults.push(cypressResult);
-
-    await processCypressResults(currentSpecFile.instanceId, cypressResult);
+    // TODO: process failed results as well
+    if (cypressResult) cypressResults.push(cypressResult);
   }
 
   return cypressResults;
+}
+
+async function runCypressSpecFile(
+  spec: string,
+  instanceId: string
+): Promise<CypressCommandLine.CypressRunResult | undefined> {
+  try {
+    console.log("Running spec file...", spec);
+    const cypressResult = await runSpecFile({ spec });
+    if (isSuccessResult(cypressResult)) {
+      await processCypressResults(instanceId, cypressResult);
+      return cypressResult;
+    } else {
+      await processCypressFailedResults(instanceId, cypressResult);
+    }
+  } catch (err) {
+    const failedCypressResult = {
+      status: "failed",
+      failures: 1,
+      message: "",
+    } as CypressCommandLine.CypressFailedRunResult;
+
+    await processCypressFailedResults(instanceId, failedCypressResult);
+  }
+}
+
+async function processCypressFailedResults(
+  instanceId: string,
+  results: CypressCommandLine.CypressFailedRunResult
+) {
+  console.log("Cypress spec execution failed failed", { results, instanceId });
+
+  // TODO: Report empty results for tests and specs
+  // Remove process.exit once tests and specs are sent to Currents
+  process.exit(1);
 }
 
 async function processCypressResults(
   instanceId: string,
   results: CypressCommandLine.CypressRunResult
 ) {
+  console.log("Sending cypress results to the server...", instanceId);
   const runResult = results.runs[0];
   if (!runResult) {
     throw new Error("No run found in Cypress results");
