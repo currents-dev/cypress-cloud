@@ -10,7 +10,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "release": "release-it",
-    "watch": "yarn build --watch",
+    "dev": "yarn build --watch",
     "build": "esbuild ./index.ts ./bin/*.ts  ./plugin/*.ts --bundle --minify --platform=node --packages=external --outdir=out --external:'../index'"
   },
   "peerDependencies": {
