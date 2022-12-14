@@ -116,7 +116,6 @@ async function getSpecFile({
   machineId,
   platform,
 }: InstanceRequestArgs) {
-  console.log(`POST http://localhost:1234/runs/${runId}/instances`);
   const res = await makeRequest({
     method: "POST",
     url: `runs/${runId}/instances`,

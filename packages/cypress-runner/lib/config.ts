@@ -3,6 +3,7 @@ import { TestingType } from "../types";
 import { bootCypress } from "./bootstrap";
 import { getRandomPort } from "./utils";
 
+// TODO: Add strict types for Currents configuration options
 type CurrentsConfig = Record<string, unknown>;
 export async function getCurrentsConfig(): Promise<CurrentsConfig> {
   const configFile = await getConfigFile();
@@ -35,6 +36,7 @@ export async function mergeConfig(
     additionalIgnorePattern = rawE2EPattern;
   }
   return {
+    projectRoot: currentsConfig.projectRoot || process.cwd(),
     projectId: currentsConfig.projectId,
     specPattern: cypressResolvedConfig.specPattern,
     // @ts-ignore
