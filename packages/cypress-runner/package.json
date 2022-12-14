@@ -72,11 +72,14 @@
     "hooks": {
       "after:bump": "yarn run build"
     },
-    "git": {
-      "commitMessage": "chore: release v${version}"
+    "github": {
+      "release": true,
+      "releaseName": "v${version}",
+      "releaseNotes": "git log --pretty=oneline --abbrev-commit --no-decorate v${version}..HEAD"
     },
-    "npm": {
-      "ignoreVersion": true
+    "git": {
+      "commitMessage": "chore: release v${version}",
+      "tagName": "v${version}"
     }
   }
 }
