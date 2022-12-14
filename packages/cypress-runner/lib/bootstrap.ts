@@ -44,6 +44,6 @@ export const bootCypress = async (port: number) => {
       stdout: child.stdout.toString("utf-8"),
       stderr: child.stderr.toString(),
     });
-    process.exit(1);
+    throw new Error("Unable to resolve cypress configuration");
   }
 };

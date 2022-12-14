@@ -58,7 +58,7 @@ export const getInstanceResultPayload = (
   };
 };
 
-// this one need testing with real data
+// TODL this one need testing with real data
 export const getInstanceTestsPayload = (
   runResult: CypressCommandLine.RunResult,
   config: Cypress.ResolvedConfigOptions
@@ -73,4 +73,35 @@ export const getInstanceTestsPayload = (
         clientId: `r${i}`,
       })) ?? [],
   };
+};
+
+export interface SummarizedResult {
+  pending: number;
+  failed: number;
+  skipped: number;
+  passed: number;
+  total: number;
+}
+export const summarizeResults = (
+  input: CypressCommandLine.CypressRunResult[]
+): SummarizedResult => {
+  return input.reduce(
+    (
+      acc,
+      { totalFailed, totalPassed, totalPending, totalSkipped, totalTests }
+    ) => ({
+      pending: acc.pending + totalPending,
+      failed: acc.failed + totalFailed,
+      skipped: acc.skipped + totalSkipped,
+      passed: acc.passed + totalPassed,
+      total: acc.total + totalTests,
+    }),
+    {
+      pending: 0,
+      failed: 0,
+      skipped: 0,
+      passed: 0,
+      total: 0,
+    }
+  );
 };

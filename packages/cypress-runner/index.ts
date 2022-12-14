@@ -10,6 +10,7 @@ import {
   getInstanceResultPayload,
   getInstanceTestsPayload,
   isSuccessResult,
+  summarizeResults,
 } from "./lib/results";
 import { findSpecs } from "./lib/specMatcher";
 import { Platform, TestingType } from "./types";
@@ -30,15 +31,13 @@ export async function run() {
 
   const currentsConfig = await getCurrentsConfig();
   if (!currentsConfig.projectId) {
-    console.error("Missing projectId in config file");
-    process.exit(1);
+    throw new Error("Missing projectId in currents.config.js");
   }
+
   const config = await mergeConfig(testingType, currentsConfig);
-
   const specPattern = options.spec || config.specPattern;
-
   const specs = await findSpecs({
-    projectRoot: process.cwd(),
+    projectRoot: config.projectRoot,
     testingType,
     specPattern,
     configSpecPattern: config.specPattern,
@@ -69,8 +68,9 @@ export async function run() {
     provider: getCiProvider(),
   };
 
-  const commit = await getGitInfo();
+  const commit = await getGitInfo(config.projectRoot);
   console.log("Commit info", commit);
+
   const res = await makeRequest({
     method: "POST",
     url: "runs",
@@ -94,12 +94,14 @@ export async function run() {
   console.log("Run created", run.runUrl);
   setRunId(run.runId);
 
-  await runTillDone({
+  const results = await runTillDone({
     runId: run.runId,
     groupId: run.groupId,
     machineId: run.machineId,
     platform,
   });
+
+  return summarizeResults(results);
 }
 
 type InstanceRequestArgs = {
@@ -134,6 +136,7 @@ async function runTillDone({
   machineId,
   platform,
 }: InstanceRequestArgs) {
+  const cypressResults: CypressCommandLine.CypressRunResult[] = [];
   let hasMore = true;
   while (hasMore) {
     const currentSpecFile = await getSpecFile({
@@ -155,18 +158,24 @@ async function runTillDone({
     console.log("Running spec file...", currentSpecFile);
     const cypressResult = await runSpecFile({ spec: currentSpecFile.spec });
 
-    // console.dir(cypressResult, { depth: null });
     console.log(
       "Sending cypress results to server....",
       currentSpecFile.instanceId
     );
     if (!isSuccessResult(cypressResult)) {
       // TODO: handle failure
+      // do not exit
+      // skip the spec file, go to next
       console.log("Cypress run failed");
-      process.exit(1);
+      continue;
     }
+
+    cypressResults.push(cypressResult);
+
     await processCypressResults(currentSpecFile.instanceId, cypressResult);
   }
+
+  return cypressResults;
 }
 
 async function processCypressResults(
@@ -195,7 +204,6 @@ async function processCypressResults(
   const { videoUploadUrl, screenshotUploadUrls } = uploadInstructions.data;
 
   console.log("Uploading video", videoUploadUrl, runResult.video);
-
   await uploadArtifacts({
     videoUploadUrl,
     videoPath: runResult.video,
