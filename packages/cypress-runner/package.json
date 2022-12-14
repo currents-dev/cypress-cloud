@@ -1,6 +1,6 @@
 {
   "name": "cypress-cloud",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "main": "./out/index.js",
   "types": "./index.ts",
   "author": "Currents Software Inc",
