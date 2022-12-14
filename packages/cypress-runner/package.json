@@ -54,6 +54,10 @@
   "bin": {
     "cypress-runner": "./out/index.js"
   },
+  "files": [
+    "out",
+    "LICENSE"
+  ],
   "exports": {
     ".": {
       "import": "./out/index.js",
