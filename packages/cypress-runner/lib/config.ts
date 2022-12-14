@@ -25,8 +25,10 @@ export async function mergeConfig(
   testingType: TestingType,
   currentsConfig: CurrentsConfig
 ) {
-  const cypressResolvedConfig: Cypress.ResolvedConfigOptions =
-    await bootCypress(getRandomPort());
+  const cypressResolvedConfig: Cypress.ResolvedConfigOptions & {
+    projectRoot: string;
+    rawJson: Record<string, unknown>;
+  } = await bootCypress(getRandomPort());
 
   // @ts-ignore
   const rawE2EPattern = cypressResolvedConfig.rawJson?.e2e?.specPattern;
@@ -36,7 +38,7 @@ export async function mergeConfig(
     additionalIgnorePattern = rawE2EPattern;
   }
   return {
-    projectRoot: currentsConfig.projectRoot || process.cwd(),
+    projectRoot: cypressResolvedConfig.projectRoot || process.cwd(),
     projectId: currentsConfig.projectId,
     specPattern: cypressResolvedConfig.specPattern,
     // @ts-ignore

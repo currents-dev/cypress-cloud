@@ -9,5 +9,4 @@ loadEnvVariables();
 
 module.exports = {
   projectId: process.env.CURRENTS_PROJECT_ID,
-  projectRoot: process.cwd(),
 };
