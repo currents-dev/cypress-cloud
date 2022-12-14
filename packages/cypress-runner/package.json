@@ -1,5 +1,5 @@
 {
-  "name": "cypress-cloud",
+  "name": "cypress-runner",
   "version": "1.0.6",
   "main": "./out/index.js",
   "types": "./index.ts",
