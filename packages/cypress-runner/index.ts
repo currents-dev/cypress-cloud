@@ -142,7 +142,7 @@ async function runTillDone({
     });
     if (!currentSpecFile.spec) {
       console.log("No more spec files");
-      console.log("Run URL", `http://localhost:8080/runs/${runId}`);
+      console.log("Run URL", `https://app.currents.dev/runs/${runId}`);
       hasMore = false;
       break;
     }
