@@ -9,7 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@deploysentinel/cypress-debugger": "^0.6.6",
     "cypress": "^12.1.0",
     "cypress-runner": "*",
     "cypress-terminal-report": "^5.0.0",
