@@ -14,6 +14,15 @@ export type Platform = {
   browserVersion: string;
 };
 
+export interface CommitData {
+  sha: string;
+  branch?: string;
+  authorName?: string;
+  authorEmail?: string;
+  message?: string;
+  remoteOrigin?: string;
+}
+
 export type DetectedBrowser = {
   name: string; // or enum? not sure
   family: string;

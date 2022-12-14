@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "private": true,
-  "author": "",
-  "license": "ISC",
+  "author": "Currents Software Inc.",
+  "license": "GPL-3.0-or-later",
   "workspaces": [
     "examples/*",
     "packages/*"

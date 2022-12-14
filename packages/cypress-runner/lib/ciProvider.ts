@@ -501,7 +501,7 @@ const _providerCommitParams = (): ProviderCommitParamsRes => {
       // message: ???
       authorName: env.CIRCLE_USERNAME,
       // authorEmail: ???
-      // remoteOrigin: ???
+      remoteOrigin: env.CIRCLE_REPOSITORY_URL,
       // defaultBranch: ???
     },
     codeshipBasic: {
