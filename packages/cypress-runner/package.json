@@ -17,7 +17,6 @@
     "cypress": ">= 10.0.0"
   },
   "devDependencies": {
-    "@types/babel__code-frame": "^7.0.3",
     "@types/debug": "^4.1.7",
     "@types/getos": "^3.0.1",
     "@types/is-ci": "^3.0.0",
@@ -47,6 +46,9 @@
     "lodash": "^4.17.21",
     "nanoid": "^3.3.4",
     "tmp-promise": "^3.0.3"
+  },
+  "resolutions": {
+    "debug": "^4.3.4"
   },
   "bin": {
     "cypress-runner": "./out/bin/index.js"
