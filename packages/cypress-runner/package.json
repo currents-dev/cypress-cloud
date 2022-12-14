@@ -1,15 +1,17 @@
 {
   "name": "cypress-runner",
-  "version": "0.0.0",
-  "main": "./dist/index.js",
+  "version": "1.0.6",
+  "main": "./out/index.js",
   "types": "./index.ts",
-  "license": "ISC",
+  "author": "Currents Software Inc",
+  "license": "GPL-3.0-or-later",
   "scripts": {
-    "build": "tsc -p tsconfig.json --outDir dist",
-    "watch": "yarn build --watch",
     "lint": "TIMING=1 eslint \"**/*.ts*\"",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "release": "release-it",
+    "watch": "yarn build --watch",
+    "build": "esbuild ./index.ts ./bin/*.ts  ./plugin/*.ts --bundle --minify --platform=node --packages=external --outdir=out --external:'../index'"
   },
   "peerDependencies": {
     "cypress": ">= 10.0.0"
@@ -25,14 +27,15 @@
     "@types/lodash": "^4.14.191",
     "@types/randomstring": "^1.1.8",
     "@types/stack-utils": "^2.0.1",
+    "esbuild": "^0.16.5",
     "eslint": "^7.32.0",
     "eslint-config-custom": "*",
     "jest": "^29.3.1",
+    "release-it": "^15.5.1",
     "tsconfig": "*",
     "typescript": "^4.5.2"
   },
   "dependencies": {
-    "@babel/code-frame": "^7.18.6",
     "@cypress/commit-info": "^2.2.0",
     "axios": "^1.2.0",
     "colors": "^1.4.0",
@@ -46,5 +49,34 @@
     "lodash": "^4.17.21",
     "nanoid": "^3.3.4",
     "tmp-promise": "^3.0.3"
+  },
+  "bin": {
+    "cypress-runner": "./out/bin/index.js"
+  },
+  "files": [
+    "out",
+    "LICENSE"
+  ],
+  "exports": {
+    ".": {
+      "import": "./out/index.js",
+      "require": "./out/index.js"
+    },
+    "./plugin": {
+      "import": "./out/plugin/index.js",
+      "require": "./out/plugin/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "release-it": {
+    "hooks": {
+      "after:bump": "yarn run build"
+    },
+    "git": {
+      "commitMessage": "chore: release v${version}"
+    },
+    "npm": {
+      "ignoreVersion": true
+    }
   }
 }
