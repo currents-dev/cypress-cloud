@@ -11,7 +11,7 @@
     "lint": "TIMING=1 eslint \"**/*.ts*\"",
     "test": "jest",
     "release": "release-it",
-    "build:release": "esbuild ./index.ts ./bin/cypress-runner.ts  ./plugin/index.ts --bundle --minify --platform=node --packages=external --outdir=out --external:'../index'",
+    "build:release": "esbuild ./index.ts ./bin/*.ts  ./plugin/*.ts --bundle --minify --platform=node --packages=external --outdir=out --external:'../index'",
     "test:watch": "jest --watch"
   },
   "peerDependencies": {
@@ -52,7 +52,7 @@
     "tmp-promise": "^3.0.3"
   },
   "bin": {
-    "cypress-runner": "./out/index.js"
+    "cypress-runner": "./out/bin/index.js"
   },
   "files": [
     "out",
