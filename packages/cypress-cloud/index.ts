@@ -23,16 +23,39 @@ import { divider, info, spacer, title, warn } from "./lib/log";
 import { getPlatformInfo } from "./lib/platform";
 import { summaryTable } from "./lib/table";
 
-export async function run() {
+export async function run(
+  parameters: {
+    projectId?: string;
+    key?: string;
+    specPattern?: string;
+  } = {}
+) {
   spacer();
   const options = parseOptions();
-  const { component, parallel, key, ciBuildId, group, tag: tags } = options;
-
-  const currentsConfig = await getCurrentsConfig();
+  const { component, parallel, ciBuildId, group, tag: tags } = options;
+  const key = parameters.key || options.key;
+  if (!key) {
+    throw new Error(
+      "required option '-k, --key <record-key>' not specified. Please either pass it as a flag, or as a parameter to the run function."
+    );
+  }
 
   const testingType: TestingType = component ? "component" : "e2e";
+
+  const { projectId, ...restOfCurrentsConfig } = await getCurrentsConfig();
+  const currentsConfig = {
+    ...restOfCurrentsConfig,
+    projectId: parameters.projectId || projectId,
+  };
+  if (!currentsConfig.projectId) {
+    throw new Error(
+      "Missing projectId. Please either set it in currents.config.js, or pass it as a parameter to the run function."
+    );
+  }
+
   const config = await mergeConfig(testingType, currentsConfig);
-  const specPattern = options.spec || config.specPattern;
+  const specPattern =
+    parameters.specPattern || options.spec || config.specPattern;
   const specs = await findSpecs({
     projectRoot: config.projectRoot,
     testingType,

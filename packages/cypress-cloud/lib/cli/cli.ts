@@ -48,7 +48,7 @@ export function attachOptions(program: Command) {
     )
     .addOption(new Option("--e2e", "runs end to end tests").default(true))
     .option("--group <name>", "a named group for recorded runs in Currents")
-    .requiredOption(
+    .option(
       "-k, --key <record-key>",
       "your secret Record Key obtained from Currents. you can omit this if you set a CURRENTS_RECORD_KEY environment variable"
     )
