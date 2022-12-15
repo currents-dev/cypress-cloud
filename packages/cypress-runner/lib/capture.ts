@@ -1,3 +1,4 @@
+const debug = require("debug")("currents:capture");
 const _write = process.stdout.write;
 const _log = process.log;
 
@@ -7,8 +8,9 @@ export const restore = function () {
   process.log = _log;
 };
 
-export const stdout = function () {
-  const logs: string[] = [];
+const stdout = function () {
+  debug("capturing stdout");
+  let logs: string[] = [];
 
   // lazily backup write to enable injection
   const { write } = process.stdout;
@@ -39,9 +41,32 @@ export const stdout = function () {
     toString() {
       return logs.join("");
     },
-
     data: logs,
-
     restore,
+    reset: () => {
+      debug("resetting captured stdout");
+      logs = [];
+    },
   };
 };
+
+let initialOutput: string = "";
+let capturedOutput: null | ReturnType<typeof stdout> = null;
+
+export const initCapture = () => (capturedOutput = stdout());
+
+export const cutInitialOutput = () => {
+  if (!capturedOutput) throw new Error("capturedOutput is null");
+  initialOutput = capturedOutput.toString();
+  capturedOutput.reset();
+};
+export const resetCapture = () => {
+  if (!capturedOutput) throw new Error("capturedOutput is null");
+  capturedOutput.reset();
+};
+
+export const getCapturedOutput = () => {
+  if (!capturedOutput) throw new Error("capturedOutput is null");
+  return capturedOutput.toString();
+};
+export const getInitialOutput = () => initialOutput;

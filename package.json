@@ -26,5 +26,8 @@
   "engines": {
     "node": ">=14.0.0"
   },
+  "resolutions": {
+    "debug": "^4.3.4"
+  },
   "packageManager": "yarn@3.3.0"
 }

@@ -1,39 +1,32 @@
-import "./lib/stdout";
+import("./lib/init");
 
-import cypressPckg from "cypress/package.json";
-import { uploadArtifacts, uploadStdout } from "./lib/artifacts";
-import * as capture from "./lib/capture";
+import { cutInitialOutput, resetCapture } from "./lib/capture";
 import { parseOptions } from "./lib/cli/";
 import { getCurrentsConfig, mergeConfig } from "./lib/config";
-import { makeRequest, setCypressVersion, setRunId } from "./lib/httpClient";
+import { makeRequest, setRunId } from "./lib/httpClient";
 import {
-  getInstanceResultPayload,
-  getInstanceTestsPayload,
   isSuccessResult,
-  summarizeResults,
+  processCypressResults,
+  summarizeTestResults,
 } from "./lib/results";
 import { findSpecs } from "./lib/specMatcher";
-import { Platform, TestingType } from "./types";
+import { Platform, SummaryResults, TestingType } from "./types";
 
 import { guessBrowser } from "./lib/browser";
-import { getCiParams, getCiProvider } from "./lib/ciProvider";
+import { getCI } from "./lib/ciProvider";
 import { runSpecFile } from "./lib/cypress";
 import { getGitInfo } from "./lib/git";
+import { divider, info, spacer, title, warn } from "./lib/log";
 import { getPlatformInfo } from "./lib/platform";
-
-let stdout = capture.stdout();
-setCypressVersion(cypressPckg.version);
+import { summaryTable } from "./lib/table";
 
 export async function run() {
   const options = parseOptions();
   const { component, parallel, key, ciBuildId, group, tag: tags } = options;
-  const testingType: TestingType = component ? "component" : "e2e";
 
   const currentsConfig = await getCurrentsConfig();
-  if (!currentsConfig.projectId) {
-    throw new Error("Missing projectId in currents.config.js");
-  }
 
+  const testingType: TestingType = component ? "component" : "e2e";
   const config = await mergeConfig(testingType, currentsConfig);
   const specPattern = options.spec || config.specPattern;
   const specs = await findSpecs({
@@ -45,31 +38,31 @@ export async function run() {
     additionalIgnorePattern: config.additionalIgnorePattern,
   });
 
-  console.log(
-    "Resolved spec files to execute",
-    specs.map((spec) => spec.absolute)
-  );
-
-  // TODO: clarify the message here, and show the configuration details to allow troubleshooting
-  // I expect this to be a source of trouble until we polish the implementation
   if (specs.length === 0) {
-    console.error("No spec matching the spec pattern found");
-    process.exit(0);
+    warn("No spec files found to execute using configuration: %O", {
+      specPattern,
+      configSpecPattern: config.specPattern,
+      excludeSpecPattern: [
+        ...config.excludeSpecPattern,
+        config.additionalIgnorePattern,
+      ],
+      testingType,
+    });
+    return;
   }
 
-  const osPlatformInfo = await getPlatformInfo();
+  info(
+    "Discovered %d spec files, connecting to orchestration service...",
+    specs.length
+  );
 
+  const osPlatformInfo = await getPlatformInfo();
   const platform = {
     ...osPlatformInfo,
     ...guessBrowser(options.browser ?? "electron", config.resolved.browsers),
   };
-  const ci = {
-    params: getCiParams(),
-    provider: getCiProvider(),
-  };
-
+  const ci = getCI();
   const commit = await getGitInfo(config.projectRoot);
-  console.log("Commit info", commit);
 
   const res = await makeRequest({
     method: "POST",
@@ -91,9 +84,10 @@ export async function run() {
   });
 
   const run = res.data;
-  console.log("Run created", run.runUrl);
+  info("Run URL:", run.runUrl);
   setRunId(run.runId);
 
+  cutInitialOutput();
   const results = await runTillDone({
     runId: run.runId,
     groupId: run.groupId,
@@ -101,7 +95,18 @@ export async function run() {
     platform,
   });
 
-  return summarizeResults(results);
+  const testResults = summarizeTestResults(Object.values(results));
+
+  divider();
+
+  title("white", "Cloud Run Finished");
+
+  console.log(summaryTable(results));
+
+  info("Recorded Run:", run.runUrl);
+  spacer();
+
+  return testResults;
 }
 
 type InstanceRequestArgs = {
@@ -135,7 +140,8 @@ async function runTillDone({
   machineId,
   platform,
 }: InstanceRequestArgs) {
-  const cypressResults: CypressCommandLine.CypressRunResult[] = [];
+  const summary: SummaryResults = {};
+
   let hasMore = true;
   while (hasMore) {
     const currentSpecFile = await getSpecFile({
@@ -145,70 +151,32 @@ async function runTillDone({
       platform,
     });
     if (!currentSpecFile.spec) {
-      console.log("No more spec files");
-      console.log("Run URL", `https://app.currents.dev/runs/${runId}`);
       hasMore = false;
       break;
     }
 
-    capture.restore();
-    stdout = capture.stdout();
+    divider();
+    info(
+      "Run progress: %d/%d",
+      currentSpecFile.claimedInstances,
+      currentSpecFile.totalInstances
+    );
+    info("Executing spec file: %s", currentSpecFile.spec);
 
-    console.log("Running spec file...", currentSpecFile);
     const cypressResult = await runSpecFile({ spec: currentSpecFile.spec });
 
-    console.log(
-      "Sending cypress results to server....",
-      currentSpecFile.instanceId
-    );
     if (!isSuccessResult(cypressResult)) {
       // TODO: handle failure
       // do not exit
       // skip the spec file, go to next
-      console.log("Cypress run failed");
+      warn("Executing the spec file has failed, getting the next spec file...");
       continue;
     }
 
-    cypressResults.push(cypressResult);
-
+    summary[currentSpecFile.spec] = cypressResult;
     await processCypressResults(currentSpecFile.instanceId, cypressResult);
+    resetCapture();
   }
 
-  return cypressResults;
-}
-
-async function processCypressResults(
-  instanceId: string,
-  results: CypressCommandLine.CypressRunResult
-) {
-  const runResult = results.runs[0];
-  if (!runResult) {
-    throw new Error("No run found in Cypress results");
-  }
-
-  await makeRequest({
-    method: "POST",
-    url: `instances/${instanceId}/tests`,
-    data: getInstanceTestsPayload(results.runs[0], results.config),
-  });
-
-  const resultPayload = getInstanceResultPayload(runResult);
-  const uploadInstructions = await makeRequest({
-    method: "POST",
-    url: `instances/${instanceId}/results`,
-    data: resultPayload,
-  });
-
-  console.log(uploadInstructions.data);
-  const { videoUploadUrl, screenshotUploadUrls } = uploadInstructions.data;
-
-  console.log("Uploading video", videoUploadUrl, runResult.video);
-  await uploadArtifacts({
-    videoUploadUrl,
-    videoPath: runResult.video,
-    screenshotUploadUrls,
-    screenshots: resultPayload.screenshots,
-  });
-
-  await uploadStdout(instanceId, stdout.toString());
+  return summary;
 }
