@@ -21,6 +21,7 @@ import { getPlatformInfo } from "./lib/platform";
 import { summaryTable } from "./lib/table";
 
 export async function run() {
+  spacer();
   const options = parseOptions();
   const { component, parallel, key, ciBuildId, group, tag: tags } = options;
 
