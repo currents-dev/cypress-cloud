@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import "source-map-support/register";
 
 import { run } from "../index";
 import { error } from "../lib/log";
@@ -15,6 +16,6 @@ run()
     process.exit(0);
   })
   .catch((err) => {
-    error(err.message);
+    error(err);
     process.exit(1);
   });

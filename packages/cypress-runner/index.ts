@@ -210,13 +210,12 @@ async function processCypressResults(
 
   const { videoUploadUrl, screenshotUploadUrls } = uploadInstructions.data;
 
-  await Promise.all([
-    uploadArtifacts({
-      videoUploadUrl,
-      videoPath: runResult.video,
-      screenshotUploadUrls,
-      screenshots: resultPayload.screenshots,
-    }),
-    uploadStdoutSafe(instanceId, stdout.toString()),
-  ]);
+  await uploadArtifacts({
+    videoUploadUrl,
+    videoPath: runResult.video,
+    screenshotUploadUrls,
+    screenshots: resultPayload.screenshots,
+  });
+  // keep last because of stdout
+  await uploadStdoutSafe(instanceId, stdout.toString());
 }

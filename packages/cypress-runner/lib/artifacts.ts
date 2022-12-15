@@ -1,7 +1,7 @@
 import { ScreenshotArtifact, ScreenshotUploadInstruction } from "../types";
 import { makeRequest } from "./httpClient";
 import { safe } from "./lang";
-import { blue, info, red, title, warn } from "./log";
+import { cyan, info, red, title, warn } from "./log";
 import { uploadFile } from "./upload";
 
 interface UploadArtifacts {
@@ -29,7 +29,7 @@ export async function uploadArtifacts({
     await safe(
       uploadFile,
       () => info("- Failed Uploading", red(videoPath)),
-      () => info("- Done Uploading", blue(videoPath))
+      () => info("- Done Uploading", cyan(videoPath))
     )(videoPath, videoUploadUrl);
   }
   // upload screenshots
@@ -46,7 +46,7 @@ export async function uploadArtifacts({
         return safe(
           uploadFile,
           () => warn("- Failed Uploading", red(screenshot.path)),
-          () => info("- Done Uploading", blue(screenshot.path))
+          () => info("- Done Uploading", cyan(screenshot.path))
         )(screenshot.path, url);
       })
     );

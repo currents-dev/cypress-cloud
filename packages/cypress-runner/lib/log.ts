@@ -29,6 +29,7 @@ export const divider = () =>
 
 export const spacer = () => console.log("\n\n");
 
+export const cyan = chalk.cyan;
 export const blue = chalk.blueBright;
 export const red = chalk.red;
 export const green = chalk.green;
