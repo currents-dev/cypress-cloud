@@ -11,6 +11,7 @@
       "dependsOn": ["^build"],
       "outputs": ["dist/**", ".next/**"],
       "env": [
+        "DEBUG",
         "CURRENTS_PROJECT_ID",
         "CURRENTS_API_BASE_URL",
         "TF_BUILD",

@@ -1,6 +1,8 @@
-import { platform, release, cpus, freemem, totalmem } from "os";
-import { promisify } from "util";
+import Debug from "debug";
 import getos from "getos";
+import { cpus, freemem, platform, release, totalmem } from "os";
+import { promisify } from "util";
+const debug = Debug("currents:platform");
 
 const getOsVersion = async () => {
   if (platform() === "linux") {
@@ -20,7 +22,7 @@ const getOsVersion = async () => {
 
 export const getPlatformInfo = async () => {
   const osVersion = await getOsVersion();
-  return {
+  const result = {
     osName: platform(),
     osVersion,
     osCpus: cpus(),
@@ -29,4 +31,6 @@ export const getPlatformInfo = async () => {
       total: totalmem(),
     },
   };
+  debug("platform info: %o", result);
+  return result;
 };
