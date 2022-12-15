@@ -2,11 +2,12 @@ import { makeRequest } from "../httpClient";
 import {
   CreateInstancePayload,
   CreateInstanceResponse,
+  CreateRunPayload,
+  CreateRunResponse,
   SetInstanceTestsPayload,
   UpdateInstanceResultsPayload,
   UpdateInstanceResultsResponse,
-} from "./types/instance";
-import { CreateRunPayload, CreateRunResponse } from "./types/run";
+} from "./types/";
 
 export const createRun = (payload: CreateRunPayload) =>
   makeRequest<CreateRunResponse, CreateRunPayload>({

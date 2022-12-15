@@ -1,14 +1,19 @@
+import {
+  CypressResult,
+  ScreenshotArtifact,
+  TestsResult,
+} from "cypress-runner/types";
 import Debug from "debug";
 import { nanoid } from "nanoid";
-import { CypressResult, ScreenshotArtifact, TestsResult } from "../types";
-import { getCapturedOutput, getInitialOutput } from ".//capture";
-import { uploadArtifacts, uploadStdoutSafe } from "./artifacts";
-import { setInstanceTests, updateInstanceResults } from "./cloud/api";
 import {
+  setInstanceTests,
   SetInstanceTestsPayload,
+  TestState,
+  updateInstanceResults,
   UpdateInstanceResultsPayload,
-} from "./cloud/types/instance";
-import { TestState } from "./cloud/types/test";
+} from "./api/";
+import { uploadArtifacts, uploadStdoutSafe } from "./artifacts";
+import { getCapturedOutput, getInitialOutput } from "./capture";
 
 const debug = Debug("currents:results");
 
@@ -58,7 +63,7 @@ export const getInstanceResultPayload = (
     stats: getStats(runResult.stats),
     reporterStats: runResult.reporterStats,
     exception: runResult.error ?? null,
-    video: !!runResult.video,
+    video: !!runResult.video, // Did the instance generate a video?
     screenshots: getScreenshotsSummary(runResult.tests ?? []),
     tests:
       runResult.tests?.map((test, i) => ({

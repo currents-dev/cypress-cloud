@@ -1,9 +1,9 @@
 import Debug from "debug";
 import { ScreenshotArtifact, ScreenshotUploadInstruction } from "../types";
-import { updateInstanceStdout } from "./cloud/api";
+import { updateInstanceStdout } from "./api/";
 import { safe } from "./lang";
 import { cyan, info, red, title, warn } from "./log";
-import { uploadFile } from "./cloud/upload";
+import { uploadFile } from "./upload";
 const debug = Debug("currents:artifacts");
 interface UploadArtifacts {
   videoPath: string | null;

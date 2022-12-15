@@ -1,23 +1,20 @@
-import nock from "nock";
 import {
-  createRun,
   createInstance,
-  setInstanceTests,
-  updateInstanceResults,
-  updateInstanceStdout,
-} from "../../cloud/api";
-import { CreateRunPayload, CreateRunResponse } from "../../cloud/types/run";
-import {
-  SetInstanceTestsPayload,
-  UpdateInstanceResultsPayload,
-  UpdateInstanceResultsResponse,
-} from "../../cloud/types/instance";
-import _ from "lodash";
-import {
   CreateInstancePayload,
   CreateInstanceResponse,
-} from "../../cloud/types/instance";
-import { TestState } from "../../cloud/types/test";
+  createRun,
+  CreateRunPayload,
+  CreateRunResponse,
+  setInstanceTests,
+  SetInstanceTestsPayload,
+  TestState,
+  updateInstanceResults,
+  UpdateInstanceResultsPayload,
+  UpdateInstanceResultsResponse,
+  updateInstanceStdout,
+} from "cypress-runner/lib/api";
+import _ from "lodash";
+import nock from "nock";
 
 const API_BASEURL = "http://localhost:1234";
 

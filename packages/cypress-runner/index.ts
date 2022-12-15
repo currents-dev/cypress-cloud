@@ -12,6 +12,8 @@ import {
 import { findSpecs } from "./lib/specMatcher";
 import { SummaryResults, TestingType } from "./types";
 
+import { createInstance, createRun } from "./lib/api/api";
+import { CreateInstancePayload } from "./lib/api/types/instance";
 import { guessBrowser } from "./lib/browser";
 import { getCI } from "./lib/ciProvider";
 import { runSpecFile } from "./lib/cypress";
@@ -19,8 +21,6 @@ import { getGitInfo } from "./lib/git";
 import { divider, info, spacer, title, warn } from "./lib/log";
 import { getPlatformInfo } from "./lib/platform";
 import { summaryTable } from "./lib/table";
-import { CreateInstancePayload } from "./lib/cloud/types/instance";
-import { createInstance, createRun } from "./lib/cloud/api";
 
 export async function run() {
   spacer();

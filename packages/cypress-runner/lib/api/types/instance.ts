@@ -1,5 +1,5 @@
-import { Platform, ScreenshotArtifact } from "../../../types";
-import { Test, TestHook } from "./test";
+import { Platform, ScreenshotArtifact } from "cypress-runner/types";
+import { SetTestsPayload, Test, TestHook } from "./test";
 
 export interface Screenshot {
   screenshotId: string;
@@ -60,11 +60,6 @@ export interface AssetUploadInstruction {
 export interface ScreenshotUploadInstruction extends AssetUploadInstruction {
   screenshotId: string;
 }
-
-export type SetTestsPayload = Pick<
-  Test,
-  "body" | "title" | "config" | "hookIds"
-> & { clientId: string };
 
 export type SetResultsTestsPayload = Pick<
   Test,
