@@ -1,9 +1,19 @@
+import {
+  CypressResult,
+  ScreenshotArtifact,
+  TestsResult,
+} from "cypress-runner/types";
 import Debug from "debug";
 import { nanoid } from "nanoid";
-import { CypressResult, ScreenshotArtifact, TestsResult } from "../types";
-import { getCapturedOutput, getInitialOutput } from ".//capture";
+import {
+  setInstanceTests,
+  SetInstanceTestsPayload,
+  TestState,
+  updateInstanceResults,
+  UpdateInstanceResultsPayload,
+} from "./api/";
 import { uploadArtifacts, uploadStdoutSafe } from "./artifacts";
-import { makeRequest } from "./httpClient";
+import { getCapturedOutput, getInitialOutput } from "./capture";
 
 const debug = Debug("currents:results");
 
@@ -40,6 +50,7 @@ export const getStats = (stats: CypressCommandLine.RunResult["stats"]) => {
 export const getTestAttempts = (attempt: CypressCommandLine.AttemptResult) => {
   return {
     ...attempt,
+    state: attempt.state as TestState,
     wallClockDuration: attempt.duration,
     wallClockStartedAt: attempt.startedAt,
   };
@@ -47,17 +58,17 @@ export const getTestAttempts = (attempt: CypressCommandLine.AttemptResult) => {
 
 export const getInstanceResultPayload = (
   runResult: CypressCommandLine.RunResult
-) => {
+): UpdateInstanceResultsPayload => {
   return {
     stats: getStats(runResult.stats),
     reporterStats: runResult.reporterStats,
     exception: runResult.error ?? null,
-    video: runResult.video,
+    video: !!runResult.video, // Did the instance generate a video?
     screenshots: getScreenshotsSummary(runResult.tests ?? []),
     tests:
       runResult.tests?.map((test, i) => ({
-        diplayError: test.displayError,
-        state: test.state,
+        displayError: test.displayError,
+        state: test.state as TestState,
         attempts: test.attempts?.map(getTestAttempts) ?? [],
         clientId: `r${i}`,
       })) ?? [],
@@ -68,16 +79,18 @@ export const getInstanceResultPayload = (
 export const getInstanceTestsPayload = (
   runResult: CypressCommandLine.RunResult,
   config: Cypress.ResolvedConfigOptions
-) => {
+): SetInstanceTestsPayload => {
   return {
     config,
     tests:
       runResult.tests?.map((test, i) => ({
         title: test.title,
-        config: {},
+        config: null,
         body: test.body,
         clientId: `r${i}`,
+        hookIds: [],
       })) ?? [],
+    hooks: [],
   };
 };
 
@@ -114,22 +127,20 @@ export async function processCypressResults(
     throw new Error("No run found in Cypress results");
   }
 
-  await makeRequest({
-    method: "POST",
-    url: `instances/${instanceId}/tests`,
-    data: getInstanceTestsPayload(results.runs[0], results.config),
-  });
+  await setInstanceTests(
+    instanceId,
+    getInstanceTestsPayload(results.runs[0], results.config)
+  );
 
   const resultPayload = getInstanceResultPayload(runResult);
   debug("result payload %o", resultPayload);
-  const uploadInstructions = await makeRequest({
-    method: "POST",
-    url: `instances/${instanceId}/results`,
-    data: resultPayload,
-  });
+  const uploadInstructions = await updateInstanceResults(
+    instanceId,
+    resultPayload
+  );
 
-  const { videoUploadUrl, screenshotUploadUrls } = uploadInstructions.data;
-  debug("artifact upload instructions %o", uploadInstructions.data);
+  const { videoUploadUrl, screenshotUploadUrls } = uploadInstructions;
+  debug("artifact upload instructions %o", uploadInstructions);
   await uploadArtifacts({
     videoUploadUrl,
     videoPath: runResult.video,
