@@ -1,14 +1,10 @@
-import axios, {
-  AxiosError,
-  AxiosRequestConfig,
-  AxiosResponse,
-  isAxiosError,
-} from "axios";
+import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import Debug from "debug";
 import { omit } from "lodash";
 import prettyMS from "pretty-ms";
 import VError from "verror";
-import { warn } from "./log";
+import { warn } from "../../lib/log";
+import { getDelays, isRetriableError } from "./config";
 const debug = Debug("currents:api");
 
 let _runId: string | undefined = undefined;
@@ -59,27 +55,11 @@ export const makeRequest = <T = any, D = any>(
   }, retryOptions) as Promise<AxiosResponse<T, D>>;
 };
 
-const DELAYS = [30 * 1000, 60 * 1000, 2 * 60 * 1000]; // 30s, 1min, 2min
-
-const isRetriableError = (err: AxiosError | Error) => {
-  if (!isAxiosError(err)) {
-    return false;
-  }
-  if (err.code === "ECONNREFUSED") {
-    return true;
-  }
-  return (
-    err?.response?.status &&
-    500 <= err.response.status &&
-    err.response.status < 600
-  );
-};
-
 const retryWithBackoff = (fn: Function, retryOptions?: RetryOptions) => {
   let attempt: any;
 
   const options = {
-    delays: DELAYS,
+    delays: getDelays(),
     isRetriableError,
     ...retryOptions,
   };
@@ -87,10 +67,14 @@ const retryWithBackoff = (fn: Function, retryOptions?: RetryOptions) => {
   return (attempt = (retryIndex: number) => {
     return promiseTry(() => fn(retryIndex)).catch((err) => {
       debug("network request failed: %O", err.toJSON ? err.toJSON() : err);
-      if (!options.isRetriableError(err)) throw new VError(err);
+      const shouldRetry = options.isRetriableError(err);
 
-      if (retryIndex > options.delays.length) {
-        throw err;
+      if (!shouldRetry) {
+        throw new VError(err);
+      }
+
+      if (retryIndex >= options.delays.length) {
+        throw new VError(err, "Max retries reached");
       }
 
       const delay = options.delays[retryIndex];
@@ -106,7 +90,6 @@ const retryWithBackoff = (fn: Function, retryOptions?: RetryOptions) => {
 
       return promiseDelay(delay).then(() => {
         debug(`Retry #${retryIndex} after ${delay}ms`);
-
         return attempt(retryIndex);
       });
     });

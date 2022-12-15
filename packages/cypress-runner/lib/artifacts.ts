@@ -1,13 +1,13 @@
 import Debug from "debug";
 import { ScreenshotArtifact, ScreenshotUploadInstruction } from "../types";
-import { makeRequest } from "./httpClient";
+import { updateInstanceStdout } from "./api/";
 import { safe } from "./lang";
 import { cyan, info, red, title, warn } from "./log";
 import { uploadFile } from "./upload";
 const debug = Debug("currents:artifacts");
 interface UploadArtifacts {
   videoPath: string | null;
-  videoUploadUrl?: string;
+  videoUploadUrl?: string | null;
   screenshots: ScreenshotArtifact[];
   screenshotUploadUrls: ScreenshotUploadInstruction[];
 }
@@ -61,18 +61,8 @@ export async function uploadArtifacts({
   }
 }
 
-async function uploadStdout(instanceId: string, stdout: string) {
-  const res = await makeRequest({
-    method: "PUT",
-    url: `instances/${instanceId}/stdout`,
-    data: {
-      stdout,
-    },
-  });
-  return res.data;
-}
 export const uploadStdoutSafe = safe(
-  uploadStdout,
+  updateInstanceStdout,
   () => {},
   () => {}
 );

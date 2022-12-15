@@ -17,8 +17,8 @@ export async function getCurrentsConfig(): Promise<CurrentsConfig> {
     config = require(configFilePath);
     config.projectId = process.env.CURRENTS_PROJECT_ID ?? config.projectId;
   } catch (e) {
-    throw VError(
-      e,
+    throw new VError(
+      e as Error,
       "Cannot load currents config file from '%s'",
       configFilePath
     );

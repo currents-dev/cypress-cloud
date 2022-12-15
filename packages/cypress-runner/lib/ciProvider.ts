@@ -666,9 +666,15 @@ export function detectableCiBuildIdProviders() {
   return chain(_providerCiParams()).omitBy(isNull).keys().value();
 }
 
-export function getCiProvider() {
+export type CiProvider = string | null;
+
+export function getCiProvider(): CiProvider {
   return _detectProviderName() || null;
 }
+
+export type CiParams = {
+  [key: string]: string | undefined;
+};
 
 export function getCiParams() {
   return _get(_providerCiParams);

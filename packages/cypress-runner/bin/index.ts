@@ -16,6 +16,6 @@ run()
     process.exit(0);
   })
   .catch((err) => {
-    error(err);
+    error(err.stack);
     process.exit(1);
   });
