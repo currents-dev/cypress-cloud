@@ -1,6 +1,6 @@
 import Debug from "debug";
 import fs from "fs";
-import { makeRequest } from "./httpClient";
+import { makeRequest } from "../httpClient";
 const readFile = fs.promises.readFile;
 const debug = Debug("currents:upload");
 

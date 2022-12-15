@@ -3,14 +3,14 @@ import("./lib/init");
 import { cutInitialOutput, resetCapture } from "./lib/capture";
 import { parseOptions } from "./lib/cli/";
 import { getCurrentsConfig, mergeConfig } from "./lib/config";
-import { makeRequest, setRunId } from "./lib/httpClient";
+import { setRunId } from "./lib/httpClient";
 import {
   isSuccessResult,
   processCypressResults,
   summarizeTestResults,
 } from "./lib/results";
 import { findSpecs } from "./lib/specMatcher";
-import { Platform, SummaryResults, TestingType } from "./types";
+import { SummaryResults, TestingType } from "./types";
 
 import { guessBrowser } from "./lib/browser";
 import { getCI } from "./lib/ciProvider";
@@ -19,6 +19,8 @@ import { getGitInfo } from "./lib/git";
 import { divider, info, spacer, title, warn } from "./lib/log";
 import { getPlatformInfo } from "./lib/platform";
 import { summaryTable } from "./lib/table";
+import { CreateInstancePayload } from "./lib/cloud/types/instance";
+import { createInstance, createRun } from "./lib/cloud/api";
 
 export async function run() {
   spacer();
@@ -65,26 +67,21 @@ export async function run() {
   const ci = getCI();
   const commit = await getGitInfo(config.projectRoot);
 
-  const res = await makeRequest({
-    method: "POST",
-    url: "runs",
-    data: {
-      ci,
-      specs: specs.map((spec) => spec.relative),
-      commit,
-      group,
-      platform,
-      parallel,
-      ciBuildId,
-      projectId: config.projectId,
-      recordKey: key,
-      specPattern,
-      tags,
-      testingType,
-    },
+  const run = await createRun({
+    ci,
+    specs: specs.map((spec) => spec.relative),
+    commit,
+    group,
+    platform,
+    parallel,
+    ciBuildId,
+    projectId: config.projectId,
+    recordKey: key,
+    specPattern,
+    tags,
+    testingType,
   });
 
-  const run = res.data;
   info("Run URL:", run.runUrl);
   setRunId(run.runId);
 
@@ -110,42 +107,17 @@ export async function run() {
   return testResults;
 }
 
-type InstanceRequestArgs = {
-  runId: string;
-  groupId: string;
-  machineId: string;
-  platform: Platform;
-};
-async function getSpecFile({
-  runId,
-  groupId,
-  machineId,
-  platform,
-}: InstanceRequestArgs) {
-  const res = await makeRequest({
-    method: "POST",
-    url: `runs/${runId}/instances`,
-    data: {
-      runId,
-      groupId,
-      machineId,
-      platform,
-    },
-  });
-  return res.data;
-}
-
 async function runTillDone({
   runId,
   groupId,
   machineId,
   platform,
-}: InstanceRequestArgs) {
+}: CreateInstancePayload) {
   const summary: SummaryResults = {};
 
   let hasMore = true;
   while (hasMore) {
-    const currentSpecFile = await getSpecFile({
+    const currentSpecFile = await createInstance({
       runId,
       groupId,
       machineId,
@@ -175,7 +147,7 @@ async function runTillDone({
     }
 
     summary[currentSpecFile.spec] = cypressResult;
-    await processCypressResults(currentSpecFile.instanceId, cypressResult);
+    await processCypressResults(currentSpecFile.instanceId!, cypressResult);
     resetCapture();
   }
 
