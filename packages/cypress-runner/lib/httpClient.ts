@@ -51,9 +51,9 @@ export const makeRequest = <T = any, D = any>(
       },
     };
 
-    debug("sending network request: %O", requestConfig);
+    debug("sending network request: %o", requestConfig);
     return axios(requestConfig).then((res) => {
-      debug("network request response: %O", omit(res, "request", "config"));
+      debug("network request response: %o", omit(res, "request", "config"));
       return res;
     });
   }, retryOptions) as Promise<AxiosResponse<T, D>>;

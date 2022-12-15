@@ -1,14 +1,12 @@
 import("./lib/init");
 
-import { uploadArtifacts, uploadStdoutSafe } from "./lib/artifacts";
-import * as capture from "./lib/capture";
+import { cutInitialOutput, resetCapture } from "./lib/capture";
 import { parseOptions } from "./lib/cli/";
 import { getCurrentsConfig, mergeConfig } from "./lib/config";
 import { makeRequest, setRunId } from "./lib/httpClient";
 import {
-  getInstanceResultPayload,
-  getInstanceTestsPayload,
   isSuccessResult,
+  processCypressResults,
   summarizeTestResults,
 } from "./lib/results";
 import { findSpecs } from "./lib/specMatcher";
@@ -21,8 +19,6 @@ import { getGitInfo } from "./lib/git";
 import { divider, info, spacer, title, warn } from "./lib/log";
 import { getPlatformInfo } from "./lib/platform";
 import { summaryTable } from "./lib/table";
-
-let stdout = capture.stdout();
 
 export async function run() {
   const options = parseOptions();
@@ -91,6 +87,7 @@ export async function run() {
   info("Run URL:", run.runUrl);
   setRunId(run.runId);
 
+  cutInitialOutput();
   const results = await runTillDone({
     runId: run.runId,
     groupId: run.groupId,
@@ -178,44 +175,8 @@ async function runTillDone({
 
     summary[currentSpecFile.spec] = cypressResult;
     await processCypressResults(currentSpecFile.instanceId, cypressResult);
-
-    capture.restore();
-    stdout = capture.stdout();
+    resetCapture();
   }
 
   return summary;
-}
-
-async function processCypressResults(
-  instanceId: string,
-  results: CypressCommandLine.CypressRunResult
-) {
-  const runResult = results.runs[0];
-  if (!runResult) {
-    throw new Error("No run found in Cypress results");
-  }
-
-  await makeRequest({
-    method: "POST",
-    url: `instances/${instanceId}/tests`,
-    data: getInstanceTestsPayload(results.runs[0], results.config),
-  });
-
-  const resultPayload = getInstanceResultPayload(runResult);
-  const uploadInstructions = await makeRequest({
-    method: "POST",
-    url: `instances/${instanceId}/results`,
-    data: resultPayload,
-  });
-
-  const { videoUploadUrl, screenshotUploadUrls } = uploadInstructions.data;
-
-  await uploadArtifacts({
-    videoUploadUrl,
-    videoPath: runResult.video,
-    screenshotUploadUrls,
-    screenshots: resultPayload.screenshots,
-  });
-  // keep last because of stdout
-  await uploadStdoutSafe(instanceId, stdout.toString());
 }

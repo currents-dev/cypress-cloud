@@ -22,5 +22,6 @@ export async function runSpecFile({ spec }: RunCypressSpecFile) {
     spec,
   });
 
+  debug("cypress run result %o", result);
   return result;
 }

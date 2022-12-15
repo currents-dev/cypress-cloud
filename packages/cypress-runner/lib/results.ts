@@ -1,5 +1,11 @@
+import Debug from "debug";
 import { nanoid } from "nanoid";
 import { CypressResult, ScreenshotArtifact, TestsResult } from "../types";
+import { getCapturedOutput, getInitialOutput } from ".//capture";
+import { uploadArtifacts, uploadStdoutSafe } from "./artifacts";
+import { makeRequest } from "./httpClient";
+
+const debug = Debug("currents:results");
 
 export const isSuccessResult = (
   result: CypressResult
@@ -58,7 +64,7 @@ export const getInstanceResultPayload = (
   };
 };
 
-// TODL this one need testing with real data
+// TODO this one need testing with real data
 export const getInstanceTestsPayload = (
   runResult: CypressCommandLine.RunResult,
   config: Cypress.ResolvedConfigOptions
@@ -98,3 +104,39 @@ export const summarizeTestResults = (
     }
   );
 };
+
+export async function processCypressResults(
+  instanceId: string,
+  results: CypressCommandLine.CypressRunResult
+) {
+  const runResult = results.runs[0];
+  if (!runResult) {
+    throw new Error("No run found in Cypress results");
+  }
+
+  await makeRequest({
+    method: "POST",
+    url: `instances/${instanceId}/tests`,
+    data: getInstanceTestsPayload(results.runs[0], results.config),
+  });
+
+  const resultPayload = getInstanceResultPayload(runResult);
+  debug("result payload %o", resultPayload);
+  const uploadInstructions = await makeRequest({
+    method: "POST",
+    url: `instances/${instanceId}/results`,
+    data: resultPayload,
+  });
+
+  const { videoUploadUrl, screenshotUploadUrls } = uploadInstructions.data;
+  debug("artifact upload instructions %o", uploadInstructions.data);
+  await uploadArtifacts({
+    videoUploadUrl,
+    videoPath: runResult.video,
+    screenshotUploadUrls,
+    screenshots: resultPayload.screenshots,
+  });
+  debug("uploading stdout for instanceId %s", instanceId);
+  // keep last because of stdout
+  await uploadStdoutSafe(instanceId, getInitialOutput() + getCapturedOutput());
+}

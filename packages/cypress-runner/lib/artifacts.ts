@@ -1,9 +1,10 @@
+import Debug from "debug";
 import { ScreenshotArtifact, ScreenshotUploadInstruction } from "../types";
 import { makeRequest } from "./httpClient";
 import { safe } from "./lang";
 import { cyan, info, red, title, warn } from "./log";
 import { uploadFile } from "./upload";
-
+const debug = Debug("currents:artifacts");
 interface UploadArtifacts {
   videoPath: string | null;
   videoUploadUrl?: string;
@@ -17,6 +18,13 @@ export async function uploadArtifacts({
   screenshotUploadUrls,
 }: UploadArtifacts) {
   title("blue", "Uploading  Results");
+
+  debug("uploading artifacts: %o", {
+    videoPath,
+    videoUploadUrl,
+    screenshots,
+    screenshotUploadUrls,
+  });
 
   const totalUploads = (videoPath ? 1 : 0) + screenshots.length;
   if (totalUploads === 0) {
