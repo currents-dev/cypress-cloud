@@ -27,4 +27,6 @@ jobs:
         run: yarn
 
       - name: Run unit tests
+        env:
+          FORCE_COLOR: 2 # for chalk tests
         run: yarn test
