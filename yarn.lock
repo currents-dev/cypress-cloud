@@ -4550,7 +4550,7 @@ jest-environment-node@^29.3.1:
 
 jest-esbuild@^0.2.9:
   version "0.2.9"
-  resolved "https://registry.npmjs.org/jest-esbuild/-/jest-esbuild-0.2.9.tgz"
+  resolved "https://registry.yarnpkg.com/jest-esbuild/-/jest-esbuild-0.2.9.tgz#c4c103e510400ad8a080753fd990dfe5a2a76025"
   integrity sha512-GfcQgHf8XPwUydEurYTRdrhrDblVFXtgOsKmE/7KADxbsC0c5xpxQBarak4X7K0wl5XXfTmw7Qtat2V0/ssreg==
   dependencies:
     debug "^4.3.4"
