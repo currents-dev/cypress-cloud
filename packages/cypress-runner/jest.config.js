@@ -3,7 +3,7 @@ module.exports = {
   testEnvironment: "node",
   testMatch: ["<rootDir>/**/__tests__/**/?(*.)(spec|test).ts"],
   transform: {
-    "^.+\\.tsx?$": "jest-esbuild",
+    "^.+\\.tsx?$": "@swc/jest",
   },
   moduleNameMapper: {
     "cypress-runner/(.*)$": "<rootDir>/../cypress-runner/$1",
