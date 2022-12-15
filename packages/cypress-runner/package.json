@@ -6,6 +6,7 @@
   "author": "Currents Software Inc",
   "license": "GPL-3.0-or-later",
   "scripts": {
+    "rm": "rimraf out",
     "lint": "TIMING=1 eslint \"**/*.ts*\"",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -28,6 +29,7 @@
     "eslint-config-custom": "*",
     "jest": "^29.3.1",
     "release-it": "^15.5.1",
+    "rimraf": "^3.0.2",
     "tsconfig": "*",
     "typescript": "^4.5.2"
   },
@@ -75,12 +77,11 @@
   },
   "release-it": {
     "hooks": {
-      "after:bump": "yarn run build"
+      "after:bump": "yarn rm && yarn run build"
     },
     "github": {
       "release": true,
-      "releaseName": "v${version}",
-      "releaseNotes": "git log --pretty=oneline --abbrev-commit --no-decorate v${version}..HEAD"
+      "releaseName": "v${version}"
     },
     "git": {
       "commitMessage": "chore: release v${version}",
