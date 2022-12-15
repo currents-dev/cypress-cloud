@@ -1,6 +1,6 @@
 {
   "name": "cypress-runner",
-  "version": "1.0.7",
+  "version": "1.1.0",
   "main": "./out/index.js",
   "types": "./index.ts",
   "author": "Currents Software Inc",
