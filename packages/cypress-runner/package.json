@@ -18,6 +18,7 @@
     "cypress": ">= 10.0.0"
   },
   "devDependencies": {
+    "@release-it/conventional-changelog": "^5.1.1",
     "@types/debug": "^4.1.7",
     "@types/getos": "^3.0.1",
     "@types/is-ci": "^3.0.0",
