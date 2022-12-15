@@ -13,15 +13,15 @@ import {
 } from "../types";
 import { toArray, toPosix } from "./utils";
 
-const debug = Debug("currents:specMatcher");
+const debug = Debug("currents:specs");
 
 type GlobPattern = string | string[];
+
 /**
  * Replicate how cypress is discovering spec files
  * https://github.com/cypress-io/cypress/blob/bc9edb44523d62ca934827b8e870f38f86634ca4/packages/data-context/src/sources/ProjectDataSource.ts#L250
  * https://github.com/cypress-io/cypress/blob/bc9edb44523d62ca934827b8e870f38f86634ca4/packages/data-context/src/actions/ProjectActions.ts#L417
  */
-// @ts-disable
 export async function findSpecs({
   projectRoot,
   testingType,
@@ -37,17 +37,17 @@ export async function findSpecs({
   // exclude all specs matching e2e if in component testing
   additionalIgnorePattern = toArray(additionalIgnorePattern) || [];
 
-  if (!specPattern || !configSpecPattern) {
-    throw Error("could not find pattern to load specs");
-  }
-
-  console.log({
+  debug("exploring spec files for execution %O", {
     projectRoot,
     specPattern,
     configSpecPattern,
     excludeSpecPattern,
     additionalIgnorePattern,
   });
+
+  if (!specPattern || !configSpecPattern) {
+    throw Error("Could not find glob patterns for exploring specs");
+  }
 
   let specAbsolutePaths = await getFilesByGlob(projectRoot, specPattern, {
     absolute: true,
@@ -79,7 +79,6 @@ export async function findSpecs({
       specAbsolutePaths,
       defaultSpecAbsolutePaths
     );
-    console.log({ specAbsolutePaths });
   }
 
   const matched = matchedSpecs({

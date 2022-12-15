@@ -1,5 +1,7 @@
 import { ScreenshotArtifact, ScreenshotUploadInstruction } from "../types";
 import { makeRequest } from "./httpClient";
+import { safe } from "./lang";
+import { blue, info, red, title, warn } from "./log";
 import { uploadFile } from "./upload";
 
 interface UploadArtifacts {
@@ -14,9 +16,21 @@ export async function uploadArtifacts({
   screenshots,
   screenshotUploadUrls,
 }: UploadArtifacts) {
+  title("blue", "Uploading  Results");
+
+  const totalUploads = (videoPath ? 1 : 0) + screenshots.length;
+  if (totalUploads === 0) {
+    info("Nothing to upload");
+    return;
+  }
+
   // upload video
   if (videoUploadUrl && videoPath) {
-    await uploadFile(videoPath, videoUploadUrl);
+    await safe(
+      uploadFile,
+      () => info("- Failed Uploading", red(videoPath)),
+      () => info("- Done Uploading", blue(videoPath))
+    )(videoPath, videoUploadUrl);
   }
   // upload screenshots
   if (screenshotUploadUrls.length) {
@@ -26,17 +40,20 @@ export async function uploadArtifacts({
           (urls) => urls.screenshotId === screenshot.screenshotId
         )?.uploadUrl;
         if (!url) {
-          console.warn("Cannot find upload url for screenshot", screenshot);
+          warn("Cannot find upload url for screenshot: %s", screenshot.path);
           return Promise.resolve();
         }
-        return uploadFile(screenshot.path, url);
+        return safe(
+          uploadFile,
+          () => warn("- Failed Uploading", red(screenshot.path)),
+          () => info("- Done Uploading", blue(screenshot.path))
+        )(screenshot.path, url);
       })
     );
   }
 }
 
-export async function uploadStdout(instanceId: string, stdout: string) {
-  console.log("Uploading stdout...", instanceId);
+async function uploadStdout(instanceId: string, stdout: string) {
   const res = await makeRequest({
     method: "PUT",
     url: `instances/${instanceId}/stdout`,
@@ -44,6 +61,10 @@ export async function uploadStdout(instanceId: string, stdout: string) {
       stdout,
     },
   });
-  console.log("Done uploading stdout", instanceId);
   return res.data;
 }
+export const uploadStdoutSafe = safe(
+  uploadStdout,
+  () => {},
+  () => {}
+);

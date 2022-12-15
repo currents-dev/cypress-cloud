@@ -89,3 +89,16 @@ export type ScreenshotArtifact = CypressCommandLine.ScreenshotInformation & {
   testAttemptIndex: number;
   screenshotId: string;
 };
+
+export interface TestsResult {
+  pending: number;
+  failed: number;
+  skipped: number;
+  passed: number;
+  total: number;
+}
+
+export type SummaryResults = Record<
+  string,
+  CypressCommandLine.CypressRunResult
+>;

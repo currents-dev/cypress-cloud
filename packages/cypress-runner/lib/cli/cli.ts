@@ -1,7 +1,10 @@
 import { Command, Option } from "commander";
+import Debug from "debug";
 import { omit, pickBy } from "lodash";
 import { CypressModuleAPIRunOptions } from "../../types";
 import { sanitizeAndConvertNestedArgs } from "./parser";
+
+const debug = Debug("currents:cli");
 
 /**
  Ignored values - those are irrelevant for the CI runner
@@ -92,8 +95,8 @@ export function parseOptions(
   ...args: Parameters<typeof program.parse>
 ) {
   _program.parse(...args);
+  debug("parsed CLI options", _program.opts());
   const { e2e, component } = _program.opts();
-
   if (e2e && component) {
     _program.error("Cannot use both e2e and component options");
   }

@@ -1,23 +1,36 @@
+import Debug from "debug";
 import path from "path";
+import VError from "verror";
 import { TestingType } from "../types";
 import { bootCypress } from "./bootstrap";
 import { getRandomPort } from "./utils";
+const debug = Debug("currents:config");
 
 // TODO: Add strict types for Currents configuration options
 type CurrentsConfig = Record<string, unknown>;
 export async function getCurrentsConfig(): Promise<CurrentsConfig> {
-  const configFile = await getConfigFile();
-  let config: CurrentsConfig = {};
+  const configFilePath = await getConfigFilePath();
+  debug("loading currents config file from '%s'", configFilePath);
 
+  let config: CurrentsConfig = {};
   try {
-    config = require(configFile);
+    config = require(configFilePath);
     config.projectId = process.env.CURRENTS_PROJECT_ID ?? config.projectId;
   } catch (e) {
-    console.warn(
-      "Cannot load loading config file from '%s', using defaults",
-      configFile
+    throw VError(
+      e,
+      "Cannot load currents config file from '%s'",
+      configFilePath
     );
   }
+
+  if (!config.projectId) {
+    throw new VError(
+      "Missing projectId in '%s' or environment variable CURRENTS_PROJECT_ID",
+      configFilePath
+    );
+  }
+
   return config;
 }
 
@@ -25,6 +38,7 @@ export async function mergeConfig(
   testingType: TestingType,
   currentsConfig: CurrentsConfig
 ) {
+  debug("resolving cypress config");
   const cypressResolvedConfig: Cypress.ResolvedConfigOptions & {
     projectRoot: string;
     rawJson: Record<string, unknown>;
@@ -37,7 +51,8 @@ export async function mergeConfig(
     // @ts-ignore
     additionalIgnorePattern = rawE2EPattern;
   }
-  return {
+
+  const result = {
     projectRoot: cypressResolvedConfig.projectRoot || process.cwd(),
     projectId: currentsConfig.projectId,
     specPattern: cypressResolvedConfig.specPattern,
@@ -46,6 +61,8 @@ export async function mergeConfig(
     additionalIgnorePattern,
     resolved: cypressResolvedConfig,
   };
+  debug("merged config: %O", result);
+  return result;
 
   // see https://github.com/cypress-io/cypress/blob/ed0668e24c2ee6753bbd25ae467ce94ae5857741/packages/config/src/options.ts#L457
   // and https://github.com/cypress-io/cypress/blob/develop/packages/config/src/project/utils.ts#L412
@@ -83,9 +100,6 @@ export async function mergeConfig(
   return resolvedConfig.component;
 }
 
-async function getConfigFile(explicitLocation = null) {
-  if (explicitLocation) {
-    return "explicit location";
-  }
-  return path.resolve(process.cwd(), "currents.config.js");
+function getConfigFilePath(explicitLocation = null) {
+  return path.resolve(explicitLocation ?? process.cwd(), "currents.config.js");
 }

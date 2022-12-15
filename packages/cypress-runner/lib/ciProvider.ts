@@ -15,7 +15,7 @@ import {
   transform,
 } from "lodash";
 
-const debug = debugFn("currents:ci-info");
+const debug = debugFn("currents:ci");
 
 const join = (char: string, ...pieces: (string | undefined)[]) => {
   return chain(pieces).compact().join(char).value();
@@ -678,18 +678,24 @@ export function getCommitParams() {
   return _get(_providerCommitParams);
 }
 
+export function getCI() {
+  const params = getCiParams();
+  const provider = getCiProvider();
+  debug("detected CI provider: %s", provider);
+  debug("detected CI params: %O", params);
+  return {
+    params,
+    provider,
+  };
+}
+
 export function getCommitDefaults(existingInfo: CiProviderData) {
   debug("git commit existing info");
   debug(existingInfo);
 
-  const providerName = getCiProvider();
-
-  debug("detected provider name: %s", providerName);
-
   const commitParamsObj = getCommitParams();
 
-  debug("commit info from provider environment variables");
-  debug("%o", commitParamsObj);
+  debug("commit info from provider environment variables: %O", commitParamsObj);
 
   // based on the existingInfo properties
   // merge in the commitParams if null or undefined

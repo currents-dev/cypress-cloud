@@ -1,5 +1,5 @@
 import { nanoid } from "nanoid";
-import { CypressResult, ScreenshotArtifact } from "../types";
+import { CypressResult, ScreenshotArtifact, TestsResult } from "../types";
 
 export const isSuccessResult = (
   result: CypressResult
@@ -75,16 +75,9 @@ export const getInstanceTestsPayload = (
   };
 };
 
-export interface SummarizedResult {
-  pending: number;
-  failed: number;
-  skipped: number;
-  passed: number;
-  total: number;
-}
-export const summarizeResults = (
+export const summarizeTestResults = (
   input: CypressCommandLine.CypressRunResult[]
-): SummarizedResult => {
+): TestsResult => {
   return input.reduce(
     (
       acc,
