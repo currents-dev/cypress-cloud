@@ -1,6 +1,6 @@
 const { defineConfig } = require("cypress");
 const { loadEnvConfig } = require("@next/env");
-const { currents } = require("cypress-runner/plugin");
+const { currents } = require("cypress-cloud/plugin");
 
 function loadEnvVariables() {
   const projectDir = process.cwd();
@@ -8,7 +8,6 @@ function loadEnvVariables() {
 }
 
 loadEnvVariables();
-// const projectId = process.env.CYPRESS_PROJECT_ID;
 
 module.exports = defineConfig({
   e2e: {

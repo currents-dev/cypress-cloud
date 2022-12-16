@@ -1,4 +1,4 @@
-### Currents 2.0
+### Cypress Cloud 2.0
 
 This is an experimental package that integrates cypress with Currents (and sorry cypress). It implements the orchestration protocol and results reporting, mimicking the internal cypress implementation. It runs cypress in "local" mode, explicitly providing the specific spec file to run each time.
 
@@ -22,7 +22,7 @@ See an example setup in `examples/nextjs` directory:
 To run an example, make sure that currents is running locally and then:
 
 ```
-cd packages/cypress-runner
+cd packages/cypress-cloud
 nvm use # OR nvm install
 yarn watch
 ```

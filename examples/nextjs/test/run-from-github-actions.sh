@@ -11,4 +11,4 @@ export GITHUB_RUN_ATTEMPT=
 export GITHUB_REPOSITORY=
 export GITHUB_REPOSITORY=
 
-yarn cypress-runner --parallel --record --key ${CURRENTS_RECORD_KEY} --ci-build-id $(date +%s)
+yarn cypress-cloud --parallel --record --key ${CURRENTS_RECORD_KEY} --ci-build-id $(date +%s)

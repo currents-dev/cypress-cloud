@@ -2,7 +2,7 @@ import {
   CypressResult,
   ScreenshotArtifact,
   TestsResult,
-} from "cypress-runner/types";
+} from "cypress-cloud/types";
 import Debug from "debug";
 import { nanoid } from "nanoid";
 import {
@@ -11,7 +11,7 @@ import {
   TestState,
   updateInstanceResults,
   UpdateInstanceResultsPayload,
-} from "./api/";
+} from "./api";
 import { uploadArtifacts, uploadStdoutSafe } from "./artifacts";
 import { getCapturedOutput, getInitialOutput } from "./capture";
 
