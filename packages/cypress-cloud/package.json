@@ -63,7 +63,8 @@
   "files": [
     "out",
     "LICENSE",
-    "!**/*.map.js"
+    "!**/*.map",
+    "!**/*/*.map"
   ],
   "exports": {
     ".": {
