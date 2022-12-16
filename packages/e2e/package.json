@@ -1,0 +1,22 @@
+{
+  "name": "e2e",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "esbuild index.ts --platform=node --bundle --outdir=out",
+    "test": "yarn build && node ./out/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "msw": "^0.49.2"
+  },
+  "dependencies": {
+    "axios": "^1.2.1",
+    "cypress": "^12.1.0",
+    "cypress-runner": "*",
+    "esbuild": "0.16.7"
+  }
+}
