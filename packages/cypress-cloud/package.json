@@ -11,7 +11,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "release": "release-it",
-    "dev": "yarn build --watch --sourcemap=external",
+    "dev": "yarn build --watch --sourcemap",
     "build": "esbuild ./index.ts ./bin/*.ts  ./plugin/*.ts ./support/*.ts --bundle --minify --platform=node --packages=external --outdir=out --external:'../index'"
   },
   "peerDependencies": {
@@ -62,7 +62,8 @@
   },
   "files": [
     "out",
-    "LICENSE"
+    "LICENSE",
+    "!**/*.map.js"
   ],
   "exports": {
     ".": {
