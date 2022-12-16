@@ -1,6 +1,6 @@
 module.exports = {
   reactStrictMode: true,
   experimental: {
-    transpilePackages: ["cypress-runner"],
+    transpilePackages: ["cypress-cloud"],
   },
 };

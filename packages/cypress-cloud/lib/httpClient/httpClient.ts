@@ -3,7 +3,7 @@ import Debug from "debug";
 import { omit } from "lodash";
 import prettyMS from "pretty-ms";
 import VError from "verror";
-import { warn } from "../../lib/log";
+import { warn } from "../log";
 import { getBaseUrl, getDelays, isRetriableError } from "./config";
 import { maybePrintErrors } from "./printErrors";
 

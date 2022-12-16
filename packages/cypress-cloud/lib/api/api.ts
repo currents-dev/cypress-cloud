@@ -7,7 +7,7 @@ import {
   SetInstanceTestsPayload,
   UpdateInstanceResultsPayload,
   UpdateInstanceResultsResponse,
-} from "./types/";
+} from "./types";
 import { printWarnings } from "./warnings";
 
 export const createRun = async (payload: CreateRunPayload) => {

@@ -1,9 +1,9 @@
-import * as log from "cypress-runner/lib/log";
+import * as log from "cypress-cloud/lib/log";
 import nock from "nock";
 import { getBaseUrl, getDelays, isRetriableError } from "../config";
 import { makeRequest } from "../httpClient";
 jest.mock("../config");
-jest.mock("cypress-runner/lib/log");
+jest.mock("cypress-cloud/lib/log");
 
 (getBaseUrl as jest.Mock).mockReturnValue("http://localhost:1234");
 const apiMock = nock(getBaseUrl()).persist();

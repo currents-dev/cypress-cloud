@@ -1,4 +1,4 @@
-import { Platform, ScreenshotArtifact } from "cypress-runner/types";
+import { Platform, ScreenshotArtifact } from "cypress-cloud/types";
 import { SetTestsPayload, Test, TestHook } from "./test";
 
 export interface Screenshot {

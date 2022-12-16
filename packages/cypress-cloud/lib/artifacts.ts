@@ -1,6 +1,6 @@
 import Debug from "debug";
 import { ScreenshotArtifact, ScreenshotUploadInstruction } from "../types";
-import { updateInstanceStdout } from "./api/";
+import { updateInstanceStdout } from "./api";
 import { safe } from "./lang";
 import { cyan, info, red, title, warn } from "./log";
 import { uploadFile } from "./upload";

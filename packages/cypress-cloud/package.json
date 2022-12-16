@@ -1,6 +1,6 @@
 {
-  "name": "cypress-runner",
-  "version": "1.1.2",
+  "name": "cypress-cloud",
+  "version": "1.2.4",
   "main": "./out/index.js",
   "types": "./index.ts",
   "author": "Currents Software Inc",
@@ -11,7 +11,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "release": "release-it",
-    "dev": "yarn build --watch --sourcemap=inline",
+    "dev": "yarn build --watch --sourcemap",
     "build": "esbuild ./index.ts ./bin/*.ts  ./plugin/*.ts ./support/*.ts --bundle --minify --platform=node --packages=external --outdir=out --external:'../index'"
   },
   "peerDependencies": {
@@ -58,11 +58,13 @@
     "verror": "^1.10.1"
   },
   "bin": {
-    "cypress-runner": "./out/bin/index.js"
+    "cypress-cloud": "./out/bin/index.js"
   },
   "files": [
     "out",
-    "LICENSE"
+    "LICENSE",
+    "!**/*.map",
+    "!**/*/*.map"
   ],
   "exports": {
     ".": {

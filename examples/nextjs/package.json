@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "cypress": "^12.1.0",
-    "cypress-runner": "*",
+    "cypress-cloud": "*",
     "cypress-terminal-report": "^5.0.0",
     "next": "13.0.0",
     "react": "^18.2.0",
