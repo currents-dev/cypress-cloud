@@ -2,7 +2,7 @@
 import cypress from "cypress";
 import Debug from "debug";
 import { CypressResult } from "../types";
-import { getCypressModuleAPIOptions, getStrippedCypressOptions } from "./cli/";
+import { getCypressModuleAPIOptions, getStrippedCypressOptions } from "./cli";
 
 const debug = Debug("currents:cypress");
 interface RunCypressSpecFile {

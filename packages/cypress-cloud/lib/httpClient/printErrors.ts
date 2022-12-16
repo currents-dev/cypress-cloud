@@ -1,6 +1,6 @@
 import { AxiosError } from "axios";
 import { isString } from "lodash";
-import { spacer, warn } from "../../lib/log";
+import { spacer, warn } from "../log";
 
 export function maybePrintErrors(
   err: AxiosError<{ message: string; errors?: string[] }>

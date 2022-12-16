@@ -1,7 +1,7 @@
 import("./lib/init");
 
 import { cutInitialOutput, resetCapture } from "./lib/capture";
-import { parseOptions } from "./lib/cli/";
+import { parseOptions } from "./lib/cli";
 import { getCurrentsConfig, mergeConfig } from "./lib/config";
 import { setRunId } from "./lib/httpClient";
 import {

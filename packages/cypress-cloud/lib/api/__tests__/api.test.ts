@@ -12,7 +12,7 @@ import {
   UpdateInstanceResultsPayload,
   UpdateInstanceResultsResponse,
   updateInstanceStdout,
-} from "cypress-runner/lib/api";
+} from "cypress-cloud/lib/api";
 import _ from "lodash";
 import nock from "nock";
 
