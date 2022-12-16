@@ -42,7 +42,7 @@ export async function run() {
   });
 
   if (specs.length === 0) {
-    warn("No spec files found to execute using configuration: %O", {
+    warn("No spec files found to execute. Used configuration: %O", {
       specPattern,
       configSpecPattern: config.specPattern,
       excludeSpecPattern: [
@@ -55,7 +55,7 @@ export async function run() {
   }
 
   info(
-    "Discovered %d spec files, connecting to orchestration service...",
+    "Discovered %d spec files, connecting to the cloud orchestration service...",
     specs.length
   );
 
