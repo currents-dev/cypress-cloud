@@ -151,3 +151,85 @@ export async function processCypressResults(
   // keep last because of stdout
   await uploadStdoutSafe(instanceId, getInitialOutput() + getCapturedOutput());
 }
+
+export function getFailedDummyResult({
+  spec,
+  error,
+  config,
+}: {
+  spec: string;
+  error: string;
+  config: any; // TODO tighten this up
+}): CypressCommandLine.CypressRunResult {
+  const start = new Date().toISOString();
+  const end = new Date().toISOString();
+  return {
+    config,
+    status: "finished",
+    startedTestsAt: new Date().toISOString(),
+    endedTestsAt: new Date().toISOString(),
+    totalDuration: 0,
+    totalSuites: 1,
+    totalFailed: 1,
+    totalPassed: 0,
+    totalPending: 0,
+    totalSkipped: 0,
+    totalTests: 1,
+    browserName: "unknown",
+    browserVersion: "unknown",
+    browserPath: "unknown",
+    osName: "unknown",
+    osVersion: "unknown",
+    cypressVersion: "unknown",
+    runs: [
+      {
+        stats: {
+          suites: 1,
+          tests: 1,
+          passes: 0,
+          pending: 0,
+          skipped: 0,
+          failures: 1,
+          startedAt: start,
+          endedAt: end,
+          duration: 0,
+        },
+        reporter: "spec",
+        reporterStats: {},
+        hooks: [],
+        error,
+        video: null,
+        spec: {
+          name: spec,
+          relative: "",
+          absolute: "",
+          relativeToCommonRoot: "",
+        },
+        tests: [
+          {
+            title: ["Automatically dummy generated test"],
+            state: "failed",
+            body: "// This test is automatically generated due to execution failure",
+            displayError: error,
+            attempts: [
+              {
+                state: "failed",
+                startedAt: start,
+                duration: 0,
+                videoTimestamp: 0,
+                screenshots: [],
+                error: {
+                  name: "CloudExecutionError",
+                  message: error,
+                  stack: "",
+                },
+              },
+            ],
+          },
+        ],
+        shouldUploadVideo: false,
+        skippedSpec: false,
+      },
+    ],
+  };
+}

@@ -5,6 +5,7 @@ import { parseOptions } from "./lib/cli/";
 import { getCurrentsConfig, mergeConfig } from "./lib/config";
 import { setRunId } from "./lib/httpClient";
 import {
+  getFailedDummyResult,
   isSuccessResult,
   processCypressResults,
   summarizeTestResults,
@@ -16,7 +17,7 @@ import { createInstance, createRun } from "./lib/api/api";
 import { CreateInstancePayload } from "./lib/api/types/instance";
 import { guessBrowser } from "./lib/browser";
 import { getCI } from "./lib/ciProvider";
-import { runSpecFile } from "./lib/cypress";
+import { runSpecFileSafe } from "./lib/cypress";
 import { getGitInfo } from "./lib/git";
 import { divider, info, spacer, title, warn } from "./lib/log";
 import { getPlatformInfo } from "./lib/platform";
@@ -91,6 +92,7 @@ export async function run() {
     groupId: run.groupId,
     machineId: run.machineId,
     platform,
+    config,
   });
 
   const testResults = summarizeTestResults(Object.values(results));
@@ -112,7 +114,10 @@ async function runTillDone({
   groupId,
   machineId,
   platform,
-}: CreateInstancePayload) {
+  config,
+}: CreateInstancePayload & {
+  config: ReturnType<typeof getCurrentsConfig>;
+}) {
   const summary: SummaryResults = {};
 
   let hasMore = true;
@@ -136,14 +141,17 @@ async function runTillDone({
     );
     info("Executing spec file: %s", currentSpecFile.spec);
 
-    const cypressResult = await runSpecFile({ spec: currentSpecFile.spec });
+    let cypressResult = await runSpecFileSafe({ spec: currentSpecFile.spec });
 
     if (!isSuccessResult(cypressResult)) {
-      // TODO: handle failure
-      // do not exit
-      // skip the spec file, go to next
-      warn("Executing the spec file has failed, getting the next spec file...");
-      continue;
+      cypressResult = getFailedDummyResult({
+        spec: currentSpecFile.spec,
+        error: cypressResult.message,
+        config,
+      });
+      warn(
+        "Executing the spec file has failed, executing the next spec file..."
+      );
     }
 
     summary[currentSpecFile.spec] = cypressResult;

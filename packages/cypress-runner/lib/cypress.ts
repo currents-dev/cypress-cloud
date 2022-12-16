@@ -1,6 +1,7 @@
 // @ts-ignore
 import cypress from "cypress";
 import Debug from "debug";
+import { CypressResult } from "../types";
 import { getCypressModuleAPIOptions, getStrippedCypressOptions } from "./cli/";
 
 const debug = Debug("currents:cypress");
@@ -25,3 +26,20 @@ export async function runSpecFile({ spec }: RunCypressSpecFile) {
   debug("cypress run result %o", result);
   return result;
 }
+
+export const runSpecFileSafe = async ({
+  spec,
+}: RunCypressSpecFile): Promise<CypressResult> => {
+  try {
+    return await runSpecFile({ spec });
+  } catch (error) {
+    debug("cypress run exception %o", error);
+    return {
+      status: "failed",
+      failures: 1,
+      message: `Cypress process crashed with an error:\n${
+        (error as Error).message
+      }\n${(error as Error).stack}}`,
+    };
+  }
+};
