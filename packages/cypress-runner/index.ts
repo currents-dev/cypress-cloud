@@ -7,6 +7,7 @@ import { setRunId } from "./lib/httpClient";
 import {
   isSuccessResult,
   processCypressResults,
+  processCypressFailedResults,
   summarizeTestResults,
 } from "./lib/results";
 import { findSpecs } from "./lib/specMatcher";
@@ -136,19 +137,35 @@ async function runTillDone({
     );
     info("Executing spec file: %s", currentSpecFile.spec);
 
-    const cypressResult = await runSpecFile({ spec: currentSpecFile.spec });
+    try {
+      const cypressResult = await runSpecFile({ spec: currentSpecFile.spec });
 
-    if (!isSuccessResult(cypressResult)) {
-      // TODO: handle failure
-      // do not exit
-      // skip the spec file, go to next
-      warn("Executing the spec file has failed, getting the next spec file...");
-      continue;
+      if (!isSuccessResult(cypressResult)) {
+        await processCypressFailedResults(
+          currentSpecFile.instanceId!,
+          cypressResult
+        );
+        continue;
+      }
+      if (cypressResult.runs.length === 0) {
+        await processCypressFailedResults(currentSpecFile.instanceId!, {
+          status: "failed",
+          failures: 1,
+          message: "No run found in Cypress results",
+        });
+        continue;
+      }
+
+      summary[currentSpecFile.spec] = cypressResult;
+      await processCypressResults(currentSpecFile.instanceId!, cypressResult);
+      resetCapture();
+    } catch (err) {
+      await processCypressFailedResults(currentSpecFile.instanceId!, {
+        status: "failed",
+        failures: 1,
+        message: err?.toString() || "",
+      });
     }
-
-    summary[currentSpecFile.spec] = cypressResult;
-    await processCypressResults(currentSpecFile.instanceId!, cypressResult);
-    resetCapture();
   }
 
   return summary;

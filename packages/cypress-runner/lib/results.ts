@@ -11,9 +11,10 @@ import {
   TestState,
   updateInstanceResults,
   UpdateInstanceResultsPayload,
-} from "./api/";
+} from "./api";
 import { uploadArtifacts, uploadStdoutSafe } from "./artifacts";
 import { getCapturedOutput, getInitialOutput } from "./capture";
+import { warn } from "./log";
 
 const debug = Debug("currents:results");
 
@@ -122,14 +123,11 @@ export async function processCypressResults(
   instanceId: string,
   results: CypressCommandLine.CypressRunResult
 ) {
-  const runResult = results.runs[0];
-  if (!runResult) {
-    throw new Error("No run found in Cypress results");
-  }
+  const [runResult] = results.runs;
 
   await setInstanceTests(
     instanceId,
-    getInstanceTestsPayload(results.runs[0], results.config)
+    getInstanceTestsPayload(runResult, results.config)
   );
 
   const resultPayload = getInstanceResultPayload(runResult);
@@ -150,4 +148,27 @@ export async function processCypressResults(
   debug("uploading stdout for instanceId %s", instanceId);
   // keep last because of stdout
   await uploadStdoutSafe(instanceId, getInitialOutput() + getCapturedOutput());
+}
+
+export async function processCypressFailedResults(
+  instanceId: string,
+  results: CypressCommandLine.CypressFailedRunResult
+) {
+  warn(
+    {
+      instanceId,
+      error: results.message,
+    },
+    "Executing the spec file has failed, getting the next spec file..."
+  );
+
+  // await setInstanceTests(
+  //   instanceId,
+  //   config: {}, // How to get it from cypress when it's failed?
+  //   tests: [], // Do we want to just put it empty?
+  //   hooks:[]
+  // );
+
+  // Call updateInstanceResults?
+  // Don't know if we should call this function
 }
