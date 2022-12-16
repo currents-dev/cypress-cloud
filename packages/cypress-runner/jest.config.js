@@ -1,5 +1,6 @@
 module.exports = {
   verbose: true,
+  clearMocks: true,
   testEnvironment: "node",
   testMatch: ["<rootDir>/**/__tests__/**/?(*.)(spec|test).ts"],
   transform: {

@@ -1,11 +1,12 @@
 import * as log from "cypress-runner/lib/log";
 import nock from "nock";
-import { getDelays, isRetriableError } from "../config";
+import { getBaseUrl, getDelays, isRetriableError } from "../config";
 import { makeRequest } from "../httpClient";
 jest.mock("../config");
 jest.mock("cypress-runner/lib/log");
 
-const apiMock = nock("https://cy.currents.dev").persist();
+(getBaseUrl as jest.Mock).mockReturnValue("http://localhost:1234");
+const apiMock = nock(getBaseUrl()).persist();
 
 describe("HTTP Client Retries", () => {
   it("does not retry non-axios errors", async () => {
@@ -16,12 +17,13 @@ describe("HTTP Client Retries", () => {
     await expect(makeRequest({})).rejects.toThrowErrorMatchingInlineSnapshot(
       `": Request failed with status code 503"`
     );
+    expect(isRetriableError).toHaveBeenCalledTimes(1);
   });
 
-  it("retries and shows warnings for according to attempts config", async () => {
-    const retires: any[] = [0, 0];
+  it("retries and shows warnings according to attempts config", async () => {
+    const retries: any[] = [0, 0];
     (isRetriableError as jest.Mock).mockReturnValue(true);
-    (getDelays as jest.Mock).mockReturnValue(retires);
+    (getDelays as jest.Mock).mockReturnValue(retries);
 
     apiMock.get("/").reply(503);
 
@@ -29,6 +31,7 @@ describe("HTTP Client Retries", () => {
       await makeRequest({});
     } catch (r) {}
 
-    expect(log.warn).toHaveBeenCalledTimes(retires.length);
+    expect(log.warn).toHaveBeenCalledTimes(retries.length);
+    expect(isRetriableError).toHaveBeenCalledTimes(retries.length + 1);
   });
 });
