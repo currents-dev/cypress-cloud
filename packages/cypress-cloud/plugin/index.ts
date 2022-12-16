@@ -2,7 +2,7 @@ import fs from "fs";
 import { format } from "util";
 
 // @ts-ignore
-export const currents = async (on, config) => {
+async function cloudPlugin(on, config) {
   function debug(...args: unknown[]) {
     if (config.env.currents_debug_enabled) {
       console.debug("[currents:plugin]", format(...args));
@@ -18,4 +18,6 @@ export const currents = async (on, config) => {
   }
 
   return config;
-};
+}
+
+export default cloudPlugin;
