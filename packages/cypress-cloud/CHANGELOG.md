@@ -1,5 +1,12 @@
 
 
+## [1.2.5](https://github.com/currents-dev/cypress-cloud/compare/v1.2.4...v1.2.5) (2022-12-16)
+
+
+### Bug Fixes
+
+* remove "colors" dep ([4113bf8](https://github.com/currents-dev/cypress-cloud/commit/4113bf8c7d6bd6a6940a032995ba6033477dec62))
+
 ## [1.2.4](https://github.com/currents-dev/cypress-cloud/compare/v1.2.2...v1.2.4) (2022-12-16)
 
 ## [1.2.2](https://github.com/currents-dev/cypress-cloud/compare/v1.2.1...v1.2.2) (2022-12-16)
