@@ -2,7 +2,7 @@ import fs from "fs";
 import { format } from "util";
 
 // @ts-ignore
-async function cloudPlugin(on, config) {
+export async function cloudPlugin(on, config) {
   function debug(...args: unknown[]) {
     if (config.env.currents_debug_enabled) {
       console.debug("[currents:plugin]", format(...args));
