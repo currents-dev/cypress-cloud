@@ -22,8 +22,13 @@ export type CreateRunPayload = {
   timeout?: number;
 };
 
+export type CloudWarning = {
+  message: string;
+  [key: string]: string | number | Date;
+};
+
 export type CreateRunResponse = {
-  warnings: any[];
+  warnings: CloudWarning[];
   groupId: string;
   machineId: string;
   runId: string;

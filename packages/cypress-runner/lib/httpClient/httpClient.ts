@@ -4,7 +4,9 @@ import { omit } from "lodash";
 import prettyMS from "pretty-ms";
 import VError from "verror";
 import { warn } from "../../lib/log";
-import { getDelays, isRetriableError } from "./config";
+import { getBaseUrl, getDelays, isRetriableError } from "./config";
+import { maybePrintErrors } from "./printErrors";
+
 const debug = Debug("currents:api");
 
 let _runId: string | undefined = undefined;
@@ -31,12 +33,9 @@ export const makeRequest = <T = any, D = any>(
   config: AxiosRequestConfig<D>,
   retryOptions?: RetryOptions
 ) => {
-  const baseURL =
-    process.env.CURRENTS_API_BASE_URL || "https://cy.currents.dev";
-
   return retryWithBackoff((retryIndex: number) => {
     const requestConfig = {
-      baseURL,
+      baseURL: getBaseUrl(),
       ...config,
       headers: {
         "x-cypress-request-attempt": retryIndex,
@@ -67,8 +66,9 @@ const retryWithBackoff = (fn: Function, retryOptions?: RetryOptions) => {
   return (attempt = (retryIndex: number) => {
     return promiseTry(() => fn(retryIndex)).catch((err) => {
       debug("network request failed: %O", err.toJSON ? err.toJSON() : err);
-      const shouldRetry = options.isRetriableError(err);
+      maybePrintErrors(err);
 
+      const shouldRetry = options.isRetriableError(err);
       if (!shouldRetry) {
         throw new VError(err);
       }

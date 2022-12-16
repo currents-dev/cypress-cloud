@@ -43,6 +43,14 @@ Use the command bellow to run currents runner:
 yarn cypress
 ```
 
+## Testing
+
+```
+yarn test
+```
+
+Please note, we use `esbuild` for building and `swc` for testing. In addition, jest has built-in module aliases, but eslint does not. Beware of importing aliases in non-testing code.
+
 ## What's inside?
 
 This turborepo uses [Yarn](https://yarnpkg.com/) as a package manager. It includes the following packages/apps:
