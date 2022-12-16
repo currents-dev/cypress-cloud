@@ -1,5 +1,5 @@
-import { magenta } from "colors";
 import { omit } from "lodash";
+import { magenta } from "../log";
 
 import { info, spacer, warn } from "../log";
 import { CloudWarning } from "./types";
