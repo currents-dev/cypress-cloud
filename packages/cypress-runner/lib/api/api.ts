@@ -8,21 +8,32 @@ import {
   UpdateInstanceResultsPayload,
   UpdateInstanceResultsResponse,
 } from "./types/";
+import { printWarnings } from "./warnings";
 
-export const createRun = (payload: CreateRunPayload) =>
-  makeRequest<CreateRunResponse, CreateRunPayload>({
+export const createRun = async (payload: CreateRunPayload) => {
+  const response = await makeRequest<CreateRunResponse, CreateRunPayload>({
     method: "POST",
     url: "runs",
     data: payload,
-  }).then((res) => res.data);
+  });
 
-export const createInstance = ({
+  if ((response.data.warnings?.length ?? 0) > 0) {
+    printWarnings(response.data.warnings);
+  }
+
+  return response.data;
+};
+
+export const createInstance = async ({
   runId,
   groupId,
   machineId,
   platform,
-}: CreateInstancePayload) =>
-  makeRequest<CreateInstanceResponse, CreateInstancePayload>({
+}: CreateInstancePayload) => {
+  const respone = await makeRequest<
+    CreateInstanceResponse,
+    CreateInstancePayload
+  >({
     method: "POST",
     url: `runs/${runId}/instances`,
     data: {
@@ -31,8 +42,10 @@ export const createInstance = ({
       machineId,
       platform,
     },
-  }).then((res) => res.data);
+  });
 
+  return respone.data;
+};
 export const setInstanceTests = (
   instanceId: string,
   payload: SetInstanceTestsPayload
