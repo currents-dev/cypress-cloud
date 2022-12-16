@@ -11,7 +11,7 @@ import {
   summarizeTestResults,
 } from "./lib/results";
 import { findSpecs } from "./lib/specMatcher";
-import { SummaryResults, TestingType } from "./types";
+import { SummaryResults, TestingType, TestsResult } from "./types";
 
 import { createInstance, createRun } from "./lib/api/api";
 import { CreateInstancePayload } from "./lib/api/types/instance";
@@ -23,13 +23,23 @@ import { divider, info, spacer, title, warn } from "./lib/log";
 import { getPlatformInfo } from "./lib/platform";
 import { summaryTable } from "./lib/table";
 
-export async function run(
-  parameters: {
-    projectId?: string;
-    key?: string;
-    specPattern?: string;
-  } = {}
-) {
+interface RunOptions {
+  /** The project ID to use. If not specified, will use the projectId from currents.config.js or process.env.CURRENTS_PROJECT_ID */
+  projectId?: string;
+  /**  The record key to use */
+  key?: string;
+  /** The spec pattern to use. If not specified, will use the specPattern from Cypress configuration */
+  specPattern?: string;
+}
+
+/**
+ * A microchart is a small chart that shows a single metric over time.
+ * It is used in the instance summary and instance details.
+ *
+ * @augments RunOptions
+ * @returns {TestsResult | undefined} The test results, or undefined if no tests were run.
+ */
+export async function run(parameters: RunOptions = {}) {
   spacer();
   const options = parseOptions();
   const { component, parallel, ciBuildId, group, tag: tags } = options;
