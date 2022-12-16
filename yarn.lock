@@ -433,16 +433,6 @@
   resolved "https://registry.yarnpkg.com/@esbuild/linux-ppc64/-/linux-ppc64-0.16.7.tgz#72a00c9788f3ca5df56ecec060d5b92f945c9a2d"
   integrity sha512-WM83Dac0LdXty5xPhlOuCD5Egfk1xLND/oRLYeB7Jb/tY4kzFSDgLlq91wYbHua/s03tQGA9iXvyjgymMw62Vw==
 
-<<<<<<< HEAD
-=======
-"@esbuild/linux-loong64@npm:0.16.6":
-  version: 0.16.6
-  resolution: "@esbuild/linux-loong64@npm:0.16.6"
-  conditions: os=linux & cpu=loong64
-  languageName: node
-  linkType: hard
-
->>>>>>> cb6750f (Resolve yarn package lock conflict)
 "@esbuild/linux-mips64el@npm:0.16.6":
   version: 0.16.6
   resolution: "@esbuild/linux-mips64el@npm:0.16.6"
