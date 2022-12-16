@@ -1,6 +1,6 @@
 {
   "name": "cypress-cloud",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "main": "./out/index.js",
   "types": "./index.ts",
   "author": "Currents Software Inc",
@@ -11,7 +11,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "release": "release-it",
-    "dev": "yarn build --watch --sourcemap=inline",
+    "dev": "yarn build --watch --sourcemap=external",
     "build": "esbuild ./index.ts ./bin/*.ts  ./plugin/*.ts ./support/*.ts --bundle --minify --platform=node --packages=external --outdir=out --external:'../index'"
   },
   "peerDependencies": {
