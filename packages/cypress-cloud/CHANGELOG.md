@@ -1,5 +1,7 @@
 
 
+## [1.2.6](https://github.com/currents-dev/cypress-cloud/compare/v1.2.5...v1.2.6) (2022-12-18)
+
 ## [1.2.5](https://github.com/currents-dev/cypress-cloud/compare/v1.2.4...v1.2.5) (2022-12-16)
 
 
