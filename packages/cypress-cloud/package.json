@@ -12,7 +12,7 @@
     "test:watch": "jest --watch",
     "release": "release-it",
     "dev": "yarn build --watch --sourcemap",
-    "build": "esbuild ./index.ts ./bin/*.ts  ./plugin/*.ts ./support/*.ts --bundle --minify --platform=node --packages=external --outdir=out --external:'../index'"
+    "build": "esbuild ./index.ts ./bin/*.ts  ./plugin/*.ts ./support/*.ts --bundle --minify --platform=node --target=node14 --packages=external --outdir=out --external:'../index'"
   },
   "peerDependencies": {
     "cypress": ">= 10.0.0"
