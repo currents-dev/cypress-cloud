@@ -1,7 +1,6 @@
 import("./lib/init");
 
 import { cutInitialOutput, resetCapture } from "./lib/capture";
-import { parseOptions } from "./lib/cli";
 import { getCurrentsConfig, mergeConfig } from "./lib/config";
 import { setRunId } from "./lib/httpClient";
 import {
@@ -23,30 +22,32 @@ import { divider, info, spacer, title, warn } from "./lib/log";
 import { getPlatformInfo } from "./lib/platform";
 import { summaryTable } from "./lib/table";
 
-interface RunOptions {
+interface RunOptions extends Partial<CypressCommandLine.CypressRunOptions> {
   /** The project ID to use. If not specified, will use the projectId from currents.config.js or process.env.CURRENTS_PROJECT_ID */
   projectId?: string;
   /**  The record key to use */
   key?: string;
   /** The spec pattern to use. If not specified, will use the specPattern from Cypress configuration */
   specPattern?: string;
+  /** Whether the test is a component test. Defaults to false, which implies an e2e test */
+  component?: boolean;
 }
 
 /**
- * A microchart is a small chart that shows a single metric over time.
- * It is used in the instance summary and instance details.
+ * Run the Cypress tests.
+ * You can either pass the options as a parameter, or run the cli.
  *
  * @augments RunOptions
  * @returns {TestsResult | undefined} The test results, or undefined if no tests were run.
  */
-export async function run(parameters: RunOptions = {}) {
+export async function run(parameters: RunOptions) {
   spacer();
-  const options = parseOptions();
-  const { component, parallel, ciBuildId, group, tag: tags } = options;
-  const key = parameters.key || options.key;
+
+  const { group, parallel, ciBuildId, tag: tags, component } = parameters;
+  const key = parameters.key ?? process.env.CURRENTS_RECORD_KEY;
   if (!key) {
     throw new Error(
-      "required option '-k, --key <record-key>' not specified. Please either pass it as a flag, or as a parameter to the run function."
+      "Missing key. Please either pass it as a cli flag '-k, --key <record-key>', as CURRENTS_RECORD_KEY environment variable, or as a parameter to the run function."
     );
   }
 
@@ -96,7 +97,7 @@ export async function run(parameters: RunOptions = {}) {
   const osPlatformInfo = await getPlatformInfo();
   const platform = {
     ...osPlatformInfo,
-    ...guessBrowser(options.browser ?? "electron", config.resolved.browsers),
+    ...guessBrowser(parameters.browser ?? "electron", config.resolved.browsers),
   };
   const ci = getCI();
   const commit = await getGitInfo(config.projectRoot);
@@ -107,7 +108,7 @@ export async function run(parameters: RunOptions = {}) {
     commit,
     group,
     platform,
-    parallel,
+    parallel: parallel ?? false,
     ciBuildId,
     projectId: config.projectId,
     recordKey: key,

@@ -2,9 +2,11 @@
 import "source-map-support/register";
 
 import { run } from "../index";
+import { parseOptions } from "../lib/cli";
 import { error } from "../lib/log";
 
-run()
+const options = parseOptions();
+run(options)
   .then((result) => {
     if (!result) {
       process.exit(0);
