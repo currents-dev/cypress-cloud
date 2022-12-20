@@ -27,11 +27,13 @@ import { divider, info, spacer, title, warn } from "./lib/log";
 import { getPlatformInfo } from "./lib/platform";
 import { summaryTable } from "./lib/table";
 
-interface RunOptions extends Partial<CypressCommandLine.CypressRunOptions> {
+interface RunOptions extends CypressModuleAPIRunOptions {
   /** The project ID to use. If not specified, will use the projectId from currents.config.js or process.env.CURRENTS_PROJECT_ID */
   projectId?: string;
   /**  The record key to use */
   key?: string;
+  /** List of tags for the recorded run, like ["production" , "nightly"] */
+  tag?: string[];
 }
 
 /**
@@ -71,7 +73,7 @@ export async function run(parameters: RunOptions) {
   }
 
   const testingType: TestingType = _testingType ?? "e2e";
-  const config = await mergeConfig(testingType, projectId);
+  const config = await mergeConfig(testingType, projectId, cypressRunOptions);
   const specPattern = parameters.spec || config.specPattern;
   const specs = await findSpecs({
     projectRoot: config.projectRoot,

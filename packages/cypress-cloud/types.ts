@@ -4,8 +4,10 @@ export type SpecType = "component" | "integration";
 export type CypressResult =
   | CypressCommandLine.CypressRunResult
   | CypressCommandLine.CypressFailedRunResult;
-export type CypressModuleAPIRunOptions =
-  Partial<CypressCommandLine.CypressRunOptions>;
+export type CypressModuleAPIRunOptions = Omit<
+  Partial<CypressCommandLine.CypressRunOptions>,
+  "tag"
+>;
 
 export type Platform = {
   osName: string;

@@ -1,8 +1,8 @@
-import { Command } from "commander";
-import { attachOptions, parseOptions } from "..";
+import { createProgram, parseOptions } from "..";
+import { expect } from "@jest/globals";
 
 const getProgram = () =>
-  attachOptions(new Command())
+  createProgram()
     .exitOverride()
     .configureOutput({
       writeOut: () => {},
@@ -59,15 +59,18 @@ describe("CLI", () => {
   });
 
   it("e2e is the default, when no explicit params", async () => {
-    expect(
-      parseOptions(getProgram(), ["program", "command", "--key", "a"])
-    ).toMatchObject({
-      component: false,
-      e2e: true,
+    const parsedOptions = parseOptions(getProgram(), [
+      "program",
+      "command",
+      "--key",
+      "a",
+    ]);
+    expect(parsedOptions).toMatchObject({
+      testingType: "e2e",
     });
   });
 
-  it("using component implies e2e is false", async () => {
+  it("using component implies testingType is 'component'", async () => {
     expect(
       parseOptions(getProgram(), [
         "program",
@@ -77,17 +80,15 @@ describe("CLI", () => {
         "a",
       ])
     ).toMatchObject({
-      component: true,
-      e2e: false,
+      testingType: "component",
     });
   });
 
-  it("using e2e implies component false", async () => {
+  it("using e2e implies testingType is 'e2e'", async () => {
     expect(
       parseOptions(getProgram(), ["program", "command", "--e2e", "--key", "a"])
     ).toMatchObject({
-      component: false,
-      e2e: true,
+      testingType: "e2e",
     });
   });
 });

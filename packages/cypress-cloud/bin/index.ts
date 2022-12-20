@@ -5,8 +5,8 @@ import { run } from "../index";
 import { parseOptions } from "../lib/cli";
 import { error } from "../lib/log";
 
-parseOptions()
-  .then((options) => run(options))
+const options = parseOptions();
+run(options)
   .then((result) => {
     if (!result) {
       process.exit(0);
