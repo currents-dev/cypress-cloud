@@ -4,6 +4,7 @@ import Debug from "debug";
 import fs from "fs";
 import { customAlphabet } from "nanoid";
 import VError from "verror";
+import { CypressModuleAPIRunOptions } from "../types";
 import { getStrippedCypressOptions, serializeOptions } from "./cli/cli";
 import { createTempFile } from "./fs";
 import { error } from "./log";
@@ -11,12 +12,15 @@ const debug = Debug("currents:boot");
 
 const getDummySpec = customAlphabet("abcdefghijklmnopqrstuvwxyz", 10);
 
-export const bootCypress = async (port: number) => {
+export const bootCypress = async (
+  port: number,
+  cypressRunOptions: CypressModuleAPIRunOptions
+) => {
   debug("booting cypress...");
   const tempFilePath = await createTempFile();
 
   const serializedOptions = serializeOptions(
-    getStrippedCypressOptions()
+    getStrippedCypressOptions(cypressRunOptions)
   ).flatMap((arg) => arg.split(" "));
 
   // it is important to pass the same args in order to get the same config as for the actual run

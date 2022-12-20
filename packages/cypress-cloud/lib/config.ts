@@ -1,13 +1,13 @@
 import Debug from "debug";
 import path from "path";
 import VError from "verror";
-import { TestingType } from "../types";
+import { CypressModuleAPIRunOptions, TestingType } from "../types";
 import { bootCypress } from "./bootstrap";
 import { getRandomPort } from "./utils";
 const debug = Debug("currents:config");
 
 // TODO: Add strict types for Currents configuration options
-type CurrentsConfig = Record<string, unknown>;
+type CurrentsConfig = { projectId?: string };
 export async function getCurrentsConfig(): Promise<CurrentsConfig> {
   const configFilePath = await getConfigFilePath();
   debug("loading currents config file from '%s'", configFilePath);
@@ -15,34 +15,22 @@ export async function getCurrentsConfig(): Promise<CurrentsConfig> {
   let config: CurrentsConfig = {};
   try {
     config = require(configFilePath);
-    config.projectId = process.env.CURRENTS_PROJECT_ID ?? config.projectId;
+    return config;
   } catch (e) {
-    throw new VError(
-      e as Error,
-      "Cannot load currents config file from '%s'",
-      configFilePath
-    );
+    return {};
   }
-
-  if (!config.projectId) {
-    throw new VError(
-      "Missing projectId in '%s' or environment variable CURRENTS_PROJECT_ID",
-      configFilePath
-    );
-  }
-
-  return config;
 }
 
 export async function mergeConfig(
   testingType: TestingType,
-  currentsConfig: CurrentsConfig
+  projectId: string,
+  cypressRunOptions: CypressModuleAPIRunOptions
 ) {
   debug("resolving cypress config");
   const cypressResolvedConfig: Cypress.ResolvedConfigOptions & {
     projectRoot: string;
     rawJson: Record<string, unknown>;
-  } = await bootCypress(getRandomPort());
+  } = await bootCypress(getRandomPort(), cypressRunOptions);
 
   // @ts-ignore
   const rawE2EPattern = cypressResolvedConfig.rawJson?.e2e?.specPattern;
@@ -54,7 +42,7 @@ export async function mergeConfig(
 
   const result = {
     projectRoot: cypressResolvedConfig.projectRoot || process.cwd(),
-    projectId: currentsConfig.projectId,
+    projectId,
     specPattern: cypressResolvedConfig.specPattern,
     // @ts-ignore
     excludeSpecPattern: cypressResolvedConfig.resolved.excludeSpecPattern.value,

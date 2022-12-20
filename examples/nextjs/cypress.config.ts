@@ -1,6 +1,6 @@
-const { defineConfig } = require("cypress");
-const { loadEnvConfig } = require("@next/env");
-const { currents } = require("cypress-cloud/plugin");
+import { defineConfig } from "cypress";
+import { loadEnvConfig } from "@next/env";
+import currents from "cypress-cloud/plugin";
 
 function loadEnvVariables() {
   const projectDir = process.cwd();

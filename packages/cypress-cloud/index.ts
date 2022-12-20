@@ -10,7 +10,12 @@ import {
   summarizeTestResults,
 } from "./lib/results";
 import { findSpecs } from "./lib/specMatcher";
-import { SummaryResults, TestingType, TestsResult } from "./types";
+import {
+  CypressModuleAPIRunOptions,
+  SummaryResults,
+  TestingType,
+  TestsResult,
+} from "./types";
 
 import { createInstance, createRun } from "./lib/api/api";
 import { CreateInstancePayload } from "./lib/api/types/instance";
@@ -27,10 +32,6 @@ interface RunOptions extends Partial<CypressCommandLine.CypressRunOptions> {
   projectId?: string;
   /**  The record key to use */
   key?: string;
-  /** The spec pattern to use. If not specified, will use the specPattern from Cypress configuration */
-  specPattern?: string;
-  /** Whether the test is a component test. Defaults to false, which implies an e2e test */
-  component?: boolean;
 }
 
 /**
@@ -43,30 +44,35 @@ interface RunOptions extends Partial<CypressCommandLine.CypressRunOptions> {
 export async function run(parameters: RunOptions) {
   spacer();
 
-  const { group, parallel, ciBuildId, tag: tags, component } = parameters;
-  const key = parameters.key ?? process.env.CURRENTS_RECORD_KEY;
+  const { key: _key, projectId: _projectId, ...cypressRunOptions } = parameters;
+
+  const { projectId: currentsProjectId } = await getCurrentsConfig();
+
+  const {
+    group,
+    parallel,
+    ciBuildId,
+    tag: tags,
+    testingType: _testingType,
+  } = parameters;
+  const key = _key ?? process.env.CURRENTS_RECORD_KEY;
   if (!key) {
     throw new Error(
-      "Missing key. Please either pass it as a cli flag '-k, --key <record-key>', as CURRENTS_RECORD_KEY environment variable, or as a parameter to the run function."
+      "Missing 'key'. Please either pass it as a cli flag '-k, --key <record-key>', as CURRENTS_RECORD_KEY environment variable, or if using the run function directly pass it as the 'key' parameter."
     );
   }
 
-  const testingType: TestingType = component ? "component" : "e2e";
-
-  const { projectId, ...restOfCurrentsConfig } = await getCurrentsConfig();
-  const currentsConfig = {
-    ...restOfCurrentsConfig,
-    projectId: parameters.projectId || projectId,
-  };
-  if (!currentsConfig.projectId) {
+  const projectId =
+    _projectId ?? currentsProjectId ?? process.env.CURRENTS_PROJECT_ID;
+  if (!projectId) {
     throw new Error(
-      "Missing projectId. Please either set it in currents.config.js, or pass it as a parameter to the run function."
+      "Missing projectId. Please either set it in currents.config.js, as CURRENTS_PROJECT_ID environmnet variable, or if using the run function directly pass it as the 'projectId' parameter."
     );
   }
 
-  const config = await mergeConfig(testingType, currentsConfig);
-  const specPattern =
-    parameters.specPattern || options.spec || config.specPattern;
+  const testingType: TestingType = _testingType ?? "e2e";
+  const config = await mergeConfig(testingType, projectId);
+  const specPattern = parameters.spec || config.specPattern;
   const specs = await findSpecs({
     projectRoot: config.projectRoot,
     testingType,
@@ -121,13 +127,16 @@ export async function run(parameters: RunOptions) {
   setRunId(run.runId);
 
   cutInitialOutput();
-  const results = await runTillDone({
-    runId: run.runId,
-    groupId: run.groupId,
-    machineId: run.machineId,
-    platform,
-    config,
-  });
+  const results = await runTillDone(
+    {
+      runId: run.runId,
+      groupId: run.groupId,
+      machineId: run.machineId,
+      platform,
+      config,
+    },
+    cypressRunOptions
+  );
 
   const testResults = summarizeTestResults(Object.values(results));
 
@@ -143,15 +152,18 @@ export async function run(parameters: RunOptions) {
   return testResults;
 }
 
-async function runTillDone({
-  runId,
-  groupId,
-  machineId,
-  platform,
-  config,
-}: CreateInstancePayload & {
-  config: ReturnType<typeof getCurrentsConfig>;
-}) {
+async function runTillDone(
+  {
+    runId,
+    groupId,
+    machineId,
+    platform,
+    config,
+  }: CreateInstancePayload & {
+    config: ReturnType<typeof getCurrentsConfig>;
+  },
+  cypressRunOptions: CypressModuleAPIRunOptions
+) {
   const summary: SummaryResults = {};
 
   let hasMore = true;
@@ -175,7 +187,10 @@ async function runTillDone({
     );
     info("Executing spec file: %s", currentSpecFile.spec);
 
-    let cypressResult = await runSpecFileSafe({ spec: currentSpecFile.spec });
+    let cypressResult = await runSpecFileSafe(
+      { spec: currentSpecFile.spec },
+      cypressRunOptions
+    );
 
     if (!isSuccessResult(cypressResult)) {
       cypressResult = getFailedDummyResult({
