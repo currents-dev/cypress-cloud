@@ -1,10 +1,9 @@
-import cp from "child_process";
-import { getBinPath } from "cy2";
+import cypress from "cypress";
 import Debug from "debug";
 import fs from "fs";
 import { customAlphabet } from "nanoid";
 import VError from "verror";
-import { CypressModuleAPIRunOptions } from "../types";
+import { CurrentsRunParameters } from "../types";
 import { getStrippedCypressOptions, serializeOptions } from "./cli/cli";
 import { createTempFile } from "./fs";
 import { error } from "./log";
@@ -14,13 +13,13 @@ const getDummySpec = customAlphabet("abcdefghijklmnopqrstuvwxyz", 10);
 
 export const bootCypress = async (
   port: number,
-  cypressRunOptions: CypressModuleAPIRunOptions
+  params: CurrentsRunParameters
 ) => {
   debug("booting cypress...");
   const tempFilePath = await createTempFile();
 
   const serializedOptions = serializeOptions(
-    getStrippedCypressOptions(cypressRunOptions)
+    getStrippedCypressOptions(params)
   ).flatMap((arg) => arg.split(" "));
 
   // it is important to pass the same args in order to get the same config as for the actual run
@@ -35,12 +34,21 @@ export const bootCypress = async (
     ...serializedOptions,
   ];
 
+  try {
+    await cypress.run({
+      ...getStrippedCypressOptions(params),
+      spec: getDummySpec(),
+    });
+  } catch (e) {
+    console.log(e);
+  }
   debug("booting cypress with args: %o", args);
-  const cypressBin = await getBinPath(require.resolve("cypress"));
-  debug("cypress executable location: %s", cypressBin);
-  const child = cp.spawnSync(cypressBin, args, {
-    stdio: "pipe",
-  });
+  // const cypressBin = await getBinPath(require.resolve("cypress"));
+  // debug("cypress executable location: %s", cypressBin);
+
+  // const child = cp.spawnSync(cypressBin, args, {
+  //   stdio: "pipe",
+  // });
 
   if (!fs.existsSync(tempFilePath)) {
     throw new VError(

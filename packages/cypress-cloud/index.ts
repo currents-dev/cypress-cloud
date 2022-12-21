@@ -10,12 +10,7 @@ import {
   summarizeTestResults,
 } from "./lib/results";
 import { findSpecs } from "./lib/specMatcher";
-import {
-  CypressModuleAPIRunOptions,
-  SummaryResults,
-  TestingType,
-  TestsResult,
-} from "./types";
+import { CurrentsRunParameters, SummaryResults } from "./types";
 
 import { createInstance, createRun } from "./lib/api/api";
 import { CreateInstancePayload } from "./lib/api/types/instance";
@@ -27,15 +22,6 @@ import { divider, info, spacer, title, warn } from "./lib/log";
 import { getPlatformInfo } from "./lib/platform";
 import { summaryTable } from "./lib/table";
 
-interface RunOptions extends CypressModuleAPIRunOptions {
-  /** The project ID to use. If not specified, will use the projectId from currents.config.js or process.env.CURRENTS_PROJECT_ID */
-  projectId?: string;
-  /**  The record key to use */
-  key?: string;
-  /** List of tags for the recorded run, like ["production" , "nightly"] */
-  tag?: string[];
-}
-
 /**
  * Run the Cypress tests.
  * You can either pass the options as a parameter, or run the cli.
@@ -43,38 +29,14 @@ interface RunOptions extends CypressModuleAPIRunOptions {
  * @augments RunOptions
  * @returns {TestsResult | undefined} The test results, or undefined if no tests were run.
  */
-export async function run(parameters: RunOptions) {
+export async function run(params: CurrentsRunParameters) {
   spacer();
 
-  const { key: _key, projectId: _projectId, ...cypressRunOptions } = parameters;
+  const { key, projectId, group, parallel, ciBuildId, tags, testingType } =
+    params;
 
-  const { projectId: currentsProjectId } = await getCurrentsConfig();
-
-  const {
-    group,
-    parallel,
-    ciBuildId,
-    tag: tags,
-    testingType: _testingType,
-  } = parameters;
-  const key = _key ?? process.env.CURRENTS_RECORD_KEY;
-  if (!key) {
-    throw new Error(
-      "Missing 'key'. Please either pass it as a cli flag '-k, --key <record-key>', as CURRENTS_RECORD_KEY environment variable, or if using the run function directly pass it as the 'key' parameter."
-    );
-  }
-
-  const projectId =
-    _projectId ?? currentsProjectId ?? process.env.CURRENTS_PROJECT_ID;
-  if (!projectId) {
-    throw new Error(
-      "Missing projectId. Please either set it in currents.config.js, as CURRENTS_PROJECT_ID environmnet variable, or if using the run function directly pass it as the 'projectId' parameter."
-    );
-  }
-
-  const testingType: TestingType = _testingType ?? "e2e";
-  const config = await mergeConfig(testingType, projectId, cypressRunOptions);
-  const specPattern = parameters.spec || config.specPattern;
+  const config = await mergeConfig(params);
+  const specPattern = params.spec || config.specPattern;
   const specs = await findSpecs({
     projectRoot: config.projectRoot,
     testingType,
@@ -105,7 +67,7 @@ export async function run(parameters: RunOptions) {
   const osPlatformInfo = await getPlatformInfo();
   const platform = {
     ...osPlatformInfo,
-    ...guessBrowser(parameters.browser ?? "electron", config.resolved.browsers),
+    ...guessBrowser(params.browser ?? "electron", config.resolved.browsers),
   };
   const ci = getCI();
   const commit = await getGitInfo(config.projectRoot);
@@ -118,7 +80,7 @@ export async function run(parameters: RunOptions) {
     platform,
     parallel: parallel ?? false,
     ciBuildId,
-    projectId: config.projectId,
+    projectId,
     recordKey: key,
     specPattern,
     tags,
@@ -137,7 +99,7 @@ export async function run(parameters: RunOptions) {
       platform,
       config,
     },
-    cypressRunOptions
+    params
   );
 
   const testResults = summarizeTestResults(Object.values(results));
@@ -164,7 +126,7 @@ async function runTillDone(
   }: CreateInstancePayload & {
     config: ReturnType<typeof getCurrentsConfig>;
   },
-  cypressRunOptions: CypressModuleAPIRunOptions
+  cypressRunOptions: CurrentsRunParameters
 ) {
   const summary: SummaryResults = {};
 
