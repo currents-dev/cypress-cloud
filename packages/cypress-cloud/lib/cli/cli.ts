@@ -131,6 +131,7 @@ export function getStrippedCypressOptions(
       "exit",
       "headed",
       "headless",
+      "testingType",
     ]),
     Boolean
   );

@@ -11,6 +11,7 @@ loadEnvVariables();
 
 module.exports = defineConfig({
   e2e: {
+    baseUrl: "https://en.wikipedia.org/",
     videoUploadOnPasses: false,
     supportFile: "cypress/support/e2e.ts",
     specPattern: "cypress/e2e/*.spec.js",
