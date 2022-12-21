@@ -47,7 +47,7 @@ export async function run() {
       specPattern,
       configSpecPattern: config.specPattern,
       excludeSpecPattern: [
-        ...config.excludeSpecPattern,
+        config.excludeSpecPattern,
         config.additionalIgnorePattern,
       ],
       testingType,
@@ -135,11 +135,11 @@ async function runTillDone({
 
     divider();
     info(
-      "Run progress: %d/%d",
+      "Running: %s (%d/%d)",
+      currentSpecFile.spec,
       currentSpecFile.claimedInstances,
       currentSpecFile.totalInstances
     );
-    info("Executing spec file: %s", currentSpecFile.spec);
 
     let cypressResult = await runSpecFileSafe({ spec: currentSpecFile.spec });
 
@@ -155,7 +155,9 @@ async function runTillDone({
     }
 
     summary[currentSpecFile.spec] = cypressResult;
-    await processCypressResults(currentSpecFile.instanceId!, cypressResult);
+    processCypressResults(currentSpecFile.instanceId!, cypressResult).catch(
+      console.error
+    );
     resetCapture();
   }
 
