@@ -36,6 +36,11 @@ export const bootCypress = async (port: number) => {
   debug("cypress executable location: %s", cypressBin);
   const child = cp.spawnSync(cypressBin, args, {
     stdio: "pipe",
+    env: {
+      ...process.env,
+      // prevent warnings about recording mode
+      CYPRESS_RECORD_KEY: undefined,
+    },
   });
 
   if (!fs.existsSync(tempFilePath)) {
