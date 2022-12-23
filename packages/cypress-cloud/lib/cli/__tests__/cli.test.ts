@@ -11,7 +11,7 @@ const getProgram = () =>
     });
 
 const p = (args: string[]) =>
-  parseOptions(getProgram(), ["program", "command", ...args]);
+  parseOptions(getProgram(), ["program", "command", "--key", "some", ...args]);
 
 const defaults = {
   parallel: false,
@@ -19,45 +19,44 @@ const defaults = {
   testingType: "e2e",
 };
 describe("CLI", () => {
-  it("has defaults", () => expect(p([])).toMatchObject(defaults));
-  it("parses browser", () => {
-    expect(p(["--browser", "some"])).toMatchObject({
+  process.env.CURRENTS_PROJECT_ID = "some";
+  it("has defaults", async () => expect(await p([])).toMatchObject(defaults));
+  it("parses browser", async () => {
+    expect(await p(["--browser", "some"])).toMatchObject({
       browser: "some",
     });
   });
 
-  it("parses --ci-build-id", () => {
-    expect(p(["--ci-build-id", "some"])).toMatchObject({
+  it("parses --ci-build-id", async () => {
+    expect(await p(["--ci-build-id", "some"])).toMatchObject({
       ciBuildId: "some",
     });
   });
 
   it("parses spec into an array", async () => {
-    expect(p(["--spec", "a,b", "--spec", "c"])).toMatchObject({
+    expect(await p(["--spec", "a,b", "--spec", "c"])).toMatchObject({
       spec: ["a", "b", "c"],
     });
   });
 
   it("parses empty spec into nothing", async () => {
-    expect(p([])).toMatchObject({
-      spec: undefined,
-    });
+    expect(await p([])).toMatchObject({});
   });
 
   it("parses --component", async () => {
-    expect(p(["--component"])).toMatchObject({
+    expect(await p(["--component"])).toMatchObject({
       testingType: "component",
     });
   });
 
   it("parses --e2e", async () => {
-    expect(p(["--e2e"])).toMatchObject({
+    expect(await p(["--e2e"])).toMatchObject({
       testingType: "e2e",
     });
   });
 
   it("parses --config comma-separated", async () => {
-    expect(p(["--config", "a=b,c=d"])).toMatchObject({
+    expect(await p(["--config", "a=b,c=d"])).toMatchObject({
       config: {
         a: "b",
         c: "d",
@@ -65,16 +64,22 @@ describe("CLI", () => {
     });
   });
 
-  xit("parses --config json", async () => {
-    expect(p(["--config", `c={'a': 'b'}`])).toMatchObject({
+  it("parses --config json", async () => {
+    expect(
+      await p(["--config", `{"a": "b", "c": 1,  "d": {"nested": true } }`])
+    ).toMatchObject({
       config: {
         a: "b",
+        c: 1,
+        d: {
+          nested: true,
+        },
       },
     });
   });
 
   it("parses --env comma-separated", async () => {
-    expect(p(["--env", "a=b,c=d"])).toMatchObject({
+    expect(await p(["--env", "a=b,c=d"])).toMatchObject({
       env: {
         a: "b",
         c: "d",
@@ -83,110 +88,83 @@ describe("CLI", () => {
   });
 
   it("parses -C", async () => {
-    expect(p(["-C", "some"])).toMatchObject({
+    expect(await p(["-C", "some"])).toMatchObject({
       configFile: "some",
     });
   });
 
   it("parses --group", async () => {
-    expect(p(["--group", "some"])).toMatchObject({
+    expect(await p(["--group", "some"])).toMatchObject({
       group: "some",
     });
   });
 
   it("parses --key", async () => {
-    expect(p(["--key", "some"])).toMatchObject({
+    expect(await p(["--key", "some"])).toMatchObject({
       key: "some",
     });
   });
 
   it("parses --parallel", async () => {
-    expect(p(["--parallel"])).toMatchObject({
+    expect(await p(["--parallel"])).toMatchObject({
       parallel: true,
     });
   });
 
   it("parses no --parallel", async () => {
-    expect(p([])).toMatchObject({
+    expect(await p([])).toMatchObject({
       parallel: false,
     });
   });
 
   it("parses --port", async () => {
-    expect(p(["--port", "8080"])).toMatchObject({
+    expect(await p(["--port", "8080"])).toMatchObject({
       port: 8080,
     });
   });
 
   it("parses --P", async () => {
-    expect(p(["-P", "some"])).toMatchObject({
+    expect(await p(["-P", "some"])).toMatchObject({
       project: "some",
     });
   });
 
   it("parses --record", async () => {
-    expect(p(["--record"])).toMatchObject({
+    expect(await p(["--record"])).toMatchObject({
       record: true,
     });
   });
 
   it("parses no --record", async () => {
-    expect(p([""])).toMatchObject({
+    expect(await p([""])).toMatchObject({
       record: true,
     });
   });
 
   it("parses tags into an array", async () => {
-    expect(p(["--tag", "a,b", "--tag", "c", "--key", "a"])).toMatchObject({
-      tags: ["a", "b", "c"],
-    });
+    expect(await p(["--tag", "a,b", "--tag", "c", "--key", "a"])).toMatchObject(
+      {
+        tags: ["a", "b", "c"],
+      }
+    );
   });
 
   it("cannot use --e2e and --component together", async () => {
-    expect(() =>
-      parseOptions(getProgram(), [
-        "program",
-        "command",
-        "--component",
-        "--e2e",
-        "--key",
-        "a",
-      ])
-    ).toThrowErrorMatchingInlineSnapshot(
+    await expect(async () =>
+      p(["--component", "--e2e"])
+    ).rejects.toThrowErrorMatchingInlineSnapshot(
       `"Cannot use both e2e and component options"`
     );
   });
 
-  it("e2e is the default, when no explicit params", async () => {
-    const parsedOptions = parseOptions(getProgram(), [
-      "program",
-      "command",
-      "--key",
-      "a",
-    ]);
-    expect(parsedOptions).toMatchObject({
-      testingType: "e2e",
-    });
-  });
-
   it("using component implies testingType is 'component'", async () => {
-    expect(
-      parseOptions(getProgram(), [
-        "program",
-        "command",
-        "--component",
-        "--key",
-        "a",
-      ])
-    ).toMatchObject({
+    expect(await p(["program", "command", "--component"])).toMatchObject({
       testingType: "component",
     });
   });
 
   it("using e2e implies testingType is 'e2e'", async () => {
-    expect(
-      parseOptions(getProgram(), ["program", "command", "--e2e", "--key", "a"])
-    ).toMatchObject({
+    expect(await p(["--e2e"])).toMatchObject({
       testingType: "e2e",
     });
   });

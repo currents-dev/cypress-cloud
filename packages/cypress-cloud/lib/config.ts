@@ -1,12 +1,12 @@
 import Debug from "debug";
 import path from "path";
-import { CurrentsRunParameters } from "../types";
+import { CurrentsRunParameters, DetectedBrowser } from "../types";
 import { bootCypress } from "./bootstrap";
 import { getRandomPort } from "./utils";
 const debug = Debug("currents:config");
 
-// TODO: Add strict types for Currents configuration options
-type CurrentsConfig = { projectId?: string };
+export type CurrentsConfig = { projectId?: string };
+
 export async function getCurrentsConfig(): Promise<CurrentsConfig> {
   const configFilePath = await getConfigFilePath();
   debug("loading currents config file from '%s'", configFilePath);
@@ -20,11 +20,12 @@ export async function getCurrentsConfig(): Promise<CurrentsConfig> {
   }
 }
 
-export async function mergeConfig(params: CurrentsRunParameters) {
+export async function getConfig(params: CurrentsRunParameters) {
   debug("resolving cypress config");
   const cypressResolvedConfig: Cypress.ResolvedConfigOptions & {
     projectRoot: string;
     rawJson: Record<string, unknown>;
+    browsers: DetectedBrowser[];
   } = await bootCypress(getRandomPort(), params);
 
   // @ts-ignore

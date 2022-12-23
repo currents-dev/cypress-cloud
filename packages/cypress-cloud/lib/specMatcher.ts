@@ -29,7 +29,7 @@ export async function findSpecs({
   configSpecPattern,
   excludeSpecPattern,
   additionalIgnorePattern,
-}: FindSpecs<string[]>): Promise<SpecWithRelativeRoot[]> {
+}: FindSpecs<string[] | string>): Promise<SpecWithRelativeRoot[]> {
   configSpecPattern = toArray(configSpecPattern);
   specPattern = toArray(specPattern);
   excludeSpecPattern = toArray(excludeSpecPattern) || [];

@@ -46,7 +46,7 @@ export const sanitizeAndConvertNestedArgs = <T extends Record<string, unknown>>(
       .mapValues(JSONOrCoerce)
       .value() as Record<string, unknown> as T;
   } catch (err) {
-    error("could not pass config %s value %s", argName, str);
+    error("could not parse CLI option '%s' value: %s", argName, str);
     error("error %o", err);
     return undefined;
   }

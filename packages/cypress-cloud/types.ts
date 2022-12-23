@@ -101,12 +101,7 @@ export type SummaryResults = Record<
   CypressCommandLine.CypressRunResult
 >;
 
-export type CypressModuleAPIRunOptions = Omit<
-  Partial<CypressCommandLine.CypressRunOptions>,
-  "tag"
->;
-
-// This is the same as CypressModuleAPIRunOptions, but without cloud-related flags.  We explicitly filter them out to avoid confusion and prevent accidental usage
+// All the cypress flags without cloud-related flags. We explicitly filter them out to avoid confusion and prevent accidental usage
 export type StrippedCypressModuleAPIOptions = Omit<
   Partial<CypressCommandLine.CypressRunOptions>,
   | "tag"

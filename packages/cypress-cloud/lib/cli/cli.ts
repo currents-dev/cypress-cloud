@@ -1,6 +1,6 @@
 import { Command, Option } from "@commander-js/extra-typings";
 import Debug from "debug";
-import { omit, pickBy } from "lodash";
+import { isObject, omit, pickBy } from "lodash";
 import {
   CurrentsRunParameters,
   StrippedCypressModuleAPIOptions,
@@ -10,12 +10,6 @@ import { sanitizeAndConvertNestedArgs } from "./parser";
 
 const debug = Debug("currents:cli");
 
-/**
- Ignored values - those are irrelevant for the CI runner
-  --headed                                   displays the browser instead of running headlessly
-  --headless                                 hide the browser instead of running headed (default for cypress run)
-  --no-exit                                  keep the browser open after tests finish
- */
 export const createProgram = (command: Command = new Command()) =>
   command
     .name("currents")
@@ -128,10 +122,11 @@ function parseCommaSeparatedList(value: string, previous: string[] = []) {
  * @returns Cypress non-empty options without the ones that are not relevant for the runner
  */
 export function getStrippedCypressOptions(
-  runOptions: CurrentsRunParameters
+  params: CurrentsRunParameters
 ): StrippedCypressModuleAPIOptions {
   return pickBy(
-    omit(runOptions, [
+    omit(params, [
+      "projectId",
       "record",
       "key",
       "group",
@@ -151,14 +146,26 @@ export function getStrippedCypressOptions(
 export function serializeOptions(options: Record<string, unknown>) {
   return Object.entries(options)
     .map(([key, value]) => {
+      const _key = dashed(key);
       if (typeof value === "boolean") {
-        return value === true ? `--${key}` : "";
+        return value === true ? `--${_key}` : "";
       }
+
+      if (isObject(value)) {
+        return `--${_key} ${serializeComplexParam(value)}`;
+      }
+
       // @ts-ignore
-      return `--${key} ${value.toString()}`;
+      return `--${_key} ${value.toString()}`;
     })
     .filter(Boolean);
 }
+
+function serializeComplexParam(param: {}) {
+  return JSON.stringify(param);
+}
+
+const dashed = (v: string) => v.replace(/[A-Z]/g, (m) => "-" + m.toLowerCase());
 
 /**
  * Transforms the CLI options into the format that the runner expects
@@ -172,20 +179,21 @@ async function getRunParameters(
   const key = cliOptions.key ?? process.env.CURRENTS_RECORD_KEY;
   if (!key) {
     return program.error(
-      "Missing 'key'. Please either pass it as a cli flag '-k, --key <record-key>', or set CURRENTS_RECORD_KEY environment variable"
+      "Missing 'key'. Please either pass it as a cli flag '-k, --key <record-key>', or set CURRENTS_RECORD_KEY environment variable."
     );
   }
 
   const { projectId } = await getCurrentsConfig();
-  const _projectId = projectId ?? process.env.CURRENTS_PROJECT_ID;
+  const _projectId = process.env.CURRENTS_PROJECT_ID ?? projectId;
 
   if (!_projectId) {
     return program.error(
-      "Missing projectId. Please either set it in currents.config.js, or as CURRENTS_PROJECT_ID environmnet variable."
+      "Missing projectId. Please either set it in currents.config.js, or as CURRENTS_PROJECT_ID environment variable."
     );
   }
 
-  const result = omit({ ...cliOptions }, "e2e", "component", "tag", "spec");
+  const result = omit({ ...cliOptions }, "e2e", "component", "tag");
+
   return {
     ...result,
     config: sanitizeAndConvertNestedArgs(cliOptions.config, "config"),
@@ -194,7 +202,6 @@ async function getRunParameters(
       cliOptions.reporterOptions,
       "reporterOptions"
     ),
-    spec: cliOptions.spec,
     tags: cliOptions.tag,
     testingType: cliOptions.component ? "component" : "e2e",
     key,

@@ -1,7 +1,7 @@
 import("./lib/init");
 
 import { cutInitialOutput, resetCapture } from "./lib/capture";
-import { getCurrentsConfig, mergeConfig } from "./lib/config";
+import { getConfig } from "./lib/config";
 import { setRunId } from "./lib/httpClient";
 import {
   getFailedDummyResult,
@@ -23,8 +23,7 @@ import { getPlatformInfo } from "./lib/platform";
 import { summaryTable } from "./lib/table";
 
 /**
- * Run the Cypress tests.
- * You can either pass the options as a parameter, or run the cli.
+ * Run the Cypress tests and return the results.
  *
  * @augments RunOptions
  * @returns {TestsResult | undefined} The test results, or undefined if no tests were run.
@@ -35,7 +34,7 @@ export async function run(params: CurrentsRunParameters) {
   const { key, projectId, group, parallel, ciBuildId, tags, testingType } =
     params;
 
-  const config = await mergeConfig(params);
+  const config = await getConfig(params);
   const specPattern = params.spec || config.specPattern;
   const specs = await findSpecs({
     projectRoot: config.projectRoot,
@@ -47,13 +46,13 @@ export async function run(params: CurrentsRunParameters) {
   });
 
   if (specs.length === 0) {
-    warn("No spec files found to execute. Used configuration: %O", {
+    warn("No spec files found to execute. Configuration: %O", {
       specPattern,
       configSpecPattern: config.specPattern,
       excludeSpecPattern: [
-        ...config.excludeSpecPattern,
+        config.excludeSpecPattern,
         config.additionalIgnorePattern,
-      ],
+      ].flat(2),
       testingType,
     });
     return;
@@ -82,7 +81,7 @@ export async function run(params: CurrentsRunParameters) {
     ciBuildId,
     projectId,
     recordKey: key,
-    specPattern,
+    specPattern: [specPattern].flat(2),
     tags,
     testingType,
   });
@@ -124,7 +123,7 @@ async function runTillDone(
     platform,
     config,
   }: CreateInstancePayload & {
-    config: ReturnType<typeof getCurrentsConfig>;
+    config: Awaited<ReturnType<typeof getConfig>>;
   },
   cypressRunOptions: CurrentsRunParameters
 ) {
