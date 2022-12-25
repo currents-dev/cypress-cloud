@@ -1,7 +1,7 @@
 // @ts-ignore
 import cypress from "cypress";
 import Debug from "debug";
-import { CypressModuleAPIRunOptions, CypressResult } from "../types";
+import { CurrentsRunParameters, CypressResult } from "../types";
 import { getStrippedCypressOptions } from "./cli";
 
 const debug = Debug("currents:cypress");
@@ -13,7 +13,7 @@ interface RunCypressSpecFile {
  */
 export async function runSpecFile(
   { spec }: RunCypressSpecFile,
-  cypressRunOptions: CypressModuleAPIRunOptions
+  cypressRunOptions: CurrentsRunParameters
 ) {
   const runAPIOptions = getStrippedCypressOptions(cypressRunOptions);
 
@@ -32,7 +32,7 @@ export async function runSpecFile(
 
 export const runSpecFileSafe = async (
   { spec }: RunCypressSpecFile,
-  cypressRunOptions: CypressModuleAPIRunOptions
+  cypressRunOptions: CurrentsRunParameters
 ): Promise<CypressResult> => {
   try {
     return await runSpecFile({ spec }, cypressRunOptions);

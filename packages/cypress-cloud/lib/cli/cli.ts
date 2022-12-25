@@ -1,18 +1,15 @@
 import { Command, Option } from "@commander-js/extra-typings";
-import cypress from "cypress";
 import Debug from "debug";
-import { omit, pickBy } from "lodash";
-import { CypressModuleAPIRunOptions } from "../../types";
+import { isObject, omit, pickBy } from "lodash";
+import {
+  CurrentsRunParameters,
+  StrippedCypressModuleAPIOptions,
+} from "../../types";
+import { getCurrentsConfig } from "../config";
 import { sanitizeAndConvertNestedArgs } from "./parser";
 
 const debug = Debug("currents:cli");
 
-/**
- Ignored values - those are irrelevant for the CI runner
-  --headed                                   displays the browser instead of running headlessly
-  --headless                                 hide the browser instead of running headed (default for cypress run)
-  --no-exit                                  keep the browser open after tests finish
- */
 export const createProgram = (command: Command = new Command()) =>
   command
     .name("currents")
@@ -39,6 +36,10 @@ export const createProgram = (command: Command = new Command()) =>
       "sets Cypress configuration values. separate multiple values with a comma. overrides any value in cypress.config.{js,ts,mjs,cjs}"
     )
     .option(
+      "-e, --env <env>",
+      "sets environment variables. separate multiple values with a comma. overrides any value in cypress.config.{js,ts,mjs,cjs} or cypress.env.json"
+    )
+    .option(
       "-C, --config-file <config-file>",
       'specify Cypress config file, path to script file where Cypress configuration values are set. defaults to "cypress.config.{js,ts,mjs,cjs}"'
     )
@@ -53,19 +54,24 @@ export const createProgram = (command: Command = new Command()) =>
       "enables concurrent runs and automatic load balancing of specs across multiple machines or processes",
       false
     )
-    .option(
-      "-p, --port <port>",
-      "runs Cypress on a specific port. overrides any value in cypress.config.{js,ts,mjs,cjs}"
+    .addOption(
+      new Option(
+        "-p, --port <number>",
+        "runs Cypress on a specific port. overrides any value in cypress.config.{js,ts,mjs,cjs}"
+      ).argParser((i) => parseInt(i, 10))
     )
     .option(
       "-P, --project <project-path>",
       "path to your Cypress project root location"
     )
     .option("-q, --quiet", "suppress verbose output from Cypress")
-    .option(
-      "--record [bool]",
-      "records the run and sends test results, screenshots and videos to Currents",
-      true
+    .addOption(
+      new Option(
+        "--record [bool]",
+        "records the run and sends test results, screenshots and videos to Currents"
+      )
+        .default(true)
+        .argParser((i) => (i === "false" ? false : true))
     )
     .option(
       "-r, --reporter <reporter>",
@@ -75,10 +81,11 @@ export const createProgram = (command: Command = new Command()) =>
       "-o, --reporter-options <reporter-options>",
       'options for the mocha reporter. defaults to "null"'
     )
-    .option(
-      "-s, --spec <spec-pattern>",
-      'define specific glob pattern for running the spec file(s), Defaults to the "specMatch" entry from the "cypress.config.{js,ts,mjs,cjs}" file',
-      parseCommaSeparatedList
+    .addOption(
+      new Option(
+        "-s, --spec <spec-pattern>",
+        'define specific glob pattern for running the spec file(s), Defaults to the "specMatch" entry from the "cypress.config.{js,ts,mjs,cjs}" file'
+      ).argParser(parseCommaSeparatedList)
     )
     .option(
       "-t, --tag <tag>",
@@ -94,18 +101,16 @@ export function parseOptions(
 ) {
   _program.parse(...args);
   debug("parsed CLI options", _program.opts());
+
   const { e2e, component } = _program.opts();
   if (e2e && component) {
     _program.error("Cannot use both e2e and component options");
   }
 
-  const { key, tag } = _program.opts();
-  const cypressRunArguments = getCypressModuleAPIOptions(_program.opts());
-
-  return { ...cypressRunArguments, key, tag };
+  return getRunParameters(_program.opts());
 }
 
-function parseCommaSeparatedList(value?: string, previous: string[] = []) {
+function parseCommaSeparatedList(value: string, previous: string[] = []) {
   if (value) {
     return previous.concat(value.split(",").map((t) => t.trim()));
   }
@@ -117,10 +122,11 @@ function parseCommaSeparatedList(value?: string, previous: string[] = []) {
  * @returns Cypress non-empty options without the ones that are not relevant for the runner
  */
 export function getStrippedCypressOptions(
-  runOptions: CypressModuleAPIRunOptions
-): CypressModuleAPIRunOptions {
+  params: CurrentsRunParameters
+): StrippedCypressModuleAPIOptions {
   return pickBy(
-    omit(runOptions, [
+    omit(params, [
+      "projectId",
       "record",
       "key",
       "group",
@@ -140,36 +146,65 @@ export function getStrippedCypressOptions(
 export function serializeOptions(options: Record<string, unknown>) {
   return Object.entries(options)
     .map(([key, value]) => {
+      const _key = dashed(key);
       if (typeof value === "boolean") {
-        return value === true ? `--${key}` : "";
+        return value === true ? `--${_key}` : "";
       }
+
+      if (isObject(value)) {
+        return `--${_key} ${serializeComplexParam(value)}`;
+      }
+
       // @ts-ignore
-      return `--${key} ${value.toString()}`;
+      return `--${_key} ${value.toString()}`;
     })
     .filter(Boolean);
 }
 
-function getCypressModuleAPIOptions(
-  cliOptions: Record<string, unknown>
-): CypressModuleAPIRunOptions {
-  // module API uses "testingType" instead of "e2e" and "component"
-  const result = omit({ ...cliOptions }, "e2e", "component");
+function serializeComplexParam(param: {}) {
+  return JSON.stringify(param);
+}
 
-  if (cliOptions.config) {
-    result.config = sanitizeAndConvertNestedArgs(cliOptions.config, "config");
-  }
-  if (cliOptions.env) {
-    result.env = sanitizeAndConvertNestedArgs(cliOptions.env, "env");
-  }
-  if (cliOptions.reporterOptions) {
-    result.reporterOptions = sanitizeAndConvertNestedArgs(
-      cliOptions.reporterOptions,
-      "reporterOptions"
+const dashed = (v: string) => v.replace(/[A-Z]/g, (m) => "-" + m.toLowerCase());
+
+/**
+ * Transforms the CLI options into the format that the runner expects
+ *
+ * @param cliOptions
+ * @returns
+ */
+async function getRunParameters(
+  cliOptions: ReturnType<typeof program.opts>
+): Promise<CurrentsRunParameters> {
+  const key = cliOptions.key ?? process.env.CURRENTS_RECORD_KEY;
+  if (!key) {
+    return program.error(
+      "Missing 'key'. Please either pass it as a cli flag '-k, --key <record-key>', or set CURRENTS_RECORD_KEY environment variable."
     );
   }
 
+  const { projectId } = await getCurrentsConfig();
+  const _projectId = process.env.CURRENTS_PROJECT_ID ?? projectId;
+
+  if (!_projectId) {
+    return program.error(
+      "Missing projectId. Please either set it in currents.config.js, or as CURRENTS_PROJECT_ID environment variable."
+    );
+  }
+
+  const result = omit({ ...cliOptions }, "e2e", "component", "tag");
+
   return {
     ...result,
+    config: sanitizeAndConvertNestedArgs(cliOptions.config, "config"),
+    env: sanitizeAndConvertNestedArgs(cliOptions.env, "env"),
+    reporterOptions: sanitizeAndConvertNestedArgs(
+      cliOptions.reporterOptions,
+      "reporterOptions"
+    ),
+    tags: cliOptions.tag,
     testingType: cliOptions.component ? "component" : "e2e",
+    key,
+    projectId: _projectId,
   };
 }
