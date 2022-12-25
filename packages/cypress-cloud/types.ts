@@ -4,8 +4,6 @@ export type SpecType = "component" | "integration";
 export type CypressResult =
   | CypressCommandLine.CypressRunResult
   | CypressCommandLine.CypressFailedRunResult;
-export type CypressModuleAPIRunOptions =
-  Partial<CypressCommandLine.CypressRunOptions>;
 
 export type Platform = {
   osName: string;
@@ -102,3 +100,39 @@ export type SummaryResults = Record<
   string,
   CypressCommandLine.CypressRunResult
 >;
+
+// All the cypress flags without cloud-related flags. We explicitly filter them out to avoid confusion and prevent accidental usage
+export type StrippedCypressModuleAPIOptions = Omit<
+  Partial<CypressCommandLine.CypressRunOptions>,
+  | "tag"
+  | "spec"
+  | "exit"
+  | "headed"
+  | "headless"
+  | "noExit"
+  | "parallel"
+  | "record"
+  | "key"
+  | "tag"
+  | "group"
+  | "ciBuildId"
+>;
+
+// The parameters Currents accepts via its run API.
+// Explicitly add cloud-related parameters to avoid confusion with CypressModuleAPIRunOptions
+export type CurrentsRunParameters = StrippedCypressModuleAPIOptions & {
+  parallel?: boolean;
+  ciBuildId?: string;
+  group?: string;
+  testingType: TestingType;
+  record: boolean;
+  env?: Record<string, unknown>;
+  spec?: string[];
+  tags?: string[];
+
+  /**  The record key to use */
+  key: string;
+
+  /** The project ID to use. If not specified, will use the projectId from currents.config.js or process.env.CURRENTS_PROJECT_ID */
+  projectId: string;
+};

@@ -1,8 +1,8 @@
 // @ts-ignore
 import cypress from "cypress";
 import Debug from "debug";
-import { CypressResult } from "../types";
-import { getCypressModuleAPIOptions, getStrippedCypressOptions } from "./cli";
+import { CurrentsRunParameters, CypressResult } from "../types";
+import { getStrippedCypressOptions } from "./cli";
 
 const debug = Debug("currents:cypress");
 interface RunCypressSpecFile {
@@ -11,8 +11,11 @@ interface RunCypressSpecFile {
 /**
  * Run Cypress tests, we need to pass down the stripped options as if we've received them from the CLI
  */
-export async function runSpecFile({ spec }: RunCypressSpecFile) {
-  const runAPIOptions = getCypressModuleAPIOptions(getStrippedCypressOptions());
+export async function runSpecFile(
+  { spec }: RunCypressSpecFile,
+  cypressRunOptions: CurrentsRunParameters
+) {
+  const runAPIOptions = getStrippedCypressOptions(cypressRunOptions);
 
   debug("running cypress with options", {
     runAPIOptions,
@@ -27,11 +30,12 @@ export async function runSpecFile({ spec }: RunCypressSpecFile) {
   return result;
 }
 
-export const runSpecFileSafe = async ({
-  spec,
-}: RunCypressSpecFile): Promise<CypressResult> => {
+export const runSpecFileSafe = async (
+  { spec }: RunCypressSpecFile,
+  cypressRunOptions: CurrentsRunParameters
+): Promise<CypressResult> => {
   try {
-    return await runSpecFile({ spec });
+    return await runSpecFile({ spec }, cypressRunOptions);
   } catch (error) {
     debug("cypress run exception %o", error);
     return {

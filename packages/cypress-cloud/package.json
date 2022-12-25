@@ -38,6 +38,7 @@
     "typescript": "^4.5.2"
   },
   "dependencies": {
+    "@commander-js/extra-typings": "^9.4.1",
     "@cypress/commit-info": "^2.2.0",
     "axios": "^1.2.0",
     "chalk": "^4.1.2",

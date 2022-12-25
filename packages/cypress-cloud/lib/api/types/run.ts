@@ -6,18 +6,18 @@ export type CreateRunPayload = {
     params: CiParams;
     provider: CiProvider;
   };
-  ciBuildId: string;
+  ciBuildId?: string;
   projectId: string;
   recordKey: string;
   commit: {
     [memoKey: string]: string | null;
   };
   specs: string[];
-  group: string;
+  group?: string;
   platform: Platform;
   parallel: boolean;
   specPattern: string[];
-  tags: string[];
+  tags?: string[];
   testingType: "e2e" | "component";
   timeout?: number;
 };

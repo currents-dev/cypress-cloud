@@ -1,20 +1,24 @@
 import { chain, invoke, isString, toArray, toNumber } from "lodash";
 import assert from "node:assert";
+import { error } from "../log";
 
 const nestedObjectsInCurlyBracesRe = /\{(.+?)\}/g;
 const nestedArraysInSquareBracketsRe = /\[(.+?)\]/g;
 const everythingAfterFirstEqualRe = /=(.*)/;
 
 // https://github.com/cypress-io/cypress/blob/afb66abc7023ce71e2893cb6de67d24706ff7a1f/packages/server/lib/util/args.js#L162
-export const sanitizeAndConvertNestedArgs = (
+export const sanitizeAndConvertNestedArgs = <T extends Record<string, unknown>>(
   str: unknown,
   argName: unknown
-) => {
+): T | undefined => {
+  if (!str) {
+    return;
+  }
   assert(isString(argName) && argName.trim() !== "");
 
   try {
     if (typeof str === "object") {
-      return str;
+      return str as T;
     }
 
     // if this is valid JSON then just
@@ -40,10 +44,11 @@ export const sanitizeAndConvertNestedArgs = (
       })
       .fromPairs()
       .mapValues(JSONOrCoerce)
-      .value();
+      .value() as Record<string, unknown> as T;
   } catch (err) {
-    console.error("could not pass config %s value %s", argName, str);
-    console.error("error %o", err);
+    error("could not parse CLI option '%s' value: %s", argName, str);
+    error("error %o", err);
+    return undefined;
   }
 };
 
