@@ -18,6 +18,7 @@ module.exports = defineConfig({
     setupNodeEvents(on, config) {
       currents(on, config);
       require("cypress-terminal-report/src/installLogsPrinter")(on);
+      require("@cypress/grep/src/plugin")(config);
     },
   },
 
