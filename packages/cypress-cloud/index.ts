@@ -1,8 +1,7 @@
 import("./lib/init");
 
 import { cutInitialOutput, resetCapture } from "./lib/capture";
-import { parseOptions } from "./lib/cli";
-import { getCurrentsConfig, mergeConfig } from "./lib/config";
+import { getConfig } from "./lib/config";
 import { setRunId } from "./lib/httpClient";
 import {
   getFailedDummyResult,
@@ -11,7 +10,7 @@ import {
   summarizeTestResults,
 } from "./lib/results";
 import { findSpecs } from "./lib/specMatcher";
-import { SummaryResults, TestingType } from "./types";
+import { CurrentsRunParameters, SummaryResults } from "./types";
 
 import { createInstance, createRun } from "./lib/api/api";
 import { CreateInstancePayload } from "./lib/api/types/instance";
@@ -23,16 +22,20 @@ import { divider, info, spacer, title, warn } from "./lib/log";
 import { getPlatformInfo } from "./lib/platform";
 import { summaryTable } from "./lib/table";
 
-export async function run() {
+/**
+ * Run the Cypress tests and return the results.
+ *
+ * @augments RunOptions
+ * @returns {TestsResult | undefined} The test results, or undefined if no tests were run.
+ */
+export async function run(params: CurrentsRunParameters) {
   spacer();
-  const options = parseOptions();
-  const { component, parallel, key, ciBuildId, group, tag: tags } = options;
 
-  const currentsConfig = await getCurrentsConfig();
+  const { key, projectId, group, parallel, ciBuildId, tags, testingType } =
+    params;
 
-  const testingType: TestingType = component ? "component" : "e2e";
-  const config = await mergeConfig(testingType, currentsConfig);
-  const specPattern = options.spec || config.specPattern;
+  const config = await getConfig(params);
+  const specPattern = params.spec || config.specPattern;
   const specs = await findSpecs({
     projectRoot: config.projectRoot,
     testingType,
@@ -43,13 +46,13 @@ export async function run() {
   });
 
   if (specs.length === 0) {
-    warn("No spec files found to execute. Used configuration: %O", {
+    warn("No spec files found to execute. Configuration: %O", {
       specPattern,
       configSpecPattern: config.specPattern,
       excludeSpecPattern: [
         config.excludeSpecPattern,
         config.additionalIgnorePattern,
-      ],
+      ].flat(2),
       testingType,
     });
     return;
@@ -63,7 +66,7 @@ export async function run() {
   const osPlatformInfo = await getPlatformInfo();
   const platform = {
     ...osPlatformInfo,
-    ...guessBrowser(options.browser ?? "electron", config.resolved.browsers),
+    ...guessBrowser(params.browser ?? "electron", config.resolved.browsers),
   };
   const ci = getCI();
   const commit = await getGitInfo(config.projectRoot);
@@ -74,11 +77,11 @@ export async function run() {
     commit,
     group,
     platform,
-    parallel,
+    parallel: parallel ?? false,
     ciBuildId,
-    projectId: config.projectId,
+    projectId,
     recordKey: key,
-    specPattern,
+    specPattern: [specPattern].flat(2),
     tags,
     testingType,
   });
@@ -87,13 +90,16 @@ export async function run() {
   setRunId(run.runId);
 
   cutInitialOutput();
-  const results = await runTillDone({
-    runId: run.runId,
-    groupId: run.groupId,
-    machineId: run.machineId,
-    platform,
-    config,
-  });
+  const results = await runTillDone(
+    {
+      runId: run.runId,
+      groupId: run.groupId,
+      machineId: run.machineId,
+      platform,
+      config,
+    },
+    params
+  );
 
   const testResults = summarizeTestResults(Object.values(results));
 
@@ -109,15 +115,18 @@ export async function run() {
   return testResults;
 }
 
-async function runTillDone({
-  runId,
-  groupId,
-  machineId,
-  platform,
-  config,
-}: CreateInstancePayload & {
-  config: ReturnType<typeof getCurrentsConfig>;
-}) {
+async function runTillDone(
+  {
+    runId,
+    groupId,
+    machineId,
+    platform,
+    config,
+  }: CreateInstancePayload & {
+    config: Awaited<ReturnType<typeof getConfig>>;
+  },
+  cypressRunOptions: CurrentsRunParameters
+) {
   const summary: SummaryResults = {};
 
   let hasMore = true;
@@ -141,7 +150,10 @@ async function runTillDone({
       currentSpecFile.totalInstances
     );
 
-    let cypressResult = await runSpecFileSafe({ spec: currentSpecFile.spec });
+    let cypressResult = await runSpecFileSafe(
+      { spec: currentSpecFile.spec },
+      cypressRunOptions
+    );
 
     if (!isSuccessResult(cypressResult)) {
       cypressResult = getFailedDummyResult({
