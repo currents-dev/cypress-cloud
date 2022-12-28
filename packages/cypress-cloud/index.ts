@@ -15,10 +15,14 @@ import { CurrentsRunParameters, SummaryResults } from "./types";
 import { createInstance, createRun } from "./lib/api/api";
 import { CreateInstancePayload } from "./lib/api/types/instance";
 import { guessBrowser } from "./lib/browser";
-import { getCI } from "./lib/ciProvider";
+import {
+  getCI,
+  detectableCiBuildIdProviders,
+  getCiProvider,
+} from "./lib/ciProvider";
 import { runSpecFileSafe } from "./lib/cypress";
 import { getGitInfo } from "./lib/git";
-import { divider, info, spacer, title, warn } from "./lib/log";
+import { divider, info, spacer, title, warn, error } from "./lib/log";
 import { getPlatformInfo } from "./lib/platform";
 import { summaryTable } from "./lib/table";
 
@@ -71,6 +75,8 @@ export async function run(params: CurrentsRunParameters) {
   const ci = getCI();
   const commit = await getGitInfo(config.projectRoot);
 
+  if (!ciBuildId) checkForCiBuildFromCi();
+
   const run = await createRun({
     ci,
     specs: specs.map((spec) => spec.relative),
@@ -113,6 +119,22 @@ export async function run(params: CurrentsRunParameters) {
   spacer();
 
   return testResults;
+}
+
+/**
+ * If there is no build ID specifically provided by user
+ * Check if we can fetch it automatically from CI variables.
+ * The process will stop if we cannot do it
+ * https://docs.cypress.io/guides/references/error-messages#We-could-not-determine-a-unique-CI-build-ID
+ */
+function checkForCiBuildFromCi() {
+  const ciProvider = getCiProvider();
+
+  if (ciProvider && detectableCiBuildIdProviders().includes(ciProvider))
+    return true;
+
+  error("We could not determine a unique CI build ID");
+  process.exit(1);
 }
 
 async function runTillDone(
