@@ -86,7 +86,14 @@ export async function run(params: CurrentsRunParameters) {
     testingType,
   });
 
+  info(
+    "Params:",
+    `Tags: ${tags?.join(",") ?? false}, Group: ${group ?? false}, Parallel: ${
+      parallel ?? false
+    }`
+  );
   info("Run URL:", run.runUrl);
+
   setRunId(run.runId);
 
   cutInitialOutput();

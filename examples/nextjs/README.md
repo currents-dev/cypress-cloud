@@ -23,15 +23,29 @@ To learn more about Next.js, take a look at the following resources:
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
 
-## Run Currents runner
+## Run Cypress Cloud
 
-In order to run currents runner you can use the following command:
+In order to run Cypress Cloud you can use the following command:
 
 > Make sure that .env file created and you have `CURRENTS_RECORD_KEY` env variable set up
 
 ```
 yarn cypress
 ```
+
+## Run Cypress Cloud Script
+
+For testing, we run cypress Cloud as package. Before following instructions from here, open separate terminal and run `cypress-cloud` package in DEV mode. Please, follow the README from the package to setup the project locally.
+
+Before running cypress tests, make sure you have configured all environments properly and they use your locally set up Currents dashboard.
+
+To run tests by using script from this example, run the command bellow:
+
+```
+yarn cypress:script
+```
+
+> You can use `DEBUG` environment variable to see more info about execution, as an example `DEBUG=currents:cypress yarn cypress:script`.
 
 ### Simulate currents runner execution from CI
 
