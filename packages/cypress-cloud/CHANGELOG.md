@@ -1,5 +1,12 @@
 
 
+## [1.3.2](https://github.com/currents-dev/cypress-cloud/compare/v1.3.1...v1.3.2) (2022-12-29)
+
+
+### Bug Fixes
+
+* restore capturing stdout ([8c98609](https://github.com/currents-dev/cypress-cloud/commit/8c9860962a083023ac71ac01294d20c551de809c))
+
 ## [1.3.1](https://github.com/currents-dev/cypress-cloud/compare/v1.3.0...v1.3.1) (2022-12-29)
 
 # [1.3.0](https://github.com/currents-dev/cypress-cloud/compare/v1.2.6...v1.3.0) (2022-12-29)
