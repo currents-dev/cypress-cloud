@@ -59,7 +59,7 @@ export async function run(params: CurrentsRunParameters) {
   }
 
   info(
-    "Discovered %d spec files, connecting to the cloud orchestration service...",
+    "Discovered %d spec files, connecting to cloud orchestration service...",
     specs.length
   );
 
