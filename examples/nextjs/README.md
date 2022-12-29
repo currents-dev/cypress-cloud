@@ -35,11 +35,11 @@ yarn cypress
 
 ## Run Cypress Cloud Script
 
-For testing, we run cypress Cloud as package. Before following instructions from here, open separate terminal and run `cypress-cloud` package in DEV mode. Please, follow the README from the package to setup the project locally.
+For testing, we run cypress Cloud as a package. Before following the instructions here, open a separate terminal and run `cypress-cloud` package in DEV mode. Please, follow the README from the package to set up the project locally.
 
 Before running cypress tests, make sure you have configured all environments properly and they use your locally set up Currents dashboard.
 
-To run tests by using script from this example, run the command bellow:
+To run tests by using the script from this example, run the command below:
 
 ```
 yarn cypress:script
