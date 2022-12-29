@@ -1,5 +1,18 @@
 
 
+# [1.3.0](https://github.com/currents-dev/cypress-cloud/compare/v1.2.6...v1.3.0) (2022-12-29)
+
+
+### Bug Fixes
+
+* remove CYPRESS_RECORD_KEY from env vars ([3fbcb51](https://github.com/currents-dev/cypress-cloud/commit/3fbcb51749a6809aacfbd06da6b39eaee1c5aaa6))
+* use run params everywhere ([133d135](https://github.com/currents-dev/cypress-cloud/commit/133d1355818ec4cd81e06347eb8bd4067fd834f7))
+
+
+### Features
+
+* add more info about script params ([#57](https://github.com/currents-dev/cypress-cloud/issues/57)) ([929f3c9](https://github.com/currents-dev/cypress-cloud/commit/929f3c90f3cb14807f0eb584c3dec0198bfb8381))
+
 ## [1.2.6](https://github.com/currents-dev/cypress-cloud/compare/v1.2.5...v1.2.6) (2022-12-18)
 
 ## [1.2.5](https://github.com/currents-dev/cypress-cloud/compare/v1.2.4...v1.2.5) (2022-12-16)
