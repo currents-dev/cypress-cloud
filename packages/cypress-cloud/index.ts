@@ -18,7 +18,7 @@ import { guessBrowser } from "./lib/browser";
 import { getCI } from "./lib/ciProvider";
 import { runSpecFileSafe } from "./lib/cypress";
 import { getGitInfo } from "./lib/git";
-import { divider, info, spacer, title, warn } from "./lib/log";
+import { divider, error, info, spacer, title, warn } from "./lib/log";
 import { getPlatformInfo } from "./lib/platform";
 import { summaryTable } from "./lib/table";
 
@@ -97,6 +97,7 @@ export async function run(params: CurrentsRunParameters) {
   setRunId(run.runId);
 
   cutInitialOutput();
+
   const results = await runTillDone(
     {
       runId: run.runId,
@@ -174,9 +175,11 @@ async function runTillDone(
     }
 
     summary[currentSpecFile.spec] = cypressResult;
-    processCypressResults(currentSpecFile.instanceId!, cypressResult).catch(
-      console.error
-    );
+    await processCypressResults(
+      currentSpecFile.instanceId!,
+      cypressResult
+    ).catch(error);
+
     resetCapture();
   }
 

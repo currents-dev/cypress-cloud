@@ -63,11 +63,11 @@ export const summaryTable = (r: SummaryResults) => {
     {
       border,
       columnDefault: {
-        width: 10,
+        width: 8,
       },
       columns: [
         { alignment: "left", width: 2 },
-        { alignment: "left", width: 38 },
+        { alignment: "left", width: 30 },
         { alignment: "right" },
         { alignment: "right" },
         { alignment: "right" },
