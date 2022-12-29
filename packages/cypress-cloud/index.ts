@@ -18,7 +18,7 @@ import { guessBrowser } from "./lib/browser";
 import { getCI } from "./lib/ciProvider";
 import { runSpecFileSafe } from "./lib/cypress";
 import { getGitInfo } from "./lib/git";
-import { divider, info, spacer, title, warn, error } from "./lib/log";
+import { divider, info, spacer, title, warn } from "./lib/log";
 import { getPlatformInfo } from "./lib/platform";
 import { summaryTable } from "./lib/table";
 
