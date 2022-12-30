@@ -68,7 +68,7 @@ export async function run(params: CurrentsRunParameters) {
     ...osPlatformInfo,
     ...guessBrowser(params.browser ?? "electron", config.resolved.browsers),
   };
-  const ci = getCI();
+  const ci = getCI(ciBuildId);
   const commit = await getGitInfo(config.projectRoot);
 
   const run = await createRun({

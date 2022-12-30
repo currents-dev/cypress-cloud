@@ -652,6 +652,19 @@ const _get = (fn: () => ProviderCommitParamsRes | ProviderCiParamsRes) => {
   return chain(fn()).get(providerName).value();
 };
 
+/**
+ * If there is no build ID specifically provided by user
+ * Check if we can fetch it automatically from CI variables.
+ * The process will stop if we cannot do it
+ * https://docs.cypress.io/guides/references/error-messages#We-could-not-determine-a-unique-CI-build-ID
+ */
+function checkForCiBuildFromCi(ciProvider: string | null) {
+  if (ciProvider && detectableCiBuildIdProviders().includes(ciProvider))
+    return true;
+
+  throw new Error("We could not determine a unique CI build ID");
+}
+
 export function list() {
   return keys(CI_PROVIDERS);
 }
@@ -684,9 +697,11 @@ export function getCommitParams() {
   return _get(_providerCommitParams);
 }
 
-export function getCI() {
+export function getCI(ciBuildId?: string) {
   const params = getCiParams();
   const provider = getCiProvider();
+  if (!ciBuildId) checkForCiBuildFromCi(provider);
+
   debug("detected CI provider: %s", provider);
   debug("detected CI params: %O", params);
   return {
