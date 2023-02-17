@@ -15,7 +15,7 @@
     "outDir": "dist",
     "module": "commonjs",
     "types": ["jest"],
-    "target": "es2016",
+    "target": "ES2019",
     "declaration": true,
     "emitDeclarationOnly": false,
     "esModuleInterop": true,
