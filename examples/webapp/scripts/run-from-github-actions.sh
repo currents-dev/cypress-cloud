@@ -10,5 +10,7 @@ export GITHUB_RUN_ID=
 export GITHUB_RUN_ATTEMPT=
 export GITHUB_REPOSITORY=
 export GITHUB_REPOSITORY=
+export CURRENTS_PROJECT_ID=
+export CURRENTS_RECORD_KEY=
 
-yarn cypress-cloud --parallel --record --key ${CURRENTS_RECORD_KEY} --ci-build-id $(date +%s)
+npx cypress-cloud --parallel --record --key ${CURRENTS_RECORD_KEY} --ci-build-id $(date +%s)

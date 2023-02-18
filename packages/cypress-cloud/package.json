@@ -1,6 +1,6 @@
 {
-  "name": "cypress-cloud",
-  "version": "1.3.2",
+  "name": "@currents/cypress",
+  "version": "1.0.0",
   "main": "./out/index.js",
   "types": "./index.ts",
   "author": "Currents Software Inc",
@@ -14,9 +14,6 @@
     "dev": "yarn build --watch --sourcemap",
     "build": "esbuild ./index.ts ./bin/*.ts  ./plugin/*.ts ./support/*.ts --bundle --minify --platform=node --target=node14 --packages=external --outdir=out --external:'../index'"
   },
-  "peerDependencies": {
-    "cypress": ">= 10.0.0"
-  },
   "devDependencies": {
     "@release-it/conventional-changelog": "^5.1.1",
     "@swc/core": "^1.3.23",
@@ -27,6 +24,7 @@
     "@types/jest": "^29.2.4",
     "@types/lodash": "^4.14.191",
     "@types/verror": "^1.10.6",
+    "cypress": "^12.6.0",
     "esbuild": "^0.16.5",
     "eslint": "^7.32.0",
     "eslint-config-custom": "*",

@@ -9,7 +9,7 @@ export function guessBrowser(
   availableBrowsers: DetectedBrowser[] = []
 ): Pick<Platform, "browserName" | "browserVersion"> {
   debug(
-    "guessing browser from '%s', available browsers: %O",
+    "guessing browser from '%s', available browsers: %o",
     browser,
     availableBrowsers
   );
@@ -17,7 +17,7 @@ export function guessBrowser(
   let result = availableBrowsers.find((b) => b.name === browser);
 
   if (result) {
-    debug("identified browser by name: %O", result);
+    debug("identified browser by name: %o", result);
     return {
       browserName: result.displayName,
       browserVersion: result.version,
@@ -27,7 +27,7 @@ export function guessBrowser(
   // otherwise, try identifying by the path
   result = availableBrowsers.find((b) => b.path === browser);
   if (result) {
-    debug("identified browser by path: %O", result);
+    debug("identified browser by path: %o", result);
     return {
       browserName: result.displayName ?? result.name,
       browserVersion: result.version,

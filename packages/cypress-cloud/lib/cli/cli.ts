@@ -12,7 +12,7 @@ const debug = Debug("currents:cli");
 
 export const createProgram = (command: Command = new Command()) =>
   command
-    .name("currents")
+    .name("cypress-cloud")
     .description(
       "Runs Cypress tests on CI using Currents as an orchestration and reporting service"
     )
@@ -176,14 +176,15 @@ const dashed = (v: string) => v.replace(/[A-Z]/g, (m) => "-" + m.toLowerCase());
 async function getRunParameters(
   cliOptions: ReturnType<typeof program.opts>
 ): Promise<CurrentsRunParameters> {
-  const key = cliOptions.key ?? process.env.CURRENTS_RECORD_KEY;
+  const { projectId, recordKey } = await getCurrentsConfig();
+  const key = cliOptions.key ?? process.env.CURRENTS_RECORD_KEY ?? recordKey;
+
   if (!key) {
     return program.error(
-      "Missing 'key'. Please either pass it as a cli flag '-k, --key <record-key>', or set CURRENTS_RECORD_KEY environment variable."
+      "Missing 'key'. Please either pass it as a cli flag '-k, --key <record-key>', set it in currents.config.js, or set CURRENTS_RECORD_KEY environment variable."
     );
   }
 
-  const { projectId } = await getCurrentsConfig();
   const _projectId = process.env.CURRENTS_PROJECT_ID ?? projectId;
 
   if (!_projectId) {
@@ -202,7 +203,7 @@ async function getRunParameters(
       cliOptions.reporterOptions,
       "reporterOptions"
     ),
-    tags: cliOptions.tag,
+    tag: cliOptions.tag,
     testingType: cliOptions.component ? "component" : "e2e",
     key,
     projectId: _projectId,

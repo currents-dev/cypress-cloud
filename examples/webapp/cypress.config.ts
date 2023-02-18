@@ -1,17 +1,9 @@
+import currents from "@currents/cypress/plugin";
 import { defineConfig } from "cypress";
-import { loadEnvConfig } from "@next/env";
-import currents from "cypress-cloud/plugin";
-
-function loadEnvVariables() {
-  const projectDir = process.cwd();
-  loadEnvConfig(projectDir);
-}
-
-loadEnvVariables();
 
 module.exports = defineConfig({
   e2e: {
-    baseUrl: "https://en.wikipedia.org/",
+    baseUrl: "https://todomvc.com/examples/vanillajs",
     videoUploadOnPasses: false,
     supportFile: "cypress/support/e2e.ts",
     specPattern: "cypress/e2e/*.spec.js",

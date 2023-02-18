@@ -1,0 +1,22 @@
+{
+  "name": "web",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "currents": "bash ./currents-runner.sh",
+    "cypress:script": "ts-node scripts/currents-script.ts"
+  },
+  "dependencies": {
+    "cypress": "^12.6.0",
+    "@currents/cypress": "*",
+    "cypress-terminal-report": "^5.0.0",
+    "ts-node": "^10.9.1"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.12",
+    "eslint": "7.32.0",
+    "eslint-config-custom": "*",
+    "tsconfig": "*",
+    "typescript": "^4.5.3"
+  }
+}

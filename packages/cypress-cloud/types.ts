@@ -128,7 +128,7 @@ export type CurrentsRunParameters = StrippedCypressModuleAPIOptions & {
   record: boolean;
   env?: Record<string, unknown>;
   spec?: string[];
-  tags?: string[];
+  tag?: string[];
 
   /**  The record key to use */
   key: string;

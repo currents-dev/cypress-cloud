@@ -5,7 +5,7 @@ import { bootCypress } from "./bootstrap";
 import { getRandomPort } from "./utils";
 const debug = Debug("currents:config");
 
-export type CurrentsConfig = { projectId?: string };
+export type CurrentsConfig = { projectId?: string; recordKey?: string };
 
 export async function getCurrentsConfig(): Promise<CurrentsConfig> {
   const configFilePath = await getConfigFilePath();
@@ -22,11 +22,15 @@ export async function getCurrentsConfig(): Promise<CurrentsConfig> {
 
 export async function getConfig(params: CurrentsRunParameters) {
   debug("resolving cypress config");
-  const cypressResolvedConfig: Cypress.ResolvedConfigOptions & {
-    projectRoot: string;
-    rawJson: Record<string, unknown>;
-    browsers: DetectedBrowser[];
-  } = await bootCypress(getRandomPort(), params);
+  const cypressResolvedConfig:
+    | (Cypress.ResolvedConfigOptions & {
+        projectRoot: string;
+        rawJson: Record<string, unknown>;
+        browsers: DetectedBrowser[];
+      })
+    | undefined = await bootCypress(getRandomPort(), params);
+
+  debug("cypressResolvedConfig: %o", cypressResolvedConfig);
 
   // @ts-ignore
   const rawE2EPattern = cypressResolvedConfig.rawJson?.e2e?.specPattern;
@@ -37,15 +41,16 @@ export async function getConfig(params: CurrentsRunParameters) {
   }
 
   const result = {
-    projectRoot: cypressResolvedConfig.projectRoot || process.cwd(),
+    projectRoot: cypressResolvedConfig?.projectRoot || process.cwd(),
     projectId: params.projectId,
-    specPattern: cypressResolvedConfig.specPattern,
-    // @ts-ignore
-    excludeSpecPattern: cypressResolvedConfig.resolved.excludeSpecPattern.value,
+    specPattern: cypressResolvedConfig?.specPattern || "**/*.*",
+    excludeSpecPattern:
+      // @ts-ignore
+      cypressResolvedConfig?.resolved.excludeSpecPattern.value ?? [],
     additionalIgnorePattern,
     resolved: cypressResolvedConfig,
   };
-  debug("merged config: %O", result);
+  debug("merged config: %o", result);
   return result;
 
   // see https://github.com/cypress-io/cypress/blob/ed0668e24c2ee6753bbd25ae467ce94ae5857741/packages/config/src/options.ts#L457

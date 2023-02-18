@@ -18,7 +18,7 @@ import { guessBrowser } from "./lib/browser";
 import { getCI } from "./lib/ciProvider";
 import { runSpecFileSafe } from "./lib/cypress";
 import { getGitInfo } from "./lib/git";
-import { divider, error, info, spacer, title, warn } from "./lib/log";
+import { blue, divider, error, info, spacer, title, warn } from "./lib/log";
 import { getPlatformInfo } from "./lib/platform";
 import { summaryTable } from "./lib/table";
 
@@ -31,7 +31,7 @@ import { summaryTable } from "./lib/table";
 export async function run(params: CurrentsRunParameters) {
   spacer();
 
-  const { key, projectId, group, parallel, ciBuildId, tags, testingType } =
+  const { key, projectId, group, parallel, ciBuildId, tag, testingType } =
     params;
 
   const config = await getConfig(params);
@@ -66,7 +66,7 @@ export async function run(params: CurrentsRunParameters) {
   const osPlatformInfo = await getPlatformInfo();
   const platform = {
     ...osPlatformInfo,
-    ...guessBrowser(params.browser ?? "electron", config.resolved.browsers),
+    ...guessBrowser(params.browser ?? "electron", config.resolved?.browsers),
   };
   const ci = getCI(ciBuildId);
   const commit = await getGitInfo(config.projectRoot);
@@ -82,17 +82,17 @@ export async function run(params: CurrentsRunParameters) {
     projectId,
     recordKey: key,
     specPattern: [specPattern].flat(2),
-    tags,
+    tags: tag,
     testingType,
   });
 
   info(
     "Params:",
-    `Tags: ${tags?.join(",") ?? false}, Group: ${group ?? false}, Parallel: ${
+    `Tags: ${tag?.join(",") ?? false}, Group: ${group ?? false}, Parallel: ${
       parallel ?? false
     }`
   );
-  info("Run URL:", run.runUrl);
+  info("Run URL:", blue(run.runUrl));
 
   setRunId(run.runId);
 
@@ -117,7 +117,7 @@ export async function run(params: CurrentsRunParameters) {
 
   console.log(summaryTable(results));
 
-  info("Recorded Run:", run.runUrl);
+  info("Recorded Run:", blue(run.runUrl));
   spacer();
 
   return testResults;

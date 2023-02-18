@@ -2,6 +2,7 @@
   "$schema": "https://json.schemastore.org/tsconfig",
   "display": "Next.js",
   "compilerOptions": {
+    "baseUrl": ".",
     "composite": false,
     "declaration": true,
     "declarationMap": true,
@@ -29,6 +30,6 @@
       "module": "CommonJS"
     }
   },
-  "include": ["src", "next-env.d.ts"],
+  "include": ["src"],
   "exclude": ["node_modules"]
 }

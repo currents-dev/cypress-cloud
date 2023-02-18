@@ -61,17 +61,21 @@ export const bootCypress = async (
 
   if (!fs.existsSync(tempFilePath)) {
     throw new VError(
-      "Cannot get resolved cypress configuration from '%s'. Please enable the debug mode and check the output for more information",
+      "Cannot resolve cypress configuration from '%s'. Please report the issue.",
       tempFilePath
     );
   }
   try {
     const f = fs.readFileSync(tempFilePath, "utf-8");
+
+    if (!f) {
+      throw new VError("Is cypress-cloud/plugin installed?");
+    }
     debug("cypress config '%s': '%s'", tempFilePath, f);
     return JSON.parse(f);
   } catch (err) {
     debug("read config temp file failed: %o", err);
-    error("Running cypress failed with the following output:");
+    error("Resolving cypress configuration failed:");
     console.dir({
       stdout: child.stdout.toString("utf-8").split("\n"),
       stderr: child.stderr.toString("utf-8").split("\n"),
