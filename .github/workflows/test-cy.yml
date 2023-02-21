@@ -37,9 +37,9 @@ jobs:
         working-directory: ./examples/webapp
         env:
           FORCE_COLOR: 2 # for chalk tests
-          COMMIT_INFO_MESSAGE: "@currents/cli: ${{ github.event.head_commit.message }}"
+          COMMIT_INFO_MESSAGE: "[@currents/cli] ${{ github.event.head_commit.message }}"
         run: |
           npm install @currents/cli
           npx currents run --record --parallel \
           --spec "./cypress/benchmark/*.spec.js" \
-          --browser chrome --key ${{ secrets.CURRENTS_RECORD_KEY }} \ --ci-build-id "cy-${{ github.repository }}-${{ github.run_id }}-${{ github.run_attempt}}"
+          --browser chrome --key ${{ secrets.CURRENTS_RECORD_KEY }} \ --ci-build-id "cy-${{ github.repository }}-${{ github.run_id }}-${{ github.run_attempt}}" --tag currents-cli
