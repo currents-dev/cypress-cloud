@@ -14,12 +14,12 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: "16"
-          cache: "yarn"
+          cache: "npm"
 
       - name: Install dependencies
-        run: yarn
+        run: npm install
 
       - name: Run unit tests
         env:
           FORCE_COLOR: 2 # for chalk tests
-        run: yarn
+        run: npm run test

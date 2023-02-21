@@ -11,7 +11,7 @@ jobs:
       fail-fast: false
       matrix:
         # run 3 copies of the current job in parallel
-        containers: [1, 2, 3]
+        containers: [1]
 
     steps:
       - name: Checkout
@@ -25,13 +25,13 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: "16"
-          cache: "yarn"
+          cache: "npm"
 
       - name: Install dependencies
-        run: yarn
+        run: npm i
 
       - name: Build
-        run: yarn build
+        run: npm run build
 
       - name: Run Cypress with cypress-cloud
         working-directory: ./examples/webapp

@@ -114,7 +114,7 @@ DEBUG=currents:* npx cypress-cloud run ...
 ## Testing
 
 ```sh
-yarn test
+npm run test
 ```
 
 > Please note, we use `esbuild` for building and `swc` for testing. In addition, jest has built-in module aliases, but eslint does not. Beware of importing aliases in non-testing code.
