@@ -137,6 +137,7 @@ async function runTillDone(
 ) {
   const summary: SummaryResults = {};
 
+  const uploadTasks = [];
   let hasMore = true;
   while (hasMore) {
     const currentSpecFile = await createInstance({
@@ -175,12 +176,15 @@ async function runTillDone(
     }
 
     summary[currentSpecFile.spec] = cypressResult;
-    processCypressResults(currentSpecFile.instanceId!, cypressResult).catch(
-      error
+    uploadTasks.push(
+      processCypressResults(currentSpecFile.instanceId!, cypressResult).catch(
+        error
+      )
     );
 
     resetCapture();
   }
 
+  await Promise.all(uploadTasks);
   return summary;
 }
