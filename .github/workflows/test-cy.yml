@@ -1,0 +1,42 @@
+name: Test Benchmark - CY
+
+on:
+  push:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    if: "!contains(toJSON(github.event.commits.*.message), '[skip ci]')"
+    strategy:
+      fail-fast: false
+      matrix:
+        # run 3 copies of the current job in parallel
+        containers: [1, 2, 3]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+        # populate commit message for merge commits
+        # see ://currents.dev/readme/ci-setup/github-actions
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+          cache: "yarn"
+
+      - name: Install dependencies
+        run: yarn
+
+      - name: Build
+        run: yarn build
+
+      - name: Run Cypress with @currents/cli
+        working-directory: ./examples/webapp
+        env:
+          FORCE_COLOR: 2 # for chalk tests
+        run: |
+          yarn currents run --record --parallel \
+          --browser chrome --key ${{ secrets.CURRENTS_RECORD_KEY }} \ --ci-build-id "${{ github.repository }}-${{ github.run_id }}-${{ github.run_attempt}}"

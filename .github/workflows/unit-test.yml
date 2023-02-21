@@ -1,10 +1,10 @@
-name: Lint
+name: Unit Tests
 
 on:
   push:
 
 jobs:
-  lint:
+  test:
     runs-on: ubuntu-latest
     if: "!contains(toJSON(github.event.commits.*.message), '[skip ci]')"
 
@@ -19,5 +19,7 @@ jobs:
       - name: Install dependencies
         run: yarn
 
-      - name: Run lint
-        run: yarn lint
+      - name: Run unit tests
+        env:
+          FORCE_COLOR: 2 # for chalk tests
+        run: yarn
