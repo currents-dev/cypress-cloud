@@ -11,7 +11,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "release": "release-it",
-    "dev": "npm run build --watch --sourcemap",
+    "dev": "npm run build -- --watch --sourcemap",
     "build": "esbuild ./index.ts ./bin/*.ts  ./plugin/*.ts ./support/*.ts --bundle --minify --platform=node --target=node14 --packages=external --outdir=out --external:'../index'"
   },
   "devDependencies": {

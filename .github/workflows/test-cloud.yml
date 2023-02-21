@@ -11,7 +11,7 @@ jobs:
       fail-fast: false
       matrix:
         # run 3 copies of the current job in parallel
-        containers: [1, 2, 3]
+        containers: [1, 2, 3, 4, 5]
 
     steps:
       - name: Checkout
@@ -45,4 +45,5 @@ jobs:
         run: |
           npm link @currents/cypress
           npx cypress-cloud run --record --parallel \
+          --spec "./cypress/benchmark/*.spec.js" \
           --browser chrome --key ${{ secrets.CURRENTS_RECORD_KEY }} \ --ci-build-id "cloud-${{ github.repository }}-${{ github.run_id }}-${{ github.run_attempt}}"
