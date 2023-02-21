@@ -28,6 +28,5 @@
   },
   "resolutions": {
     "debug": "^4.3.4"
-  },
-  "packageManager": "yarn@3.3.0"
+  }
 }

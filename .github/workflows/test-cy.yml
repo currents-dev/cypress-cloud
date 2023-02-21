@@ -1,4 +1,4 @@
-name: Test Benchmark - CY
+name: Test Benchmark - @currents/cli
 
 on:
   push:
@@ -25,18 +25,20 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: "16"
-          cache: "yarn"
+          cache: "npm"
 
       - name: Install dependencies
-        run: yarn
+        run: npm install
 
       - name: Build
-        run: yarn build
+        run: npm run build
 
       - name: Run Cypress with @currents/cli
         working-directory: ./examples/webapp
         env:
           FORCE_COLOR: 2 # for chalk tests
+          COMMIT_INFO_MESSAGE: "@currents/cli"
         run: |
-          yarn currents run --record --parallel \
-          --browser chrome --key ${{ secrets.CURRENTS_RECORD_KEY }} \ --ci-build-id "${{ github.repository }}-${{ github.run_id }}-${{ github.run_attempt}}"
+          npm install @currents/cli
+          npx currents run --record --parallel \
+          --browser chrome --key ${{ secrets.CURRENTS_RECORD_KEY }} \ --ci-build-id "cy-${{ github.repository }}-${{ github.run_id }}-${{ github.run_attempt}}"

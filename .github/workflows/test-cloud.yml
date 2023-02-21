@@ -11,7 +11,7 @@ jobs:
       fail-fast: false
       matrix:
         # run 3 copies of the current job in parallel
-        containers: [1]
+        containers: [1, 2, 3]
 
     steps:
       - name: Checkout
@@ -28,15 +28,21 @@ jobs:
           cache: "npm"
 
       - name: Install dependencies
-        run: npm i
+        run: npm install
 
       - name: Build
         run: npm run build
+
+      - name: Link
+        working-directory: ./packages/cypress-cloud
+        run: npm link
 
       - name: Run Cypress with cypress-cloud
         working-directory: ./examples/webapp
         env:
           FORCE_COLOR: 2 # for chalk tests
+          COMMIT_INFO_MESSAGE: "cypress-cloud"
         run: |
+          npm link @currents/cypress
           npx cypress-cloud run --record --parallel \
-          --browser chrome --key ${{ secrets.CURRENTS_RECORD_KEY }} \ --ci-build-id "${{ github.repository }}-${{ github.run_id }}-${{ github.run_attempt}}"
+          --browser chrome --key ${{ secrets.CURRENTS_RECORD_KEY }} \ --ci-build-id "cloud-${{ github.repository }}-${{ github.run_id }}-${{ github.run_attempt}}"
