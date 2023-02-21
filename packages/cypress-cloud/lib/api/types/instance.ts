@@ -102,6 +102,11 @@ export type UpdateInstanceResultsPayload = Pick<
   screenshots: ScreenshotArtifact[];
 };
 
+export type UpdateInstanceResultsMergedPayload = {
+  tests: SetInstanceTestsPayload;
+  results: UpdateInstanceResultsPayload;
+};
+
 export interface UpdateInstanceResultsResponse {
   videoUploadUrl?: string | null;
   screenshotUploadUrls: ScreenshotUploadInstruction[];

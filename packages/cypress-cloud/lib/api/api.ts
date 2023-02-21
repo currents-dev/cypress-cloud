@@ -5,6 +5,7 @@ import {
   CreateRunPayload,
   CreateRunResponse,
   SetInstanceTestsPayload,
+  UpdateInstanceResultsMergedPayload,
   UpdateInstanceResultsPayload,
   UpdateInstanceResultsResponse,
 } from "./types";
@@ -63,6 +64,19 @@ export const updateInstanceResults = (
   makeRequest<UpdateInstanceResultsResponse, UpdateInstanceResultsPayload>({
     method: "POST",
     url: `instances/${instanceId}/results`,
+    data: payload,
+  }).then((result) => result.data);
+
+export const updateInstanceResultsMerged = (
+  instanceId: string,
+  payload: UpdateInstanceResultsMergedPayload
+) =>
+  makeRequest<
+    UpdateInstanceResultsResponse,
+    UpdateInstanceResultsMergedPayload
+  >({
+    method: "POST",
+    url: `instances/${instanceId}/pw/results`,
     data: payload,
   }).then((result) => result.data);
 

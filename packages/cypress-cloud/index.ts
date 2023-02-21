@@ -1,6 +1,10 @@
 import("./lib/init");
 
-import { cutInitialOutput, resetCapture } from "./lib/capture";
+import {
+  cutInitialOutput,
+  getCapturedOutput,
+  resetCapture,
+} from "./lib/capture";
 import { getConfig } from "./lib/config";
 import { setRunId } from "./lib/httpClient";
 import {
@@ -18,7 +22,7 @@ import { guessBrowser } from "./lib/browser";
 import { getCI } from "./lib/ciProvider";
 import { runSpecFileSafe } from "./lib/cypress";
 import { getGitInfo } from "./lib/git";
-import { blue, divider, error, info, spacer, title, warn } from "./lib/log";
+import { bold, divider, error, info, spacer, title, warn } from "./lib/log";
 import { getPlatformInfo } from "./lib/platform";
 import { summaryTable } from "./lib/table";
 
@@ -92,7 +96,7 @@ export async function run(params: CurrentsRunParameters) {
       parallel ?? false
     }`
   );
-  info("Run URL:", blue(run.runUrl));
+  info("🎥 Run URL:", bold(run.runUrl));
 
   setRunId(run.runId);
 
@@ -117,7 +121,7 @@ export async function run(params: CurrentsRunParameters) {
 
   console.log(summaryTable(results));
 
-  info("Recorded Run:", blue(run.runUrl));
+  info("🏁 Recorded Run:", bold(run.runUrl));
   spacer();
 
   return testResults;
@@ -176,10 +180,15 @@ async function runTillDone(
     }
 
     summary[currentSpecFile.spec] = cypressResult;
+
+    title("blue", "Reporting results and artifacts in background...");
+
     uploadTasks.push(
-      processCypressResults(currentSpecFile.instanceId!, cypressResult).catch(
-        error
-      )
+      processCypressResults(
+        currentSpecFile.instanceId!,
+        cypressResult,
+        getCapturedOutput()
+      ).catch(error)
     );
 
     resetCapture();

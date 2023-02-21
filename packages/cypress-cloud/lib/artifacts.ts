@@ -2,7 +2,7 @@ import Debug from "debug";
 import { ScreenshotArtifact, ScreenshotUploadInstruction } from "../types";
 import { updateInstanceStdout } from "./api";
 import { safe } from "./lang";
-import { cyan, info, red, title, warn } from "./log";
+import { warn } from "./log";
 import { uploadFile } from "./upload";
 const debug = Debug("currents:artifacts");
 interface UploadArtifacts {
@@ -17,7 +17,7 @@ export async function uploadArtifacts({
   screenshots,
   screenshotUploadUrls,
 }: UploadArtifacts) {
-  title("blue", "Uploading  Results");
+  // title("blue", "Uploading  Results");
 
   debug("uploading artifacts: %o", {
     videoPath,
@@ -28,7 +28,7 @@ export async function uploadArtifacts({
 
   const totalUploads = (videoPath ? 1 : 0) + screenshots.length;
   if (totalUploads === 0) {
-    info("Nothing to upload");
+    // info("Nothing to upload");
     return;
   }
 
@@ -36,8 +36,10 @@ export async function uploadArtifacts({
   if (videoUploadUrl && videoPath) {
     await safe(
       uploadFile,
-      () => info("- Failed Uploading", red(videoPath)),
-      () => info("- Done Uploading", cyan(videoPath))
+      // () => info("- Failed Uploading", red(videoPath)),
+      // () => info("- Done Uploading", cyan(videoPath))
+      () => {},
+      () => {}
     )(videoPath, videoUploadUrl);
   }
   // upload screenshots
@@ -53,8 +55,10 @@ export async function uploadArtifacts({
         }
         return safe(
           uploadFile,
-          () => warn("- Failed Uploading", red(screenshot.path)),
-          () => info("- Done Uploading", cyan(screenshot.path))
+          // () => warn("- Failed Uploading", red(screenshot.path)),
+          // () => info("- Done Uploading", cyan(screenshot.path))
+          () => {},
+          () => {}
         )(screenshot.path, url);
       })
     );

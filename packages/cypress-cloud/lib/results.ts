@@ -2,18 +2,17 @@ import {
   CypressResult,
   ScreenshotArtifact,
   TestsResult,
-} from "cypress-cloud/types";
+} from "@currents/cypress/types";
 import Debug from "debug";
 import { nanoid } from "nanoid";
 import {
-  setInstanceTests,
   SetInstanceTestsPayload,
   TestState,
-  updateInstanceResults,
+  updateInstanceResultsMerged,
   UpdateInstanceResultsPayload,
 } from "./api";
 import { uploadArtifacts, uploadStdoutSafe } from "./artifacts";
-import { getCapturedOutput, getInitialOutput } from "./capture";
+import { getInitialOutput } from "./capture";
 
 const debug = Debug("currents:results");
 
@@ -120,36 +119,36 @@ export const summarizeTestResults = (
 
 export async function processCypressResults(
   instanceId: string,
-  results: CypressCommandLine.CypressRunResult
+  results: CypressCommandLine.CypressRunResult,
+  stdout: string
 ) {
   const runResult = results.runs[0];
   if (!runResult) {
     throw new Error("No run found in Cypress results");
   }
-
-  await setInstanceTests(
-    instanceId,
-    getInstanceTestsPayload(results.runs[0], results.config)
-  );
-
   const resultPayload = getInstanceResultPayload(runResult);
   debug("result payload %o", resultPayload);
-  const uploadInstructions = await updateInstanceResults(
-    instanceId,
-    resultPayload
-  );
+  const uploadInstructions = await updateInstanceResultsMerged(instanceId, {
+    tests: getInstanceTestsPayload(results.runs[0], results.config),
+    results: resultPayload,
+  });
 
   const { videoUploadUrl, screenshotUploadUrls } = uploadInstructions;
-  debug("artifact upload instructions %o", uploadInstructions);
-  await uploadArtifacts({
-    videoUploadUrl,
-    videoPath: runResult.video,
-    screenshotUploadUrls,
-    screenshots: resultPayload.screenshots,
-  });
-  debug("uploading stdout for instanceId %s", instanceId);
-  // keep last because of stdout
-  await uploadStdoutSafe(instanceId, getInitialOutput() + getCapturedOutput());
+  debug(
+    "instance %s artifact upload instructions %o",
+    instanceId,
+    uploadInstructions
+  );
+
+  await Promise.all([
+    uploadArtifacts({
+      videoUploadUrl,
+      videoPath: runResult.video,
+      screenshotUploadUrls,
+      screenshots: resultPayload.screenshots,
+    }),
+    uploadStdoutSafe(instanceId, getInitialOutput() + stdout),
+  ]);
 }
 
 export function getFailedDummyResult({

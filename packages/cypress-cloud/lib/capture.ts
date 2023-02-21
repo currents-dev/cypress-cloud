@@ -8,6 +8,8 @@ export const restore = function () {
   process.log = _log;
 };
 
+const logs: Record<string, string[]> = {};
+
 const stdout = function () {
   debug("capturing stdout");
   let logs: string[] = [];
