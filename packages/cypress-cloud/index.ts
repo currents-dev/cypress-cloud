@@ -175,10 +175,9 @@ async function runTillDone(
     }
 
     summary[currentSpecFile.spec] = cypressResult;
-    await processCypressResults(
-      currentSpecFile.instanceId!,
-      cypressResult
-    ).catch(error);
+    processCypressResults(currentSpecFile.instanceId!, cypressResult).catch(
+      error
+    );
 
     resetCapture();
   }
