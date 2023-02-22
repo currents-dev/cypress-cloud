@@ -46,7 +46,7 @@ jobs:
           name: Build
           command: npm run build
       - run:
-          name: Cypress Tests with @currents/cli
+          name: Cypress Tests with cypress-cloud
           command: |
             cd examples/webapp
             npx cypress-cloud run --record --parallel \
