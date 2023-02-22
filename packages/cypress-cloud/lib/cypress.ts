@@ -23,6 +23,10 @@ export async function runSpecFile(
   });
   const result = await cypress.run({
     ...runAPIOptions,
+    config: {
+      ...runAPIOptions.config,
+      trashAssetsBeforeRuns: false,
+    },
     spec,
   });
 

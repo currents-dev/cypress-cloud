@@ -38,6 +38,7 @@
   "dependencies": {
     "@commander-js/extra-typings": "^9.4.1",
     "@cypress/commit-info": "^2.2.0",
+    "async-wait-until": "^2.0.12",
     "axios": "^1.2.0",
     "chalk": "^4.1.2",
     "commander": "^9.4.1",
@@ -53,7 +54,8 @@
     "source-map-support": "^0.5.21",
     "table": "^6.8.1",
     "tmp-promise": "^3.0.3",
-    "verror": "^1.10.1"
+    "verror": "^1.10.1",
+    "ws": "^8.12.1"
   },
   "bin": {
     "cypress-cloud": "./out/bin/index.js"

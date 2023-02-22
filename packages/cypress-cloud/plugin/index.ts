@@ -16,7 +16,8 @@ export async function cloudPlugin(on, config) {
     fs.writeFileSync(config.env.currents_temp_file, JSON.stringify(config));
     debug("config is availabe at '%s'", config.env.currents_temp_file);
   }
-
+  // return watchPlugin(on, config);
+  config.trashAssetsBeforeRuns = false;
   return config;
 }
 

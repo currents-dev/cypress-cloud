@@ -16,6 +16,7 @@ import {
 import { findSpecs } from "./lib/specMatcher";
 import { CurrentsRunParameters, SummaryResults } from "./types";
 
+import { bus } from "./bus";
 import { createInstance, createRun } from "./lib/api/api";
 import { CreateInstancePayload } from "./lib/api/types/instance";
 import { guessBrowser } from "./lib/browser";
@@ -141,9 +142,10 @@ async function runTillDone(
 ) {
   const summary: SummaryResults = {};
 
-  const uploadTasks = [];
+  const uploadTasks: Promise<any>[] = [];
   let hasMore = true;
-  while (hasMore) {
+
+  async function runSpecFile() {
     const currentSpecFile = await createInstance({
       runId,
       groupId,
@@ -152,7 +154,7 @@ async function runTillDone(
     });
     if (!currentSpecFile.spec) {
       hasMore = false;
-      break;
+      return;
     }
 
     divider();
@@ -193,6 +195,15 @@ async function runTillDone(
 
     resetCapture();
   }
+
+  bus.on("after", () => console.log("🔥 AFTER"));
+  bus.on("after", runSpecFile);
+  await runSpecFile();
+  while (hasMore) {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    // uploadTasks.push(runSpecFile());
+  }
+  // waitUntil(() => !hasMore, 0, 1000);
 
   await Promise.allSettled(uploadTasks);
   return summary;

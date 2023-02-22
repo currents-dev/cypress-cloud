@@ -1,4 +1,5 @@
 import "./stdout";
+import "./ws";
 
 import cypressPckg from "cypress/package.json";
 import { version } from "../package.json";

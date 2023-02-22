@@ -17,7 +17,7 @@ module.exports = defineConfig({
   component: {
     specPattern: "cypress/component/*.spec.js",
     setupNodeEvents(on, config) {
-      currents(on, config);
+      return currents(on, config);
     },
     devServer: {
       framework: "next",
