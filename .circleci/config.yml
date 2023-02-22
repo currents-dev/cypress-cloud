@@ -1,7 +1,7 @@
 version: 2.1
 
 jobs:
-  cypress_tests:
+  cypress_tests_cli:
     parallelism: 5
     docker:
       - image: cypress/browsers:latest
@@ -26,10 +26,38 @@ jobs:
             npx currents run --record --parallel \
             --spec "./cypress/e2e*/*.spec.js" \
             --browser chrome --key $CURRENTS_RECORD_KEY \ 
-            --tag currents-cli
+            --tag currents-cli,circleCI
+
+  cypress_tests_cloud:
+    parallelism: 5
+    docker:
+      - image: cypress/browsers:latest
+    working_directory: ~/app
+    steps:
+      - checkout
+      - restore_cache:
+          key: v5-deps-{{ checksum "package-lock.json" }}
+      - run: npm install
+      - save_cache:
+          key: v5-deps-{{ checksum "package-lock.json" }}
+          paths:
+            - ~/.cache
+      - run:
+          name: Build
+          command: npm run build
+      - run:
+          name: Cypress Tests with @currents/cli
+          command: |
+            cd examples/webapp
+            npx cypress-cloud run --record --parallel \
+            --spec "./cypress/e2e*/*.spec.js" \
+            --browser chrome --key $CURRENTS_RECORD_KEY \ 
+            --tag cypress-cloud,circleCI
 
 workflows:
   cypress:
     jobs:
-      - cypress_tests:
+      - cypress_tests_cli:
+          context: currents
+      - cypress_tests_cloud:
           context: currents
