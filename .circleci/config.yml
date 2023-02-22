@@ -49,9 +49,9 @@ jobs:
           name: Cypress Tests with cypress-cloud
           command: |
             cd examples/webapp
-            npx cypress-cloud run --record --parallel \
+            node ../../packages/cypress-cloud/out/bin/index.js run --record --parallel \
             --spec "./cypress/e2e*/*.spec.js" \
-            --tag "currents-cli,circleCI" \
+            --tag "cypress-cloud,circleCI" \
             --browser chrome --key $CURRENTS_RECORD_KEY
 
 workflows:
