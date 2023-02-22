@@ -42,4 +42,4 @@ jobs:
           npm install @currents/cli
           npx currents run --record --parallel \
           --spec "./cypress/e2e*/*.spec.js" \
-          --browser chrome --key ${{ secrets.CURRENTS_RECORD_KEY }} \ --ci-build-id "cy-${{ github.repository }}-${{ github.run_id }}-${{ github.run_attempt}}" --tag currents-cli
+          --browser chrome --key ${{ secrets.CURRENTS_RECORD_KEY }} \ --ci-build-id "cy-${{ github.repository }}-${{ github.run_id }}-${{ github.run_attempt}}" --tag currents-cli,gha
