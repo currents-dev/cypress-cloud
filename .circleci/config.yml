@@ -27,7 +27,8 @@ jobs:
             COMMIT_INFO_MESSAGE="[@currents/cli] $MSG" npx currents run --record --parallel \
             --spec "./cypress/e2e*/*.spec.js" \
             --tag "currents-cli,circleCI" \
-            --browser chrome --key $CURRENTS_RECORD_KEY
+            --browser chrome --key $CURRENTS_RECORD_KEY \
+            --ci-build-id $CIRCLE_WORKFLOW_ID-$CIRCLE_WORKFLOW_JOB_ID
 
   cypress_tests_cloud:
     parallelism: 5
@@ -54,7 +55,8 @@ jobs:
             COMMIT_INFO_MESSAGE="[@currents/cli] $MSG" node ../../packages/cypress-cloud/out/bin/index.js run --record --parallel \
             --spec "./cypress/e2e*/*.spec.js" \
             --tag cypress-cloud --tag circleCI" \
-            --browser chrome --key $CURRENTS_RECORD_KEY
+            --browser chrome --key $CURRENTS_RECORD_KEY \
+            --ci-build-id $CIRCLE_WORKFLOW_ID-$CIRCLE_WORKFLOW_JOB_ID
 
 workflows:
   cypress:
