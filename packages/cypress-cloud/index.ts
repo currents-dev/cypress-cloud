@@ -16,7 +16,6 @@ import {
 import { findSpecs } from "./lib/specMatcher";
 import { CurrentsRunParameters, SummaryResults } from "./types";
 
-import { bus } from "./bus";
 import { createInstance, createRun } from "./lib/api/api";
 import { CreateInstancePayload } from "./lib/api/types/instance";
 import { guessBrowser } from "./lib/browser";
@@ -180,7 +179,7 @@ async function runTillDone(
       warn(
         "Executing the spec file has failed, executing the next spec file..."
       );
-      bus.emit("after");
+      // bus.emit("after");
     }
 
     summary[currentSpecFile.spec] = cypressResult;
@@ -198,11 +197,12 @@ async function runTillDone(
     resetCapture();
   }
 
-  bus.on("after", () => console.log("🔥 AFTER"));
-  bus.on("after", runSpecFile);
-  await runSpecFile();
+  // bus.on("after", () => console.log("🔥 AFTER"));
+  // bus.on("after", runSpecFile);
+
   while (hasMore) {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await runSpecFile();
+    // await new Promise((resolve) => setTimeout(resolve, 1000));
     // uploadTasks.push(runSpecFile());
   }
   // waitUntil(() => !hasMore, 0, 1000);
