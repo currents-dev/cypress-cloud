@@ -194,6 +194,6 @@ async function runTillDone(
     resetCapture();
   }
 
-  await Promise.all(uploadTasks);
+  await Promise.allSettled(uploadTasks);
   return summary;
 }
