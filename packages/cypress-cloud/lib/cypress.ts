@@ -17,11 +17,7 @@ export async function runSpecFile(
 ) {
   const runAPIOptions = getStrippedCypressOptions(cypressRunOptions);
 
-  debug("running cypress with options", {
-    runAPIOptions,
-    spec,
-  });
-  const result = await cypress.run({
+  const options = {
     ...runAPIOptions,
     config: {
       ...runAPIOptions.config,
@@ -32,9 +28,11 @@ export async function runSpecFile(
       currents_ws: true,
     },
     spec,
-  });
+  };
+  debug("%s: running cypress with options %o", spec, options);
+  const result = await cypress.run(options);
 
-  debug("cypress run result %o", result);
+  debug("%s: cypress run result %o", spec, result);
   return result;
 }
 
