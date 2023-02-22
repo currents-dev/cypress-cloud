@@ -40,6 +40,7 @@ jobs:
       - name: Run Cypress with cypress-cloud
         working-directory: ./examples/webapp
         env:
+          DEBUG: "currents:*"
           FORCE_COLOR: 2 # for chalk tests
           COMMIT_INFO_MESSAGE: "[cypress-cloud] ${{ github.event.head_commit.message }}"
         run: |

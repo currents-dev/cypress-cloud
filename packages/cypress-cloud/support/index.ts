@@ -11,7 +11,13 @@ button.onclick = () => {
   watchAndReloadEnabled = !watchAndReloadEnabled;
 };
 
+beforeEach(() => {
+  cy.log("currents_ws", Cypress.env("currents_ws"));
+});
 before(() => {
+  if (!Cypress.env("currents_ws")) {
+    return;
+  }
   cy.wrap(
     waitUntil(() => ws.readyState === WebSocket.OPEN, 2000, 50),
     { log: false }

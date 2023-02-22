@@ -152,6 +152,7 @@ async function runTillDone(
       machineId,
       platform,
     });
+
     if (!currentSpecFile.spec) {
       hasMore = false;
       return;
@@ -179,6 +180,7 @@ async function runTillDone(
       warn(
         "Executing the spec file has failed, executing the next spec file..."
       );
+      bus.emit("after");
     }
 
     summary[currentSpecFile.spec] = cypressResult;

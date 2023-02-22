@@ -27,6 +27,10 @@ export async function runSpecFile(
       ...runAPIOptions.config,
       trashAssetsBeforeRuns: false,
     },
+    env: {
+      ...runAPIOptions.env,
+      currents_ws: true,
+    },
     spec,
   });
 
