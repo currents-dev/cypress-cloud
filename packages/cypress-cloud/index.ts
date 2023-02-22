@@ -92,7 +92,7 @@ export async function run(params: CurrentsRunParameters) {
 
   info(
     "Params:",
-    `Tags: ${tag?.join(",") ?? false}, Group: ${group ?? false}, Parallel: ${
+    `Tags: ${tag?.join(",") ?? false}; Group: ${group ?? false}; Parallel: ${
       parallel ?? false
     }`
   );
