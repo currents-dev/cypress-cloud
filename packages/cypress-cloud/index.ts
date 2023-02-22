@@ -16,7 +16,6 @@ import {
 import { findSpecs } from "./lib/specMatcher";
 import { CurrentsRunParameters, SummaryResults } from "./types";
 
-import { bus } from "./bus";
 import { createInstance, createRun } from "./lib/api/api";
 import { CreateInstancePayload } from "./lib/api/types/instance";
 import { guessBrowser } from "./lib/browser";
@@ -198,8 +197,8 @@ async function runTillDone(
     resetCapture();
   }
 
-  bus.on("after", () => console.log("🔥 AFTER"));
-  bus.on("after", async () => await runSpecFile());
+  // bus.on("after", () => console.log("🔥 AFTER"));
+  // bus.on("after", async () => await runSpecFile());
 
   while (hasMore) {
     await runSpecFile();

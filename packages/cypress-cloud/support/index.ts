@@ -55,6 +55,10 @@ before(() => {
   });
 });
 
+afterEach(() => {
+  ws.send("afterEach");
+});
+
 after(() => {
   ws.send("after");
 });

@@ -3,14 +3,14 @@ import { defineConfig } from "cypress";
 
 module.exports = defineConfig({
   e2e: {
-    projectId: process.env.GITHUB_ACTION ? "Ij0RfK" : "s0LBur",
+    projectId: !!process.env.GITHUB_ACTION ? "Ij0RfK" : "s0LBur",
     baseUrl: "https://todomvc.com/examples/vanillajs",
     videoUploadOnPasses: false,
     supportFile: "cypress/support/e2e.ts",
     specPattern: "cypress/*/*.spec.js",
     setupNodeEvents(on, config) {
-      currents(on, config);
       require("cypress-terminal-report/src/installLogsPrinter")(on);
+      return currents(on, config);
     },
   },
 
