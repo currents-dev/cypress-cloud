@@ -20,6 +20,8 @@ jobs:
           command: npm run build
       - run:
           name: Cypress Tests with @currents/cli
+          environment:
+            COMMIT_INFO_MESSAGE: "[@currents/cli] $(git log -1 --pretty=%B)"
           command: |
             cd examples/webapp
             npm install @currents/cli
@@ -47,6 +49,8 @@ jobs:
           command: npm run build
       - run:
           name: Cypress Tests with cypress-cloud
+          environment:
+            COMMIT_INFO_MESSAGE: "[cypress-cloud] $(git log -1 --pretty=%B)"
           command: |
             cd examples/webapp
             node ../../packages/cypress-cloud/out/bin/index.js run --record --parallel \
