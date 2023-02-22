@@ -14,6 +14,7 @@ main()
     if (!result) {
       process.exit(0);
     }
+
     const overallFailed = result.failed + result.skipped;
     if (overallFailed > 0) {
       process.exit(overallFailed);

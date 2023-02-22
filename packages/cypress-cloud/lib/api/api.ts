@@ -2,6 +2,7 @@ import { makeRequest } from "../httpClient";
 import {
   CreateInstancePayload,
   CreateInstanceResponse,
+  CreateInstancesResponse,
   CreateRunPayload,
   CreateRunResponse,
   SetInstanceTestsPayload,
@@ -47,6 +48,30 @@ export const createInstance = async ({
 
   return respone.data;
 };
+
+export const createInstances = async ({
+  runId,
+  groupId,
+  machineId,
+  platform,
+}: CreateInstancePayload) => {
+  const respone = await makeRequest<
+    CreateInstancesResponse,
+    CreateInstancePayload
+  >({
+    method: "POST",
+    url: `runs/${runId}/cy/instances`,
+    data: {
+      runId,
+      groupId,
+      machineId,
+      platform,
+    },
+  });
+
+  return respone.data;
+};
+
 export const setInstanceTests = (
   instanceId: string,
   payload: SetInstanceTestsPayload

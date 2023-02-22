@@ -52,7 +52,7 @@ jobs:
           command: |
             cd examples/webapp
             MSG=`git log -1 --pretty=%B`
-            COMMIT_INFO_MESSAGE="[@currents/cli] $MSG" node ../../packages/cypress-cloud/out/bin/index.js run --record --parallel \
+            COMMIT_INFO_MESSAGE="[cypress-cloud] $MSG" node ../../packages/cypress-cloud/out/bin/index.js run --record --parallel \
             --spec "./cypress/e2e*/*.spec.js" \
             --tag "cypress-cloud,circleCI" \
             --browser chrome --key $CURRENTS_RECORD_KEY \

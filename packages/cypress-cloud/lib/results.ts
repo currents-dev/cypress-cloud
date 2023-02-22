@@ -152,11 +152,11 @@ export async function processCypressResults(
 }
 
 export function getFailedDummyResult({
-  spec,
+  specs,
   error,
   config,
 }: {
-  spec: string;
+  specs: string[];
   error: string;
   config: any; // TODO tighten this up
 }): CypressCommandLine.CypressRunResult {
@@ -180,55 +180,53 @@ export function getFailedDummyResult({
     osName: "unknown",
     osVersion: "unknown",
     cypressVersion: "unknown",
-    runs: [
-      {
-        stats: {
-          suites: 1,
-          tests: 1,
-          passes: 0,
-          pending: 0,
-          skipped: 0,
-          failures: 1,
-          startedAt: start,
-          endedAt: end,
-          duration: 0,
-        },
-        reporter: "spec",
-        reporterStats: {},
-        hooks: [],
-        error,
-        video: null,
-        spec: {
-          name: spec,
-          relative: "",
-          absolute: "",
-          relativeToCommonRoot: "",
-        },
-        tests: [
-          {
-            title: ["Automatically dummy generated test"],
-            state: "failed",
-            body: "// This test is automatically generated due to execution failure",
-            displayError: error,
-            attempts: [
-              {
-                state: "failed",
-                startedAt: start,
-                duration: 0,
-                videoTimestamp: 0,
-                screenshots: [],
-                error: {
-                  name: "CloudExecutionError",
-                  message: error,
-                  stack: "",
-                },
-              },
-            ],
-          },
-        ],
-        shouldUploadVideo: false,
-        skippedSpec: false,
+    runs: specs.map((s) => ({
+      stats: {
+        suites: 1,
+        tests: 1,
+        passes: 0,
+        pending: 0,
+        skipped: 0,
+        failures: 1,
+        startedAt: start,
+        endedAt: end,
+        duration: 0,
       },
-    ],
+      reporter: "spec",
+      reporterStats: {},
+      hooks: [],
+      error,
+      video: null,
+      spec: {
+        name: s,
+        relative: "",
+        absolute: "",
+        relativeToCommonRoot: "",
+      },
+      tests: [
+        {
+          title: ["Dummy test title"],
+          state: "failed",
+          body: "// This test is automatically generated due to execution failure",
+          displayError: error,
+          attempts: [
+            {
+              state: "failed",
+              startedAt: start,
+              duration: 0,
+              videoTimestamp: 0,
+              screenshots: [],
+              error: {
+                name: "CloudExecutionError",
+                message: error,
+                stack: "",
+              },
+            },
+          ],
+        },
+      ],
+      shouldUploadVideo: false,
+      skippedSpec: false,
+    })),
   };
 }

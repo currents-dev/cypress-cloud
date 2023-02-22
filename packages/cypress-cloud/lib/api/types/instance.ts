@@ -90,6 +90,15 @@ export type CreateInstanceResponse = {
   claimedInstances: number;
   totalInstances: number;
 };
+export type CreateInstancesResponse = {
+  specs: Array<{
+    spec: string;
+    instanceId: string;
+  }>;
+
+  claimedInstances: number;
+  totalInstances: number;
+};
 
 export type UpdateInstanceResultsPayload = Pick<
   InstanceResult,

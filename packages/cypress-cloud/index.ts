@@ -16,7 +16,7 @@ import {
 import { findSpecs } from "./lib/specMatcher";
 import { CurrentsRunParameters, SummaryResults } from "./types";
 
-import { createInstance, createRun } from "./lib/api/api";
+import { createInstances, createRun } from "./lib/api/api";
 import { CreateInstancePayload } from "./lib/api/types/instance";
 import { guessBrowser } from "./lib/browser";
 import { getCI } from "./lib/ciProvider";
@@ -113,6 +113,7 @@ export async function run(params: CurrentsRunParameters) {
     params
   );
 
+  console.log(results);
   const testResults = summarizeTestResults(Object.values(results));
 
   divider();
@@ -145,14 +146,14 @@ async function runTillDone(
   let hasMore = true;
 
   async function runSpecFile() {
-    const currentSpecFile = await createInstance({
+    const instances = await createInstances({
       runId,
       groupId,
       machineId,
       platform,
     });
 
-    if (!currentSpecFile.spec) {
+    if (instances.specs.length === 0) {
       hasMore = false;
       return;
     }
@@ -160,38 +161,53 @@ async function runTillDone(
     divider();
     info(
       "Running: %s (%d/%d)",
-      currentSpecFile.spec,
-      currentSpecFile.claimedInstances,
-      currentSpecFile.totalInstances
+      instances.specs.map((s) => s.spec).join(", "),
+      instances.claimedInstances,
+      instances.totalInstances
     );
 
     let cypressResult = await runSpecFileSafe(
-      { spec: currentSpecFile.spec },
+      { spec: instances.specs.map((s) => s.spec).join(",") },
       cypressRunOptions
     );
 
     if (!isSuccessResult(cypressResult)) {
+      // TODO: Handle partially failed results
       cypressResult = getFailedDummyResult({
-        spec: currentSpecFile.spec,
+        specs: instances.specs.map((s) => s.spec),
         error: cypressResult.message,
         config,
       });
       warn(
-        "Executing the spec file has failed, executing the next spec file..."
+        "Executing the spec files has failed, running the next spec files..."
       );
-      // bus.emit("after");
     }
 
-    summary[currentSpecFile.spec] = cypressResult;
+    console.dir(cypressResult);
+
+    instances.specs.forEach((spec) => {
+      summary[spec.spec] = {
+        ...cypressResult,
+        runs: cypressResult.runs.filter((r) => r.spec.relative === spec.spec),
+      };
+    });
 
     title("blue", "Reporting results and artifacts in background...");
 
-    uploadTasks.push(
-      processCypressResults(
-        currentSpecFile.instanceId!,
-        cypressResult,
-        getCapturedOutput()
-      ).catch(error)
+    uploadTasks.concat(
+      cypressResult.runs.flatMap(async (run) =>
+        processCypressResults(
+          instances.specs.find((s) => s.spec === run.spec.relative)!
+            .instanceId!,
+          {
+            ...cypressResult,
+            runs: cypressResult.runs.filter(
+              (r) => r.spec.relative === run.spec.relative
+            ),
+          },
+          getCapturedOutput()
+        ).catch(error)
+      )
     );
 
     resetCapture();
