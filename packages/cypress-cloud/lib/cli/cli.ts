@@ -4,6 +4,7 @@ import { isObject, omit, pickBy } from "lodash";
 import {
   CurrentsRunParameters,
   StrippedCypressModuleAPIOptions,
+  TestingType,
 } from "../../types";
 import { getCurrentsConfig } from "../config";
 import { sanitizeAndConvertNestedArgs } from "./parser";
@@ -100,7 +101,7 @@ export function parseOptions(
   ...args: Parameters<typeof program.parse>
 ) {
   _program.parse(...args);
-  debug("parsed CLI options", _program.opts());
+  debug("parsed CLI flags %o", _program.opts());
 
   const { e2e, component } = _program.opts();
   if (e2e && component) {
@@ -126,6 +127,7 @@ export function getStrippedCypressOptions(
 ): StrippedCypressModuleAPIOptions {
   return pickBy(
     omit(params, [
+      "batchSize",
       "projectId",
       "record",
       "key",
@@ -176,7 +178,7 @@ const dashed = (v: string) => v.replace(/[A-Z]/g, (m) => "-" + m.toLowerCase());
 async function getRunParameters(
   cliOptions: ReturnType<typeof program.opts>
 ): Promise<CurrentsRunParameters> {
-  const { projectId, recordKey } = await getCurrentsConfig();
+  const { projectId, recordKey, batchSize } = await getCurrentsConfig();
   const key = cliOptions.key ?? process.env.CURRENTS_RECORD_KEY ?? recordKey;
 
   if (!key) {
@@ -193,10 +195,8 @@ async function getRunParameters(
     );
   }
 
-  const result = omit({ ...cliOptions }, "e2e", "component", "tag");
-
-  return {
-    ...result,
+  const result = {
+    ...omit({ ...cliOptions }, "e2e", "component", "tag"),
     config: sanitizeAndConvertNestedArgs(cliOptions.config, "config"),
     env: sanitizeAndConvertNestedArgs(cliOptions.env, "env"),
     reporterOptions: sanitizeAndConvertNestedArgs(
@@ -204,8 +204,12 @@ async function getRunParameters(
       "reporterOptions"
     ),
     tag: cliOptions.tag,
-    testingType: cliOptions.component ? "component" : "e2e",
+    testingType: cliOptions.component ? "component" : ("e2e" as TestingType),
     key,
     projectId: _projectId,
+    batchSize,
   };
+
+  debug("parsed run params: %o", result);
+  return result;
 }

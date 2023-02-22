@@ -70,7 +70,7 @@ module.exports = {
 
 Override the default configuration values via environment variables:
 
-- `CURRENTS_API_BASE_URL` - sorry-cypress users - set the URL of your director service
+- `CURRENTS_API_URL` - sorry-cypress users - set the URL of your director service
 - `CURRENTS_PROJECT_ID` - set the `projectId`
 - `CURRENTS_RECORD_KEY` - cloud service record key
 

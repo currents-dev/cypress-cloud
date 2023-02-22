@@ -2,21 +2,32 @@ import Debug from "debug";
 import path from "path";
 import { CurrentsRunParameters, DetectedBrowser } from "../types";
 import { bootCypress } from "./bootstrap";
+import { warn } from "./log";
 import { getRandomPort } from "./utils";
 const debug = Debug("currents:config");
 
-export type CurrentsConfig = { projectId?: string; recordKey?: string };
+export type CurrentsConfig = {
+  projectId?: string;
+  recordKey?: string;
+  batchSize: number;
+};
 
 export async function getCurrentsConfig(): Promise<CurrentsConfig> {
   const configFilePath = await getConfigFilePath();
   debug("loading currents config file from '%s'", configFilePath);
 
-  let config: CurrentsConfig = {};
+  const defaultConfig: CurrentsConfig = {
+    batchSize: 3,
+  };
   try {
-    config = require(configFilePath);
-    return config;
+    const fsConfig = require(configFilePath);
+    return {
+      ...defaultConfig,
+      ...fsConfig,
+    };
   } catch (e) {
-    return {};
+    warn("failed to load currents config file: %s", configFilePath);
+    return defaultConfig;
   }
 }
 

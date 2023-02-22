@@ -1,5 +1,6 @@
 import { makeRequest } from "../httpClient";
 import {
+  CreateInstanceCyPayload,
   CreateInstancePayload,
   CreateInstanceResponse,
   CreateInstancesResponse,
@@ -49,24 +50,14 @@ export const createInstance = async ({
   return respone.data;
 };
 
-export const createInstances = async ({
-  runId,
-  groupId,
-  machineId,
-  platform,
-}: CreateInstancePayload) => {
+export const createMultiInstances = async (data: CreateInstanceCyPayload) => {
   const respone = await makeRequest<
     CreateInstancesResponse,
-    CreateInstancePayload
+    CreateInstanceCyPayload
   >({
     method: "POST",
-    url: `runs/${runId}/cy/instances`,
-    data: {
-      runId,
-      groupId,
-      machineId,
-      platform,
-    },
+    url: `runs/${data.runId}/cy/instances`,
+    data,
   });
 
   return respone.data;

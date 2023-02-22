@@ -12,8 +12,9 @@
       "outputs": ["dist/**", ".next/**"],
       "env": [
         "DEBUG",
+        "CURRENTS_BATCHED_ORCHESTRATION",
         "CURRENTS_PROJECT_ID",
-        "CURRENTS_API_BASE_URL",
+        "CURRENTS_API_URL",
         "CURRENTS_RECORD_KEY",
         "TF_BUILD",
         "TF_BUILD_BUILDNUMBER",

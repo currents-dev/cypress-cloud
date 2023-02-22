@@ -29,10 +29,10 @@ export async function runSpecFile(
     },
     spec,
   };
-  debug("%s: running cypress with options %o", spec, options);
+  debug("running cypress with options %o", options);
   const result = await cypress.run(options);
 
-  debug("%s: cypress run result %o", spec, result);
+  debug("cypress run result %o", result);
   return result;
 }
 

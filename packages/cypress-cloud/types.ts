@@ -135,4 +135,7 @@ export type CurrentsRunParameters = StrippedCypressModuleAPIOptions & {
 
   /** The project ID to use. If not specified, will use the projectId from currents.config.js or process.env.CURRENTS_PROJECT_ID */
   projectId: string;
+
+  /** The batch size defines how many spec files will be served in one orchestration "batch". If not specified, will use the projectId from currents.config.js, the default value is 3 */
+  batchSize: number;
 };

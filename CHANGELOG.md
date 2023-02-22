@@ -49,14 +49,14 @@
 
 ### Bug Fixes
 
-- add CURRENTS_API_BASE_URL env var ([9635424](https://github.com/currents-dev/cypress-cloud/commit/9635424b54dcea00c4fd0485060b7ec3581b8fc5))
+- add CURRENTS_API_URL env var ([9635424](https://github.com/currents-dev/cypress-cloud/commit/9635424b54dcea00c4fd0485060b7ec3581b8fc5))
 - capture uploads stdout ([6489278](https://github.com/currents-dev/cypress-cloud/commit/648927803a6a8f43e2d6aff18fcd69c57f7be4f5))
 - cypress start commands ([f79e9fd](https://github.com/currents-dev/cypress-cloud/commit/f79e9fd859f9bb8c802dbc17cd132ff5d9941eb8))
 - get projectRoot from resolved cypress config ([7ada7c3](https://github.com/currents-dev/cypress-cloud/commit/7ada7c37d95ea04b185a99cc89581b87dfa7ecfa))
 
 ### Features
 
-- add CURRENTS_API_BASE_URL to be able to change base URL ([b6b7980](https://github.com/currents-dev/cypress-cloud/commit/b6b798068c9d4afb33979dde091ce90a992b05b2))
+- add CURRENTS_API_URL to be able to change base URL ([b6b7980](https://github.com/currents-dev/cypress-cloud/commit/b6b798068c9d4afb33979dde091ce90a992b05b2))
 - add initial capture to uploaded results ([b064cfc](https://github.com/currents-dev/cypress-cloud/commit/b064cfc3fd8b46e9a46bb567c5f5439cf78a2964)), closes [#37](https://github.com/currents-dev/cypress-cloud/issues/37) [#23](https://github.com/currents-dev/cypress-cloud/issues/23)
 - debug and logging ([34570be](https://github.com/currents-dev/cypress-cloud/commit/34570beac3d82cdf55b4a96631b6ac9810a1eb26))
 

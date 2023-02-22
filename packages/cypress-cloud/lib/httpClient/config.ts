@@ -17,4 +17,4 @@ export const isRetriableError = (err: AxiosError | Error) => {
 export const getDelays = () => [30 * 1000, 60 * 1000, 2 * 60 * 1000]; // 30s, 1min, 2min
 
 export const getBaseUrl = () =>
-  process.env.CURRENTS_API_BASE_URL || "https://cy.currents.dev";
+  process.env.CURRENTS_API_URL || "https://cy.currents.dev";

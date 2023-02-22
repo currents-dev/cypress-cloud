@@ -84,18 +84,22 @@ export type CreateInstancePayload = {
   platform: Platform;
 };
 
+export type CreateInstanceCyPayload = CreateInstancePayload & {
+  batchSize: number;
+};
 export type CreateInstanceResponse = {
   spec: string | null;
   instanceId: string | null;
   claimedInstances: number;
   totalInstances: number;
 };
-export type CreateInstancesResponse = {
-  specs: Array<{
-    spec: string;
-    instanceId: string;
-  }>;
 
+export type InstanceResponseSpecDetails = {
+  spec: string;
+  instanceId: string;
+};
+export type CreateInstancesResponse = {
+  specs: Array<InstanceResponseSpecDetails>;
   claimedInstances: number;
   totalInstances: number;
 };

@@ -20,7 +20,7 @@ const API_BASEURL = "http://localhost:1234";
 
 describe("cloud/api", () => {
   beforeAll(() => {
-    process.env.CURRENTS_API_BASE_URL = API_BASEURL;
+    process.env.CURRENTS_API_URL = API_BASEURL;
   });
 
   describe("createRun", () => {

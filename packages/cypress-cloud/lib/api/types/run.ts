@@ -1,5 +1,5 @@
-import { CiParams, CiProvider } from "cypress-cloud/lib/ciProvider";
-import { Platform } from "cypress-cloud/types";
+import { CiParams, CiProvider } from "@currents/cypress/lib/ciProvider";
+import { Platform } from "@currents/cypress/types";
 
 export type CreateRunPayload = {
   ci: {
@@ -20,6 +20,7 @@ export type CreateRunPayload = {
   tags?: string[];
   testingType: "e2e" | "component";
   timeout?: number;
+  batchSize: number;
 };
 
 export type CloudWarning = {

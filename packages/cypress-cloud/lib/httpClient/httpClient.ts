@@ -41,7 +41,7 @@ export const makeRequest = <T = any, D = any>(
         "x-cypress-request-attempt": retryIndex,
         "x-cypress-run-id": _runId,
         "x-cypress-version": _cypressVersion,
-        "x-currents-version": _currentsVersion,
+        "x-ccy-version": _currentsVersion ?? "0.0.0",
         ...config.headers,
       },
     };

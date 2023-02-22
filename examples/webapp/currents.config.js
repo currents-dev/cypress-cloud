@@ -1,4 +1,5 @@
 module.exports = {
+  batchSize: 5, // how many specs to send in one batch
   projectId: !!(process.env.GITHUB_ACTION || process.env.CIRCLE_BRANCH)
     ? "Ij0RfK"
     : "l4zuz8",

@@ -16,15 +16,22 @@ import {
 import { findSpecs } from "./lib/specMatcher";
 import { CurrentsRunParameters, SummaryResults } from "./types";
 
-import { createInstances, createRun } from "./lib/api/api";
-import { CreateInstancePayload } from "./lib/api/types/instance";
+import Debug from "debug";
+import { createInstance, createMultiInstances, createRun } from "./lib/api/api";
+import {
+  CreateInstancePayload,
+  InstanceResponseSpecDetails,
+} from "./lib/api/types/instance";
 import { guessBrowser } from "./lib/browser";
 import { getCI } from "./lib/ciProvider";
 import { runSpecFileSafe } from "./lib/cypress";
+import { isCurrents } from "./lib/env";
 import { getGitInfo } from "./lib/git";
 import { bold, divider, error, info, spacer, title, warn } from "./lib/log";
 import { getPlatformInfo } from "./lib/platform";
 import { summaryTable } from "./lib/table";
+
+const debug = Debug("currents:index");
 
 /**
  * Run the Cypress tests and return the results.
@@ -35,8 +42,18 @@ import { summaryTable } from "./lib/table";
 export async function run(params: CurrentsRunParameters) {
   spacer();
 
-  const { key, projectId, group, parallel, ciBuildId, tag, testingType } =
-    params;
+  const {
+    key,
+    projectId,
+    group,
+    parallel,
+    ciBuildId,
+    tag,
+    testingType,
+    batchSize,
+  } = params;
+
+  debug("run params %o", params);
 
   const config = await getConfig(params);
   const specPattern = params.spec || config.specPattern;
@@ -88,13 +105,14 @@ export async function run(params: CurrentsRunParameters) {
     specPattern: [specPattern].flat(2),
     tags: tag,
     testingType,
+    batchSize,
   });
 
   info(
     "Params:",
     `Tags: ${tag?.join(",") ?? false}; Group: ${group ?? false}; Parallel: ${
       parallel ?? false
-    }`
+    }; Batch Size: ${batchSize}`
   );
   info("🎥 Run URL:", bold(run.runUrl));
 
@@ -113,7 +131,6 @@ export async function run(params: CurrentsRunParameters) {
     params
   );
 
-  console.log(results);
   const testResults = summarizeTestResults(Object.values(results));
 
   divider();
@@ -145,13 +162,40 @@ async function runTillDone(
   const uploadTasks: Promise<any>[] = [];
   let hasMore = true;
 
-  async function runSpecFile() {
-    const instances = await createInstances({
-      runId,
-      groupId,
-      machineId,
-      platform,
-    });
+  async function runSpecFiles() {
+    let instances = {
+      specs: [] as InstanceResponseSpecDetails[],
+      claimedInstances: 0,
+      totalInstances: 0,
+    };
+
+    if (isCurrents() || !!process.env.CURRENTS_BATCHED_ORCHESTRATION) {
+      debug("Running batched orchestration %d", cypressRunOptions.batchSize);
+      instances = await createMultiInstances({
+        runId,
+        groupId,
+        machineId,
+        platform,
+        batchSize: cypressRunOptions.batchSize,
+      });
+    } else {
+      const response = await createInstance({
+        runId,
+        groupId,
+        machineId,
+        platform,
+      });
+      if (response.spec !== null && response.instanceId !== null) {
+        instances.specs.push({
+          spec: response.spec,
+          instanceId: response.instanceId,
+        });
+      }
+      instances.claimedInstances = response.claimedInstances;
+      instances.totalInstances = response.totalInstances;
+    }
+
+    debug;
 
     if (instances.specs.length === 0) {
       hasMore = false;
@@ -183,8 +227,6 @@ async function runTillDone(
       );
     }
 
-    console.dir(cypressResult);
-
     instances.specs.forEach((spec) => {
       summary[spec.spec] = {
         ...cypressResult,
@@ -213,15 +255,9 @@ async function runTillDone(
     resetCapture();
   }
 
-  // bus.on("after", () => console.log("🔥 AFTER"));
-  // bus.on("after", async () => await runSpecFile());
-
   while (hasMore) {
-    await runSpecFile();
-    // await new Promise((resolve) => setTimeout(resolve, 1000));
-    // uploadTasks.push(runSpecFile());
+    await runSpecFiles();
   }
-  // waitUntil(() => !hasMore, 0, 1000);
 
   await Promise.allSettled(uploadTasks);
   return summary;
