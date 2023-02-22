@@ -3,7 +3,7 @@ import { defineConfig } from "cypress";
 
 module.exports = defineConfig({
   e2e: {
-    projectId: "s0LBur",
+    projectId: "Ij0RfK",
     baseUrl: "https://todomvc.com/examples/vanillajs",
     videoUploadOnPasses: false,
     supportFile: "cypress/support/e2e.ts",
