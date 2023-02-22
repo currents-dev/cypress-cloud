@@ -25,8 +25,8 @@ jobs:
             npm install @currents/cli
             npx currents run --record --parallel \
             --spec "./cypress/e2e*/*.spec.js" \
-            --browser chrome --key $CURRENTS_RECORD_KEY \ 
-            --tag currents-cli,circleCI
+            --tag currents-cli --tag circleCI \
+            --browser chrome --key $CURRENTS_RECORD_KEY
 
   cypress_tests_cloud:
     parallelism: 5
@@ -51,8 +51,8 @@ jobs:
             cd examples/webapp
             npx cypress-cloud run --record --parallel \
             --spec "./cypress/e2e*/*.spec.js" \
-            --browser chrome --key $CURRENTS_RECORD_KEY \ 
-            --tag cypress-cloud,circleCI
+            --tag cypress-cloud --tag circleCI \
+            --browser chrome --key $CURRENTS_RECORD_KEY
 
 workflows:
   cypress:
