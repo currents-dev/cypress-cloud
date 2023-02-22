@@ -21,6 +21,7 @@ jobs:
       - run:
           name: Cypress Tests with @currents/cli
           command: |
+            cd examples/webapp
             npm install @currents/cli
             npx currents run --record --parallel \
             --spec "./cypress/e2e*/*.spec.js" \
