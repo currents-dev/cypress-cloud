@@ -68,6 +68,7 @@ export const getInstanceResultPayload = (
       runResult.tests?.map((test, i) => ({
         displayError: test.displayError,
         state: test.state as TestState,
+        hooks: runResult.hooks,
         attempts: test.attempts?.map(getTestAttempts) ?? [],
         clientId: `r${i}`,
       })) ?? [],
