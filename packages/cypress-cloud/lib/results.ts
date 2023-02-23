@@ -46,7 +46,7 @@ export const getStats = (stats: CypressCommandLine.RunResult["stats"]) => {
   };
 };
 
-export const getTestAttempts = (attempt: CypressCommandLine.AttemptResult) => {
+export const getTestAttempt = (attempt: CypressCommandLine.AttemptResult) => {
   return {
     ...attempt,
     state: attempt.state as TestState,
@@ -58,6 +58,10 @@ export const getTestAttempts = (attempt: CypressCommandLine.AttemptResult) => {
 export const getInstanceResultPayload = (
   runResult: CypressCommandLine.RunResult
 ): UpdateInstanceResultsPayload => {
+  const altTests = [];
+  if (runResult.error && !runResult.tests?.length) {
+    altTests.push(getFakeTestFromException(runResult.error, runResult.stats));
+  }
   return {
     stats: getStats(runResult.stats),
     reporterStats: runResult.reporterStats,
@@ -69,17 +73,48 @@ export const getInstanceResultPayload = (
         displayError: test.displayError,
         state: test.state as TestState,
         hooks: runResult.hooks,
-        attempts: test.attempts?.map(getTestAttempts) ?? [],
+        attempts: test.attempts?.map(getTestAttempt) ?? [],
         clientId: `r${i}`,
-      })) ?? [],
+      })) ?? altTests,
   };
 };
 
-// TODO this one need testing with real data
+function getFakeTestFromException(
+  error: string,
+  stats: CypressCommandLine.RunResult["stats"]
+) {
+  return {
+    title: ["Unknown"],
+    body: "",
+    displayError: error.split("\n")[0],
+    state: "failed",
+    hooks: [],
+    attempts: [
+      getTestAttempt({
+        state: "failed",
+        duration: 0,
+        error: {
+          name: "Error",
+          message: error.split("\n")[0],
+          stack: error,
+        },
+        screenshots: [],
+        startedAt: stats.startedAt,
+        videoTimestamp: 0,
+      }),
+    ],
+    clientId: "r0",
+  };
+}
+
 export const getInstanceTestsPayload = (
   runResult: CypressCommandLine.RunResult,
   config: Cypress.ResolvedConfigOptions
 ): SetInstanceTestsPayload => {
+  const altTests = [];
+  if (runResult.error && !runResult.tests?.length) {
+    altTests.push(getFakeTestFromException(runResult.error, runResult.stats));
+  }
   return {
     config,
     tests:
@@ -89,8 +124,8 @@ export const getInstanceTestsPayload = (
         body: test.body,
         clientId: `r${i}`,
         hookIds: [],
-      })) ?? [],
-    hooks: [],
+      })) ?? altTests,
+    hooks: runResult.hooks,
   };
 };
 
@@ -129,11 +164,11 @@ export async function processCypressResults(
   }
   const resultPayload = getInstanceResultPayload(runResult);
   debug("result payload %o", resultPayload);
+
   const uploadInstructions = await updateInstanceResultsMerged(instanceId, {
     tests: getInstanceTestsPayload(results.runs[0], results.config),
     results: resultPayload,
   });
-
   const { videoUploadUrl, screenshotUploadUrls } = uploadInstructions;
   debug(
     "instance %s artifact upload instructions %o",
@@ -206,7 +241,7 @@ export function getFailedDummyResult({
       },
       tests: [
         {
-          title: ["Dummy test title"],
+          title: ["Unknown"],
           state: "failed",
           body: "// This test is automatically generated due to execution failure",
           displayError: error,

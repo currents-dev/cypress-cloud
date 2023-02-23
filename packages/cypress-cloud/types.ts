@@ -1,6 +1,10 @@
 export type TestingType = Cypress.TestingType;
 export type SpecType = "component" | "integration";
 
+export type CypressRun = ArrayItemType<
+  CypressCommandLine.CypressRunResult["runs"]
+>;
+
 export type CypressResult =
   | CypressCommandLine.CypressRunResult
   | CypressCommandLine.CypressFailedRunResult;
@@ -139,3 +143,4 @@ export type CurrentsRunParameters = StrippedCypressModuleAPIOptions & {
   /** The batch size defines how many spec files will be served in one orchestration "batch". If not specified, will use the projectId from currents.config.js, the default value is 3 */
   batchSize: number;
 };
+export type ArrayItemType<T> = T extends (infer U)[] ? U : T;

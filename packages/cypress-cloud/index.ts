@@ -15,7 +15,7 @@ import {
   summarizeTestResults,
 } from "./lib/results";
 import { findSpecs } from "./lib/specMatcher";
-import { CurrentsRunParameters, SummaryResults } from "./types";
+import { CurrentsRunParameters, CypressResult, SummaryResults } from "./types";
 
 import Debug from "debug";
 import { createInstance, createMultiInstances, createRun } from "./lib/api/api";
@@ -146,6 +146,7 @@ export async function run(params: CurrentsRunParameters) {
   return testResults;
 }
 
+type Config = Awaited<ReturnType<typeof getConfig>>;
 async function runTillDone(
   {
     runId,
@@ -154,7 +155,7 @@ async function runTillDone(
     platform,
     config,
   }: CreateInstancePayload & {
-    config: Awaited<ReturnType<typeof getConfig>>;
+    config: Config;
   },
   cypressRunOptions: CurrentsRunParameters
 ) {
@@ -169,6 +170,30 @@ async function runTillDone(
       claimedInstances: 0,
       totalInstances: 0,
     };
+
+    // bus.on("after:spec", (msg) => {
+    //   console.log("after:spec", msg);
+
+    //   const instanceId = instances.specs.find(
+    //     (s) => s.spec === msg.spec.name
+    //   )?.instanceId;
+
+    //   if (!instanceId) {
+    //     warn('Cannot determine instanceId for spec "%s"', msg.spec.name);
+    //     return;
+    //   }
+
+    //   return processCypressResults(
+    //     instanceId,
+    //     {
+    //       ...msg.results,
+    //       runs: cypressRawResult.runs.filter(
+    //         (r) => r.spec.relative === run.spec.relative
+    //       ),
+    //     },
+    //     getCapturedOutput()
+    //   ).catch(error);
+    // });
 
     if (isCurrents() || !!process.env.CURRENTS_BATCHED_ORCHESTRATION) {
       debug("Running batched orchestration %d", cypressRunOptions.batchSize);
@@ -186,6 +211,7 @@ async function runTillDone(
         machineId,
         platform,
       });
+
       if (response.spec !== null && response.instanceId !== null) {
         instances.specs.push({
           spec: response.spec,
@@ -209,96 +235,36 @@ async function runTillDone(
       instances.totalInstances
     );
 
-    const cypressRawResult = await runSpecFileSafe(
+    const rawResult = await runSpecFileSafe(
       { spec: instances.specs.map((s) => s.spec).join(",") },
       cypressRunOptions
     );
+    const normalizedResult = normalizeRawResult(
+      rawResult,
+      instances.specs.map((s) => s.spec),
+      config
+    );
 
-    // TODO: Handle failed results
-    if (!isSuccessResult(cypressRawResult)) {
-      const fakeResults = getFailedDummyResult({
-        specs: instances.specs.map((s) => s.spec),
-        error: cypressRawResult.message,
-        config,
-      });
-      warn("Executing the spec files has failed, running the next batch...");
-      instances.specs.forEach((spec) => {
-        const run = fakeResults.runs.find((r) => r.spec.relative === spec.spec);
-        if (!run) {
-          warn('Cannot find dummy result for spec "%s"', spec.spec);
-          return;
-        }
-        const stats = getStats(run.stats);
-        // adjust the result for singe spec
-        summary[spec.spec] = {
-          ...fakeResults,
-          runs: [run],
-          totalSuites: 1,
-          totalDuration: stats.wallClockDuration,
-          totalTests: stats.tests,
-          totalFailed: stats.failures,
-          totalPassed: stats.passes,
-          totalPending: stats.pending,
-          totalSkipped: stats.skipped,
-          startedTestsAt: stats.wallClockStartedAt,
-          endedTestsAt: stats.wallClockEndedAt,
-        };
-      });
-    } else {
-      instances.specs.forEach((spec) => {
-        const run = cypressRawResult.runs.find(
-          (r) => r.spec.relative === spec.spec
-        );
-        if (!run) {
-          warn('Cannot find results for spec "%s"', spec.spec);
-          return;
-        }
-        const stats = getStats(run.stats);
-        // adjust the result for singe spec
-        summary[spec.spec] = {
-          ...cypressRawResult,
-          runs: [run],
-          totalSuites: 1,
-          totalDuration: stats.wallClockDuration,
-          totalTests: stats.tests,
-          totalFailed: stats.failures,
-          totalPassed: stats.passes,
-          totalPending: stats.pending,
-          totalSkipped: stats.skipped,
-          startedTestsAt: stats.wallClockStartedAt,
-          endedTestsAt: stats.wallClockEndedAt,
-        };
-      });
+    instances.specs.forEach((spec) => {
+      const specSummary = getSummaryForSpec(spec.spec, normalizedResult);
+      if (!specSummary) {
+        warn('Cannot find run result for spec "%s"', spec.spec);
+        return;
+      }
+      summary[spec.spec] = specSummary;
+    });
 
-      title("blue", "Reporting results and artifacts in background...");
+    title("blue", "Reporting results and artifacts in background...");
 
-      uploadTasks.concat(
-        cypressRawResult.runs.flatMap(async (run) => {
-          const instanceId = instances.specs.find(
-            (s) => s.spec === run.spec.relative
-          )?.instanceId;
-
-          if (!instanceId) {
-            warn(
-              'Cannot determine instanceId for spec "%s"',
-              run.spec.relative
-            );
-            return;
-          }
-
-          return processCypressResults(
-            instanceId,
-            {
-              ...cypressRawResult,
-              runs: cypressRawResult.runs.filter(
-                (r) => r.spec.relative === run.spec.relative
-              ),
-            },
-            getCapturedOutput()
-          ).catch(error);
-        })
-      );
-    }
+    uploadTasks.concat(
+      instances.specs.map((spec) =>
+        getUploadTask({
+          ...spec,
+          runResult: normalizedResult,
+          output: getCapturedOutput(),
+        }).catch(error)
+      )
+    );
 
     resetCapture();
   }
@@ -310,4 +276,70 @@ async function runTillDone(
   await Promise.allSettled(uploadTasks);
 
   return summary;
+}
+
+async function getUploadTask({
+  instanceId,
+  spec,
+  runResult,
+  output,
+}: {
+  instanceId: string;
+  spec: string;
+  runResult: CypressCommandLine.CypressRunResult;
+  output: string;
+}) {
+  const run = runResult.runs.find((r) => r.spec.relative === spec);
+  if (!run) {
+    warn('Cannot determine run result for spec "%s"', spec);
+    return;
+  }
+  return processCypressResults(
+    instanceId,
+    {
+      // replace the runs with the runs for the specified spec
+      ...runResult,
+      runs: [run],
+    },
+    output
+  );
+}
+function normalizeRawResult(
+  rawResult: CypressResult,
+  specs: string[],
+  config: Config
+): CypressCommandLine.CypressRunResult {
+  if (!isSuccessResult(rawResult)) {
+    return getFailedDummyResult({
+      specs,
+      error: rawResult.message,
+      config,
+    });
+  }
+  return rawResult;
+}
+
+function getSummaryForSpec(
+  spec: string,
+  runResult: CypressCommandLine.CypressRunResult
+) {
+  const run = runResult.runs.find((r) => r.spec.relative === spec);
+  if (!run) {
+    return;
+  }
+  const stats = getStats(run.stats);
+  // adjust the result for singe spec
+  return {
+    ...runResult,
+    runs: [run],
+    totalSuites: 1,
+    totalDuration: stats.wallClockDuration,
+    totalTests: stats.tests,
+    totalFailed: stats.failures,
+    totalPassed: stats.passes,
+    totalPending: stats.pending,
+    totalSkipped: stats.skipped,
+    startedTestsAt: stats.wallClockStartedAt,
+    endedTestsAt: stats.wallClockEndedAt,
+  };
 }

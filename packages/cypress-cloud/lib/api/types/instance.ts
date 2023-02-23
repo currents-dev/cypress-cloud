@@ -1,5 +1,5 @@
-import { Platform, ScreenshotArtifact } from "cypress-cloud/types";
-import { SetTestsPayload, Test, TestHook } from "./test";
+import { Platform, ScreenshotArtifact } from "@currents/cypress/types";
+import { SetTestsPayload, Test } from "./test";
 
 export interface Screenshot {
   screenshotId: string;
@@ -69,7 +69,7 @@ export type SetResultsTestsPayload = Pick<
 export interface SetInstanceTestsPayload {
   config: PickedCypressConfig;
   tests: Array<SetTestsPayload>;
-  hooks: TestHook[];
+  hooks: CypressCommandLine.RunResult["hooks"];
 }
 
 export type PickedCypressConfig = Pick<
