@@ -273,10 +273,21 @@ async function runTillDone(
       title("blue", "Reporting results and artifacts in background...");
 
       uploadTasks.concat(
-        cypressRawResult.runs.flatMap(async (run) =>
-          processCypressResults(
-            instances.specs.find((s) => s.spec === run.spec.relative)!
-              .instanceId!,
+        cypressRawResult.runs.flatMap(async (run) => {
+          const instanceId = instances.specs.find(
+            (s) => s.spec === run.spec.relative
+          )?.instanceId;
+
+          if (!instanceId) {
+            warn(
+              'Cannot determine instanceId for spec "%s"',
+              run.spec.relative
+            );
+            return;
+          }
+
+          return processCypressResults(
+            instanceId,
             {
               ...cypressRawResult,
               runs: cypressRawResult.runs.filter(
@@ -284,8 +295,8 @@ async function runTillDone(
               ),
             },
             getCapturedOutput()
-          ).catch(error)
-        )
+          ).catch(error);
+        })
       );
     }
 
