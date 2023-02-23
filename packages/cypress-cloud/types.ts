@@ -90,10 +90,10 @@ export type ScreenshotArtifact = CypressCommandLine.ScreenshotInformation & {
 
 export interface TestsResult {
   pending: number;
-  failed: number;
+  failures: number;
   skipped: number;
-  passed: number;
-  total: number;
+  passes: number;
+  tests: number;
 }
 
 export type SummaryResults = Record<

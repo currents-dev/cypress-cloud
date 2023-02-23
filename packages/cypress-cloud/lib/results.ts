@@ -102,17 +102,17 @@ export const summarizeTestResults = (
       { totalFailed, totalPassed, totalPending, totalSkipped, totalTests }
     ) => ({
       pending: acc.pending + totalPending,
-      failed: acc.failed + totalFailed,
+      failures: acc.failures + totalFailed,
       skipped: acc.skipped + totalSkipped,
-      passed: acc.passed + totalPassed,
-      total: acc.total + totalTests,
+      passes: acc.passes + totalPassed,
+      tests: acc.tests + totalTests,
     }),
     {
       pending: 0,
-      failed: 0,
+      failures: 0,
       skipped: 0,
-      passed: 0,
-      total: 0,
+      passes: 0,
+      tests: 0,
     }
   );
 };

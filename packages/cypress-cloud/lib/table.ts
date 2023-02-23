@@ -53,9 +53,9 @@ export const summaryTable = (r: SummaryResults) => {
         hasFailed ? failureIcon : successIcon, // marker
         verdict,
         gray(prettyMS(overallDuration ?? 0)),
-        white(testsOverall.total ?? 0),
-        testsOverall.passed ? green(testsOverall.passed) : gray("-"),
-        testsOverall.failed ? red(testsOverall.failed) : gray("-"),
+        white(testsOverall.tests ?? 0),
+        testsOverall.passes ? green(testsOverall.passes) : gray("-"),
+        testsOverall.failures ? red(testsOverall.failures) : gray("-"),
         testsOverall.pending ? blue(testsOverall.pending) : gray("-"),
         testsOverall.skipped ? red(testsOverall.skipped) : gray("-"),
       ],
