@@ -17,7 +17,7 @@ module.exports = defineConfig({
   },
 
   component: {
-    specPattern: ["pages/**/*.spec.tsx", "pages/*.spec.tsx"],
+    specPattern: ["pages/__tests__/*.spec.tsx"],
     setupNodeEvents(on, config) {
       return currents(on, config);
     },

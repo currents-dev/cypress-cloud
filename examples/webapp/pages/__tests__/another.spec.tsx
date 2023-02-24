@@ -1,5 +1,5 @@
 import React from "react";
-import Another from "./another";
+import Another from "../another.page";
 
 describe("<Another />", () => {
   it("renders", () => {
