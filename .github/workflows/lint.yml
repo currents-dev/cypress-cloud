@@ -14,10 +14,9 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: "16"
-          cache: "yarn"
 
       - name: Install dependencies
-        run: yarn
+        run: npm ci
 
       - name: Run lint
-        run: yarn lint
+        run: npm run lint
