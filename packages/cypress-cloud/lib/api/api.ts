@@ -50,7 +50,7 @@ export const createInstance = async ({
   return respone.data;
 };
 
-export const createMultiInstances = async (data: CreateInstanceCyPayload) => {
+export const createBatchedInstances = async (data: CreateInstanceCyPayload) => {
   const respone = await makeRequest<
     CreateInstancesResponse,
     CreateInstanceCyPayload
@@ -92,7 +92,7 @@ export const updateInstanceResultsMerged = (
     UpdateInstanceResultsMergedPayload
   >({
     method: "POST",
-    url: `instances/${instanceId}/pw/results`,
+    url: `instances/${instanceId}/cy/results`,
     data: payload,
   }).then((result) => result.data);
 

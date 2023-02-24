@@ -18,7 +18,11 @@ import { findSpecs } from "./lib/specMatcher";
 import { CurrentsRunParameters, CypressResult, SummaryResults } from "./types";
 
 import Debug from "debug";
-import { createInstance, createMultiInstances, createRun } from "./lib/api/api";
+import {
+  createBatchedInstances,
+  createInstance,
+  createRun,
+} from "./lib/api/api";
 import {
   CreateInstancePayload,
   InstanceResponseSpecDetails,
@@ -165,39 +169,15 @@ async function runTillDone(
   let hasMore = true;
 
   async function runSpecFiles() {
-    let instances = {
+    let batch = {
       specs: [] as InstanceResponseSpecDetails[],
       claimedInstances: 0,
       totalInstances: 0,
     };
 
-    // bus.on("after:spec", (msg) => {
-    //   console.log("after:spec", msg);
-
-    //   const instanceId = instances.specs.find(
-    //     (s) => s.spec === msg.spec.name
-    //   )?.instanceId;
-
-    //   if (!instanceId) {
-    //     warn('Cannot determine instanceId for spec "%s"', msg.spec.name);
-    //     return;
-    //   }
-
-    //   return processCypressResults(
-    //     instanceId,
-    //     {
-    //       ...msg.results,
-    //       runs: cypressRawResult.runs.filter(
-    //         (r) => r.spec.relative === run.spec.relative
-    //       ),
-    //     },
-    //     getCapturedOutput()
-    //   ).catch(error);
-    // });
-
     if (isCurrents() || !!process.env.CURRENTS_BATCHED_ORCHESTRATION) {
-      debug("Running batched orchestration %d", cypressRunOptions.batchSize);
-      instances = await createMultiInstances({
+      debug("Getring batched tasks: %d", cypressRunOptions.batchSize);
+      batch = await createBatchedInstances({
         runId,
         groupId,
         machineId,
@@ -213,16 +193,16 @@ async function runTillDone(
       });
 
       if (response.spec !== null && response.instanceId !== null) {
-        instances.specs.push({
+        batch.specs.push({
           spec: response.spec,
           instanceId: response.instanceId,
         });
       }
-      instances.claimedInstances = response.claimedInstances;
-      instances.totalInstances = response.totalInstances;
+      batch.claimedInstances = response.claimedInstances;
+      batch.totalInstances = response.totalInstances;
     }
 
-    if (instances.specs.length === 0) {
+    if (batch.specs.length === 0) {
       hasMore = false;
       return;
     }
@@ -230,22 +210,22 @@ async function runTillDone(
     divider();
     info(
       "Running: %s (%d/%d)",
-      instances.specs.map((s) => s.spec).join(", "),
-      instances.claimedInstances,
-      instances.totalInstances
+      batch.specs.map((s) => s.spec).join(", "),
+      batch.claimedInstances,
+      batch.totalInstances
     );
 
     const rawResult = await runSpecFileSafe(
-      { spec: instances.specs.map((s) => s.spec).join(",") },
+      { spec: batch.specs.map((s) => s.spec).join(",") },
       cypressRunOptions
     );
     const normalizedResult = normalizeRawResult(
       rawResult,
-      instances.specs.map((s) => s.spec),
+      batch.specs.map((s) => s.spec),
       config
     );
 
-    instances.specs.forEach((spec) => {
+    batch.specs.forEach((spec) => {
       const specSummary = getSummaryForSpec(spec.spec, normalizedResult);
       if (!specSummary) {
         warn('Cannot find run result for spec "%s"', spec.spec);
@@ -257,7 +237,7 @@ async function runTillDone(
     title("blue", "Reporting results and artifacts in background...");
 
     uploadTasks.concat(
-      instances.specs.map((spec) =>
+      batch.specs.map((spec) =>
         getUploadTask({
           ...spec,
           runResult: normalizedResult,
