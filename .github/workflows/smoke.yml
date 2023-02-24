@@ -12,7 +12,7 @@ jobs:
         containers: [1, 2, 3]
     runs-on: ubuntu-latest
     env:
-      DEBUG: currents:*
+      # DEBUG: currents:*
       CURRENTS_API_URL: http://localhost:1234
 
     services:
