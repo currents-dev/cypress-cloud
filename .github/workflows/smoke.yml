@@ -1,0 +1,49 @@
+name: e2e:smoke
+
+on:
+  push:
+
+jobs:
+  e2e-network:
+    if: "!contains(toJSON(github.event.commits.*.message), '[skip ci]')"
+    strategy:
+      fail-fast: false
+      matrix:
+        containers: [1, 2, 3]
+    runs-on: ubuntu-latest
+    env:
+      DEBUG: currents:*
+      CURRENTS_API_URL: http://localhost:1234
+
+    services:
+      director:
+        image: agoldis/sorry-cypress-director
+        ports:
+          - 1234:1234
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Link
+        working-directory: ./packages/cypress-cloud
+        run: npm link
+
+      - name: Run Cypress with cypress-cloud
+        working-directory: ./examples/webapp
+        env:
+          COMMIT_INFO_MESSAGE: "[cypress-cloud] ${{ github.event.head_commit.message }}"
+        run: |
+          npm link @currents/cypress
+          npx cypress-cloud run --record --parallel \
+          --spec "./cypress/e2e/*.spec.js" \
+          --browser chrome --key ${{ secrets.CURRENTS_RECORD_KEY }} \ --ci-build-id "cloud-${{ github.repository }}-${{ github.run_id }}-${{ github.run_attempt}}" \
+          --tag cypress-cloud,gha
