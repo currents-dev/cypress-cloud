@@ -10,7 +10,6 @@ context("Clear completed button", function () {
 
   it("should display the correct text", function () {
     cy.get("@todos").eq(0).find(".toggle").check();
-
     cy.get(".clear-completed").contains("Clear completed");
   });
 
@@ -26,9 +25,7 @@ context("Clear completed button", function () {
 
   it("should be hidden when there are no items that are completed", function () {
     cy.get("@todos").eq(1).find(".toggle").check();
-
     cy.get(".clear-completed").should("be.visible").click();
-
     cy.get(".clear-completed").should("not.be.visible");
   });
 });

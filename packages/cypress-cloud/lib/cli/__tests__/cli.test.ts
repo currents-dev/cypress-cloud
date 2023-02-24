@@ -1,5 +1,19 @@
 import { expect } from "@jest/globals";
-import { createProgram, parseOptions } from "..";
+import { parseOptions } from "../cli";
+import { createProgram } from "../program";
+
+jest.mock("../../config", () => ({
+  getCurrentsConfig: () => ({
+    projectId: "projectID",
+    recordKey: "key",
+    e2e: {
+      batchSize: 1,
+    },
+    component: {
+      batchSize: 2,
+    },
+  }),
+}));
 
 const getProgram = () =>
   createProgram()
@@ -144,7 +158,7 @@ describe("CLI", () => {
   it("parses tags into an array", async () => {
     expect(await p(["--tag", "a,b", "--tag", "c", "--key", "a"])).toMatchObject(
       {
-        tags: ["a", "b", "c"],
+        tag: ["a", "b", "c"],
       }
     );
   });

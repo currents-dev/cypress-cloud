@@ -4,7 +4,7 @@ import prettyMS from "pretty-ms";
 import { table } from "table";
 import { SummaryResults } from "../types";
 import { blue, gray, green, red, white } from "./log";
-import { summarizeTestResults } from "./results";
+import { summarizeTestResults } from "./results/results";
 
 const failureIcon = red("✖");
 const successIcon = green("✔");

@@ -30,7 +30,7 @@ export async function runSpecFile(
     spec,
   };
   debug("running cypress with options %o", options);
-  const result = await cypress.run({ ...options, sdfs: "!@#$%^&*()_+" });
+  const result = await cypress.run(options);
 
   debug("cypress run result %o", result);
   return result;

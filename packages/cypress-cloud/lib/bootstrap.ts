@@ -6,7 +6,7 @@ import { chain } from "lodash";
 import { customAlphabet } from "nanoid";
 import { VError } from "verror";
 import { CurrentsRunParameters } from "../types";
-import { getStrippedCypressOptions, serializeOptions } from "./cli/cli";
+import { getCLICypressOptions, serializeOptions } from "./cli/cli";
 import { createTempFile } from "./fs";
 import { error } from "./log";
 
@@ -19,8 +19,7 @@ export const bootCypress = async (
 ) => {
   debug("booting cypress...");
   const tempFilePath = await createTempFile();
-
-  const serializedOptions = chain(getStrippedCypressOptions(params))
+  const serializedOptions = chain(getCLICypressOptions(params))
     .thru((opts) => ({
       ...opts,
       // merge the env with the currents specific env variables
@@ -44,6 +43,7 @@ export const bootCypress = async (
     "--spec",
     getDummySpec(),
     ...serializedOptions,
+    params.testingType === "component" ? "--component" : "--e2e",
   ];
 
   debug("booting cypress with args: %o", args);

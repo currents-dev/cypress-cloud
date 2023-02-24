@@ -2,7 +2,7 @@ import {
   getInstanceResultPayload,
   getInstanceTestsPayload,
   getTestAttempt,
-} from "../results";
+} from "../results/results";
 import configException from "./fixtures/payloads/cypressResult/exception/config.json";
 import rawResultException from "./fixtures/payloads/cypressResult/exception/results.json";
 

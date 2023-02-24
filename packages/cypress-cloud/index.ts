@@ -1,39 +1,20 @@
 import("./lib/init");
 
-import {
-  cutInitialOutput,
-  getCapturedOutput,
-  resetCapture,
-} from "./lib/capture";
+import { cutInitialOutput } from "./lib/capture";
 import { getConfig } from "./lib/config";
 import { setRunId } from "./lib/httpClient";
-import {
-  getFailedDummyResult,
-  getStats,
-  isSuccessResult,
-  processCypressResults,
-  summarizeTestResults,
-} from "./lib/results";
-import { findSpecs } from "./lib/specMatcher";
-import { CurrentsRunParameters, CypressResult, SummaryResults } from "./types";
+import { summarizeTestResults } from "./lib/results";
+import { getSpecFiles, getSpecPattern } from "./lib/specMatcher";
+import { CurrentsRunParameters } from "./types";
 
 import Debug from "debug";
-import {
-  createBatchedInstances,
-  createInstance,
-  createRun,
-} from "./lib/api/api";
-import {
-  CreateInstancePayload,
-  InstanceResponseSpecDetails,
-} from "./lib/api/types/instance";
+import { createRun } from "./lib/api/api";
 import { guessBrowser } from "./lib/browser";
 import { getCI } from "./lib/ciProvider";
-import { runSpecFileSafe } from "./lib/cypress";
-import { isCurrents } from "./lib/env";
 import { getGitInfo } from "./lib/git";
-import { bold, divider, error, info, spacer, title, warn } from "./lib/log";
+import { bold, divider, info, spacer, title } from "./lib/log";
 import { getPlatformInfo } from "./lib/platform";
+import { runTillDone } from "./lib/runner";
 import { summaryTable } from "./lib/table";
 
 const debug = Debug("currents:index");
@@ -48,7 +29,7 @@ export async function run(params: CurrentsRunParameters) {
   spacer();
 
   const {
-    key,
+    key: recordKey,
     projectId,
     group,
     parallel,
@@ -58,29 +39,15 @@ export async function run(params: CurrentsRunParameters) {
     batchSize,
   } = params;
 
-  debug("run params %o", params);
+  debug("run api params %o", params);
 
+  // get the actual config parsed by Cypress
   const config = await getConfig(params);
-  const specPattern = params.spec || config.specPattern;
-  const specs = await findSpecs({
-    projectRoot: config.projectRoot,
-    testingType,
-    specPattern,
-    configSpecPattern: config.specPattern,
-    excludeSpecPattern: config.excludeSpecPattern,
-    additionalIgnorePattern: config.additionalIgnorePattern,
-  });
-
+  // explicitly provided pattern or the default from the config file
+  const specPattern = getSpecPattern(config.specPattern, params.spec);
+  // find the spec files according to the resolved configuration
+  const specs = await getSpecFiles({ config, params });
   if (specs.length === 0) {
-    warn("No spec files found to execute. Configuration: %O", {
-      specPattern,
-      configSpecPattern: config.specPattern,
-      excludeSpecPattern: [
-        config.excludeSpecPattern,
-        config.additionalIgnorePattern,
-      ].flat(2),
-      testingType,
-    });
     return;
   }
 
@@ -106,7 +73,7 @@ export async function run(params: CurrentsRunParameters) {
     parallel: parallel ?? false,
     ciBuildId,
     projectId,
-    recordKey: key,
+    recordKey,
     specPattern: [specPattern].flat(2),
     tags: tag,
     testingType,
@@ -141,185 +108,9 @@ export async function run(params: CurrentsRunParameters) {
   divider();
 
   title("white", "Cloud Run Finished");
-
   console.log(summaryTable(results));
-
   info("🏁 Recorded Run:", bold(run.runUrl));
+
   spacer();
-
   return testResults;
-}
-
-type Config = Awaited<ReturnType<typeof getConfig>>;
-async function runTillDone(
-  {
-    runId,
-    groupId,
-    machineId,
-    platform,
-    config,
-  }: CreateInstancePayload & {
-    config: Config;
-  },
-  cypressRunOptions: CurrentsRunParameters
-) {
-  const summary: SummaryResults = {};
-
-  const uploadTasks: Promise<any>[] = [];
-  let hasMore = true;
-
-  async function runSpecFiles() {
-    let batch = {
-      specs: [] as InstanceResponseSpecDetails[],
-      claimedInstances: 0,
-      totalInstances: 0,
-    };
-
-    if (isCurrents() || !!process.env.CURRENTS_BATCHED_ORCHESTRATION) {
-      debug("Getring batched tasks: %d", cypressRunOptions.batchSize);
-      batch = await createBatchedInstances({
-        runId,
-        groupId,
-        machineId,
-        platform,
-        batchSize: cypressRunOptions.batchSize,
-      });
-    } else {
-      const response = await createInstance({
-        runId,
-        groupId,
-        machineId,
-        platform,
-      });
-
-      if (response.spec !== null && response.instanceId !== null) {
-        batch.specs.push({
-          spec: response.spec,
-          instanceId: response.instanceId,
-        });
-      }
-      batch.claimedInstances = response.claimedInstances;
-      batch.totalInstances = response.totalInstances;
-    }
-
-    if (batch.specs.length === 0) {
-      hasMore = false;
-      return;
-    }
-
-    divider();
-    info(
-      "Running: %s (%d/%d)",
-      batch.specs.map((s) => s.spec).join(", "),
-      batch.claimedInstances,
-      batch.totalInstances
-    );
-
-    const rawResult = await runSpecFileSafe(
-      { spec: batch.specs.map((s) => s.spec).join(",") },
-      cypressRunOptions
-    );
-    const normalizedResult = normalizeRawResult(
-      rawResult,
-      batch.specs.map((s) => s.spec),
-      config
-    );
-
-    batch.specs.forEach((spec) => {
-      const specSummary = getSummaryForSpec(spec.spec, normalizedResult);
-      if (!specSummary) {
-        warn('Cannot find run result for spec "%s"', spec.spec);
-        return;
-      }
-      summary[spec.spec] = specSummary;
-    });
-
-    title("blue", "Reporting results and artifacts in background...");
-
-    uploadTasks.concat(
-      batch.specs.map((spec) =>
-        getUploadTask({
-          ...spec,
-          runResult: normalizedResult,
-          output: getCapturedOutput(),
-        }).catch(error)
-      )
-    );
-
-    resetCapture();
-  }
-
-  while (hasMore) {
-    await runSpecFiles();
-  }
-
-  await Promise.allSettled(uploadTasks);
-
-  return summary;
-}
-
-async function getUploadTask({
-  instanceId,
-  spec,
-  runResult,
-  output,
-}: {
-  instanceId: string;
-  spec: string;
-  runResult: CypressCommandLine.CypressRunResult;
-  output: string;
-}) {
-  const run = runResult.runs.find((r) => r.spec.relative === spec);
-  if (!run) {
-    warn('Cannot determine run result for spec "%s"', spec);
-    return;
-  }
-  return processCypressResults(
-    instanceId,
-    {
-      // replace the runs with the runs for the specified spec
-      ...runResult,
-      runs: [run],
-    },
-    output
-  );
-}
-function normalizeRawResult(
-  rawResult: CypressResult,
-  specs: string[],
-  config: Config
-): CypressCommandLine.CypressRunResult {
-  if (!isSuccessResult(rawResult)) {
-    return getFailedDummyResult({
-      specs,
-      error: rawResult.message,
-      config,
-    });
-  }
-  return rawResult;
-}
-
-function getSummaryForSpec(
-  spec: string,
-  runResult: CypressCommandLine.CypressRunResult
-) {
-  const run = runResult.runs.find((r) => r.spec.relative === spec);
-  if (!run) {
-    return;
-  }
-  const stats = getStats(run.stats);
-  // adjust the result for singe spec
-  return {
-    ...runResult,
-    runs: [run],
-    totalSuites: 1,
-    totalDuration: stats.wallClockDuration,
-    totalTests: stats.tests,
-    totalFailed: stats.failures,
-    totalPassed: stats.passes,
-    totalPending: stats.pending,
-    totalSkipped: stats.skipped,
-    startedTestsAt: stats.wallClockStartedAt,
-    endedTestsAt: stats.wallClockEndedAt,
-  };
 }

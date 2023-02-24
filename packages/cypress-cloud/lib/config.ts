@@ -6,10 +6,17 @@ import { warn } from "./log";
 import { getRandomPort } from "./utils";
 const debug = Debug("currents:config");
 
+export type E2EConfig = {
+  batchSize: number;
+};
+export type ComponentConfig = {
+  batchSize: number;
+};
 export type CurrentsConfig = {
   projectId?: string;
   recordKey?: string;
-  batchSize: number;
+  e2e: E2EConfig;
+  component: ComponentConfig;
 };
 
 export async function getCurrentsConfig(): Promise<CurrentsConfig> {
@@ -17,8 +24,14 @@ export async function getCurrentsConfig(): Promise<CurrentsConfig> {
   debug("loading currents config file from '%s'", configFilePath);
 
   const defaultConfig: CurrentsConfig = {
-    batchSize: 3,
+    e2e: {
+      batchSize: 3,
+    },
+    component: {
+      batchSize: 5,
+    },
   };
+
   try {
     const fsConfig = require(configFilePath);
     return {
@@ -31,8 +44,9 @@ export async function getCurrentsConfig(): Promise<CurrentsConfig> {
   }
 }
 
+export type ResolvedConfig = Awaited<ReturnType<typeof getConfig>>;
 export async function getConfig(params: CurrentsRunParameters) {
-  debug("resolving cypress config");
+  debug("resolving cypress config ");
   const cypressResolvedConfig:
     | (Cypress.ResolvedConfigOptions & {
         projectRoot: string;
@@ -41,7 +55,7 @@ export async function getConfig(params: CurrentsRunParameters) {
       })
     | undefined = await bootCypress(getRandomPort(), params);
 
-  debug("cypressResolvedConfig: %o", cypressResolvedConfig);
+  debug("cypress resolvedConfig: %O", cypressResolvedConfig);
 
   // @ts-ignore
   const rawE2EPattern = cypressResolvedConfig.rawJson?.e2e?.specPattern;
@@ -61,7 +75,7 @@ export async function getConfig(params: CurrentsRunParameters) {
     additionalIgnorePattern,
     resolved: cypressResolvedConfig,
   };
-  debug("merged config: %o", result);
+  debug("merged config: %O", result);
   return result;
 
   // see https://github.com/cypress-io/cypress/blob/ed0668e24c2ee6753bbd25ae467ce94ae5857741/packages/config/src/options.ts#L457

@@ -15,6 +15,7 @@ import { run } from "@currents/cypress";
     testingType,
     record,
     ciBuildId: new Date().toISOString(),
+    batchSize: 3,
   });
 
   console.log("summarizedResults");

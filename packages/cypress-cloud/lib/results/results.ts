@@ -8,11 +8,9 @@ import { nanoid } from "nanoid";
 import {
   SetInstanceTestsPayload,
   TestState,
-  updateInstanceResultsMerged,
   UpdateInstanceResultsPayload,
-} from "./api";
-import { uploadArtifacts, uploadStdoutSafe } from "./artifacts";
-import { getInitialOutput } from "./capture";
+} from "../api";
+import { ResolvedConfig } from "../config";
 
 const debug = Debug("currents:results");
 
@@ -153,40 +151,6 @@ export const summarizeTestResults = (
   );
 };
 
-export async function processCypressResults(
-  instanceId: string,
-  results: CypressCommandLine.CypressRunResult,
-  stdout: string
-) {
-  const runResult = results.runs[0];
-  if (!runResult) {
-    throw new Error("No run found in Cypress results");
-  }
-  const resultPayload = getInstanceResultPayload(runResult);
-  debug("result payload %o", resultPayload);
-
-  const uploadInstructions = await updateInstanceResultsMerged(instanceId, {
-    tests: getInstanceTestsPayload(results.runs[0], results.config),
-    results: resultPayload,
-  });
-  const { videoUploadUrl, screenshotUploadUrls } = uploadInstructions;
-  debug(
-    "instance %s artifact upload instructions %o",
-    instanceId,
-    uploadInstructions
-  );
-
-  await Promise.all([
-    uploadArtifacts({
-      videoUploadUrl,
-      videoPath: runResult.video,
-      screenshotUploadUrls,
-      screenshots: resultPayload.screenshots,
-    }),
-    uploadStdoutSafe(instanceId, getInitialOutput() + stdout),
-  ]);
-}
-
 export function getFailedDummyResult({
   specs,
   error,
@@ -264,5 +228,45 @@ export function getFailedDummyResult({
       shouldUploadVideo: false,
       skippedSpec: false,
     })),
+  };
+}
+
+export function normalizeRawResult(
+  rawResult: CypressResult,
+  specs: string[],
+  config: ResolvedConfig
+): CypressCommandLine.CypressRunResult {
+  if (!isSuccessResult(rawResult)) {
+    return getFailedDummyResult({
+      specs,
+      error: rawResult.message,
+      config,
+    });
+  }
+  return rawResult;
+}
+
+export function getSummaryForSpec(
+  spec: string,
+  runResult: CypressCommandLine.CypressRunResult
+) {
+  const run = runResult.runs.find((r) => r.spec.relative === spec);
+  if (!run) {
+    return;
+  }
+  const stats = getStats(run.stats);
+  // adjust the result for singe spec
+  return {
+    ...runResult,
+    runs: [run],
+    totalSuites: 1,
+    totalDuration: stats.wallClockDuration,
+    totalTests: stats.tests,
+    totalFailed: stats.failures,
+    totalPassed: stats.passes,
+    totalPending: stats.pending,
+    totalSkipped: stats.skipped,
+    startedTestsAt: stats.wallClockStartedAt,
+    endedTestsAt: stats.wallClockEndedAt,
   };
 }

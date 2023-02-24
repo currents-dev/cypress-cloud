@@ -10,8 +10,8 @@ import {
   SpecType,
   SpecWithRelativeRoot,
   TestingType,
-} from "../types";
-import { toArray, toPosix } from "./utils";
+} from "../../types";
+import { toArray, toPosix } from "../utils";
 
 const debug = Debug("currents:specs");
 
@@ -38,6 +38,7 @@ export async function findSpecs({
   additionalIgnorePattern = toArray(additionalIgnorePattern) || [];
 
   debug("exploring spec files for execution %O", {
+    testingType,
     projectRoot,
     specPattern,
     configSpecPattern,
@@ -81,14 +82,12 @@ export async function findSpecs({
     );
   }
 
-  const matched = matchedSpecs({
+  return matchedSpecs({
     projectRoot,
     testingType,
     specAbsolutePaths,
     specPattern,
   });
-
-  return matched;
 }
 
 async function getFilesByGlob(
