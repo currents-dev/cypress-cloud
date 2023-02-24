@@ -17,7 +17,7 @@ module.exports = defineConfig({
   },
 
   component: {
-    specPattern: "cypress/component/*.spec.js",
+    specPattern: ["pages/**/*.spec.tsx", "pages/*.spec.tsx"],
     setupNodeEvents(on, config) {
       return currents(on, config);
     },

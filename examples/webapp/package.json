@@ -3,16 +3,23 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "build": "next build",
+    "start": "next start",
     "cypress:script": "ts-node scripts/currents-script.ts"
   },
   "dependencies": {
-    "cypress": "^12.6.0",
     "@currents/cypress": "*",
+    "cypress": "^12.6.0",
     "cypress-terminal-report": "^5.0.0",
+    "next": "^13.2.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "ts-node": "^10.9.1"
   },
   "devDependencies": {
     "@types/node": "^17.0.12",
+    "@types/react": "^18.0.28",
+    "@types/react-dom": "^18.0.11",
     "eslint": "7.32.0",
     "eslint-config-custom": "*",
     "tsconfig": "*",
