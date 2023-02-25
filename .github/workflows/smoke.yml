@@ -6,10 +6,6 @@ on:
 jobs:
   e2e-network:
     if: "!contains(toJSON(github.event.commits.*.message), '[skip ci]')"
-    strategy:
-      fail-fast: false
-      matrix:
-        containers: [1, 2, 3]
     runs-on: ubuntu-latest
 
     services:
@@ -38,9 +34,9 @@ jobs:
         working-directory: ./examples/webapp
         env:
           CURRENTS_API_URL: http://localhost:1234
-          COMMIT_INFO_MESSAGE: "[cypress-cloud] ${{ github.event.head_commit.message }}"
         run: |
           npm link @currents/cypress
+
           npx cypress-cloud run --record --parallel \
           --spec "./cypress/e2e/*.spec.js" \
           --browser chrome --key ${{ secrets.CURRENTS_RECORD_KEY }} \ --ci-build-id "${{ github.repository }}-${{ github.run_id }}-${{ github.run_attempt}}"
