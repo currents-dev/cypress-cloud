@@ -17,9 +17,9 @@ context("Routing", function () {
 
     cy.get(".filters").contains("Active").click();
 
-    cy.get("@todos").eq(0).should("contain", TODO_ITEM_ONE);
+    cy.get(".todo-list li").eq(0).should("contain", TODO_ITEM_ONE);
 
-    cy.get("@todos").eq(1).should("contain", TODO_ITEM_THREE);
+    cy.get(".todo-list li").eq(1).should("contain", TODO_ITEM_THREE);
   });
 
   it("should respect the back button", function () {
@@ -29,19 +29,17 @@ context("Routing", function () {
 
     cy.get(".filters").contains("Completed").click();
 
-    cy.get("@todos").should("have.length", 1);
+    cy.get(".todo-list li").should("have.length", 1);
     cy.go("back");
-    cy.get("@todos").should("have.length", 2);
+    cy.get(".todo-list li").should("have.length", 2);
     cy.go("back");
-    cy.get("@todos").should("have.length", 3);
+    cy.get(".todo-list li").should("have.length", 3);
   });
 
   it("should allow me to display completed items", function () {
     cy.get("@todos").eq(1).find(".toggle").check();
-
     cy.get(".filters").contains("Completed").click();
-
-    cy.get("@todos").should("have.length", 1);
+    cy.get(".todo-list li").should("have.length", 1);
   });
 
   it("should allow me to display all items", function () {
@@ -53,7 +51,7 @@ context("Routing", function () {
 
     cy.get(".filters").contains("All").click();
 
-    cy.get("@todos").should("have.length", 3);
+    cy.get(".todo-list li").should("have.length", 3);
   });
 
   it("should highlight the currently applied filter", function () {

@@ -7,18 +7,21 @@ context("Persistence", function () {
     // mimicking TodoMVC tests
     // by writing out this function
     function testState() {
-      cy.get("@firstTodo")
+      cy.get(".todo-list li")
+        .eq(0)
         .should("contain", TODO_ITEM_ONE)
         .and("have.class", "completed");
 
-      cy.get("@secondTodo")
+      cy.get(".todo-list li")
+        .eq(1)
         .should("contain", TODO_ITEM_TWO)
         .and("not.have.class", "completed");
     }
 
     cy.createTodo(TODO_ITEM_ONE).as("firstTodo");
     cy.createTodo(TODO_ITEM_TWO).as("secondTodo");
-    cy.get("@firstTodo")
+    cy.get(".todo-list li")
+      .eq(0)
       .find(".toggle")
       .check()
       .then(testState)

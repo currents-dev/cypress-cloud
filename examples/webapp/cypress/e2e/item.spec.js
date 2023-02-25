@@ -14,14 +14,15 @@ context("Item", function () {
     cy.createTodo(TODO_ITEM_ONE).as("firstTodo");
     cy.createTodo(TODO_ITEM_TWO).as("secondTodo");
 
-    cy.get("@firstTodo").find(".toggle").check();
+    cy.get(".todo-list li").eq(0).as("firstTodo");
+    cy.get(".todo-list li").eq(0).find(".toggle").check();
 
-    cy.get("@firstTodo").should("have.class", "completed");
+    cy.get(".todo-list li").eq(0).should("have.class", "completed");
 
-    cy.get("@secondTodo").should("not.have.class", "completed");
-    cy.get("@secondTodo").find(".toggle").check();
+    cy.get(".todo-list li").eq(1).should("not.have.class", "completed");
+    cy.get(".todo-list li").eq(1).find(".toggle").check();
 
-    cy.get("@firstTodo").should("have.class", "completed");
+    cy.get(".todo-list li").eq(0).should("have.class", "completed");
     cy.get("@secondTodo").should("have.class", "completed");
   });
 
@@ -29,6 +30,7 @@ context("Item", function () {
     cy.createTodo(TODO_ITEM_ONE).as("firstTodo");
     cy.createTodo(TODO_ITEM_TWO).as("secondTodo");
 
+    cy.get(".todo-list li").eq(0).as("firstTodo");
     cy.get("@firstTodo").find(".toggle").check();
 
     cy.get("@firstTodo").should("have.class", "completed");
