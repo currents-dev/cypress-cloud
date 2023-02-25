@@ -26,6 +26,7 @@ client.interceptors.request.use((config) => ({
     "x-ccy-version": _currentsVersion ?? "0.0.0",
   },
 }));
+
 axiosRetry(client, {
   retries: MAX_RETRIES,
   retryCondition: isRetriableError,

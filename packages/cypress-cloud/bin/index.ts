@@ -3,7 +3,7 @@ import "source-map-support/register";
 
 import { run } from "../index";
 import { parseOptions } from "../lib/cli";
-import { error } from "../lib/log";
+import { divider, error } from "../lib/log";
 
 async function main() {
   return run(await parseOptions());
@@ -22,6 +22,7 @@ main()
     process.exit(0);
   })
   .catch((err) => {
+    divider();
     error(err.stack);
     process.exit(1);
   });
