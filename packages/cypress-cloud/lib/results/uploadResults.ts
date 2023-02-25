@@ -1,7 +1,13 @@
 import Debug from "debug";
-import { updateInstanceResultsMerged } from "../api";
+import { CypressRun } from "../../types";
+import {
+  reportInstanceResultsMerged,
+  setInstanceTests,
+  updateInstanceResults,
+} from "../api";
 import { uploadArtifacts, uploadStdoutSafe } from "../artifacts";
 import { getInitialOutput } from "../capture";
+import { isCurrents } from "../env";
 import { warn } from "../log";
 import { getInstanceResultPayload, getInstanceTestsPayload } from "./results";
 const debug = Debug("currents:results");
@@ -45,16 +51,16 @@ export async function processCypressResults(
   const resultPayload = getInstanceResultPayload(runResult);
   debug("result payload %o", resultPayload);
 
-  const uploadInstructions = await updateInstanceResultsMerged(instanceId, {
-    tests: getInstanceTestsPayload(results.runs[0], results.config),
-    results: resultPayload,
-  });
-  const { videoUploadUrl, screenshotUploadUrls } = uploadInstructions;
-  debug(
-    "instance %s artifact upload instructions %o",
+  const { videoUploadUrl, screenshotUploadUrls } = await reportResults(
     instanceId,
-    uploadInstructions
+    runResult,
+    results.config
   );
+
+  debug("instance %s artifact upload instructions %o", instanceId, {
+    videoUploadUrl,
+    screenshotUploadUrls,
+  });
 
   await Promise.all([
     uploadArtifacts({
@@ -65,4 +71,24 @@ export async function processCypressResults(
     }),
     uploadStdoutSafe(instanceId, getInitialOutput() + stdout),
   ]);
+}
+
+async function reportResults(
+  instanceId: string,
+  run: CypressRun,
+  config: Cypress.ResolvedConfigOptions
+) {
+  const resultPayload = getInstanceResultPayload(run);
+  debug("result payload %o", resultPayload);
+
+  if (isCurrents()) {
+    return reportInstanceResultsMerged(instanceId, {
+      tests: getInstanceTestsPayload(run, config),
+      results: resultPayload,
+    });
+  }
+
+  await setInstanceTests(instanceId, getInstanceTestsPayload(run, config));
+
+  return updateInstanceResults(instanceId, resultPayload);
 }

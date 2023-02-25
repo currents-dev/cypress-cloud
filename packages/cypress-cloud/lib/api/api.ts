@@ -83,7 +83,7 @@ export const updateInstanceResults = (
     data: payload,
   }).then((result) => result.data);
 
-export const updateInstanceResultsMerged = (
+export const reportInstanceResultsMerged = (
   instanceId: string,
   payload: UpdateInstanceResultsMergedPayload
 ) =>
