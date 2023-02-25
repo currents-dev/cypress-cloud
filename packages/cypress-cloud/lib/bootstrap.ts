@@ -4,7 +4,6 @@ import Debug from "debug";
 import fs from "fs";
 import { chain } from "lodash";
 import { customAlphabet } from "nanoid";
-import { VError } from "verror";
 import { CurrentsRunParameters } from "../types";
 import { getCLICypressOptions, serializeOptions } from "./cli/cli";
 import { createTempFile } from "./fs";
@@ -60,16 +59,15 @@ export const bootCypress = async (
   });
 
   if (!fs.existsSync(tempFilePath)) {
-    throw new VError(
-      "Cannot resolve cypress configuration from '%s'. Please report the issue.",
-      tempFilePath
+    throw new Error(
+      `Cannot resolve cypress configuration from ${tempFilePath}. Please report the issue.`
     );
   }
   try {
     const f = fs.readFileSync(tempFilePath, "utf-8");
 
     if (!f) {
-      throw new VError("Is cypress-cloud/plugin installed?");
+      throw new Error("Is cypress-cloud/plugin installed?");
     }
     debug("cypress config '%s': '%s'", tempFilePath, f);
     return JSON.parse(f);
@@ -80,6 +78,6 @@ export const bootCypress = async (
       stdout: child.stdout.toString("utf-8").split("\n"),
       stderr: child.stderr.toString("utf-8").split("\n"),
     });
-    throw new VError(err as Error, "Unable to resolve cypress configuration");
+    throw new Error("Unable to resolve cypress configuration");
   }
 };
