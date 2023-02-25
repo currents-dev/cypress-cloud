@@ -12,21 +12,21 @@ import {
   UpdateInstanceResultsPayload,
   UpdateInstanceResultsResponse,
   updateInstanceStdout,
-} from "cypress-cloud/lib/api";
+} from "@currents/cypress/lib/api";
 import _ from "lodash";
 import nock from "nock";
+import { getBaseUrl } from "../../httpClient/config";
 
-const API_BASEURL = "http://localhost:1234";
+jest.mock("@currents/cypress/lib/httpClient/config", () => ({
+  getBaseUrl: jest.fn().mockReturnValue("http://localhost:1234"),
+}));
 
 describe("cloud/api", () => {
-  beforeAll(() => {
-    process.env.CURRENTS_API_URL = API_BASEURL;
-  });
-
   describe("createRun", () => {
     let payload: CreateRunPayload;
 
     beforeEach(() => {
+      // @ts-ignore
       payload = {
         ci: {
           params: { foo: "bar" },
@@ -68,7 +68,7 @@ describe("cloud/api", () => {
         isNewRun: true,
       };
 
-      nock(API_BASEURL).post("/runs", _.matches(payload)).reply(200, result);
+      nock(getBaseUrl()).post("/runs", _.matches(payload)).reply(200, result);
 
       const run = await createRun(payload);
       expect(run).toStrictEqual(result);
@@ -100,7 +100,7 @@ describe("cloud/api", () => {
         totalInstances: 10,
       };
 
-      nock(API_BASEURL)
+      nock(getBaseUrl())
         .post("/runs/1/instances", _.matches(payload))
         .reply(200, result);
 
@@ -126,7 +126,7 @@ describe("cloud/api", () => {
     it("POST /instances/:id/tests", async () => {
       const result = {};
 
-      nock(API_BASEURL)
+      nock(getBaseUrl())
         .post("/instances/1/tests", _.matches(payload))
         .reply(200, result);
 
@@ -203,7 +203,7 @@ describe("cloud/api", () => {
         videoUploadUrl: null,
       };
 
-      nock(API_BASEURL)
+      nock(getBaseUrl())
         .post("/instances/1/results", _.matches(payload))
         .reply(200, result);
 
@@ -216,7 +216,7 @@ describe("cloud/api", () => {
     const payload = "string";
 
     it("PUT /instances/:id/stdout", async () => {
-      nock(API_BASEURL)
+      nock(getBaseUrl())
         .put("/instances/1/stdout", { stdout: payload })
         .reply(200);
 

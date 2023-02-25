@@ -16,7 +16,7 @@ import { printWarnings } from "./warnings";
 export const createRun = async (payload: CreateRunPayload) => {
   const response = await makeRequest<CreateRunResponse, CreateRunPayload>({
     method: "POST",
-    url: "runs",
+    url: "/runs",
     data: payload,
   });
 
@@ -33,7 +33,7 @@ export const createInstance = async ({
   machineId,
   platform,
 }: CreateInstancePayload) => {
-  const respone = await makeRequest<
+  const response = await makeRequest<
     CreateInstanceResponse,
     CreateInstancePayload
   >({
@@ -47,7 +47,7 @@ export const createInstance = async ({
     },
   });
 
-  return respone.data;
+  return response.data;
 };
 
 export const createBatchedInstances = async (data: CreateInstanceCyPayload) => {

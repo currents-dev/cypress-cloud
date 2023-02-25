@@ -1,13 +1,38 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
+import axiosRetry from "axios-retry";
 import Debug from "debug";
 import { omit } from "lodash";
-import prettyMS from "pretty-ms";
-import VError from "verror";
+import prettyMilliseconds from "pretty-ms";
 import { warn } from "../log";
-import { getBaseUrl, getDelays, isRetriableError } from "./config";
+import { getBaseUrl, getDelay, isRetriableError } from "./config";
 import { maybePrintErrors } from "./printErrors";
 
 const debug = Debug("currents:api");
+
+const MAX_RETRIES = 3;
+
+const client = axios.create({
+  baseURL: getBaseUrl(),
+});
+
+client.interceptors.request.use((config) => ({
+  ...config,
+  headers: {
+    ...config.headers,
+    // @ts-ignore
+    "x-cypress-request-attempt": config["axios-retry"]?.retryCount ?? 0,
+    "x-cypress-run-id": _runId,
+    "x-cypress-version": _cypressVersion,
+    "x-ccy-version": _currentsVersion ?? "0.0.0",
+  },
+}));
+axiosRetry(client, {
+  retries: MAX_RETRIES,
+  retryCondition: isRetriableError,
+  retryDelay: getDelay,
+  // @ts-ignore
+  onRetry,
+});
 
 let _runId: string | undefined = undefined;
 export const setRunId = (runId: string) => {
@@ -24,81 +49,32 @@ export const setCurrentsVersion = (v: string) => {
   _currentsVersion = v;
 };
 
-type RetryOptions = {
-  delays?: number[];
-  isRetriableError?: (...args: any[]) => boolean;
-};
+function onRetry(
+  retryCount: number,
+  err: AxiosError<{ message: string; errors?: string[] }>,
+  _config: AxiosRequestConfig
+) {
+  warn(
+    "Network request failed: '%s'. Next attempt is in %s (%d/%d).",
+    err.message,
+    prettyMilliseconds(getDelay(retryCount)),
+    retryCount,
+    MAX_RETRIES
+  );
+}
 
 export const makeRequest = <T = any, D = any>(
-  config: AxiosRequestConfig<D>,
-  retryOptions?: RetryOptions
+  config: AxiosRequestConfig<D>
 ) => {
-  return retryWithBackoff((retryIndex: number) => {
-    const requestConfig = {
-      baseURL: getBaseUrl(),
-      ...config,
-      headers: {
-        "x-cypress-request-attempt": retryIndex,
-        "x-cypress-run-id": _runId,
-        "x-cypress-version": _cypressVersion,
-        "x-ccy-version": _currentsVersion ?? "0.0.0",
-        ...config.headers,
-      },
-    };
+  debug("network request: %O", config);
 
-    debug("sending network request: %o", requestConfig);
-    return axios(requestConfig).then((res) => {
+  return client<D, AxiosResponse<T>>(config)
+    .then((res) => {
       debug("network request response: %o", omit(res, "request", "config"));
       return res;
+    })
+    .catch((error) => {
+      maybePrintErrors(error);
+      throw error;
     });
-  }, retryOptions) as Promise<AxiosResponse<T, D>>;
 };
-
-const retryWithBackoff = (fn: Function, retryOptions?: RetryOptions) => {
-  let attempt: any;
-
-  const options = {
-    delays: getDelays(),
-    isRetriableError,
-    ...retryOptions,
-  };
-
-  return (attempt = (retryIndex: number) => {
-    return promiseTry(() => fn(retryIndex)).catch((err) => {
-      debug("network request failed: %O", err.toJSON ? err.toJSON() : err);
-      maybePrintErrors(err);
-
-      const shouldRetry = options.isRetriableError(err);
-      if (!shouldRetry) {
-        throw new VError(err);
-      }
-
-      if (retryIndex >= options.delays.length) {
-        throw new VError(err, "Max retries reached");
-      }
-
-      const delay = options.delays[retryIndex];
-
-      warn(
-        "Network request failed: '%s'. Retrying %s time(s) with a %s delay ",
-        err.message,
-        options.delays.length - retryIndex,
-        prettyMS(delay)
-      );
-
-      retryIndex++;
-
-      return promiseDelay(delay).then(() => {
-        debug(`Retry #${retryIndex} after ${delay}ms`);
-        return attempt(retryIndex);
-      });
-    });
-  })(0);
-};
-
-const promiseTry = (fn: Function) => {
-  return new Promise((resolve) => resolve(fn()));
-};
-
-const promiseDelay = (duration: number) =>
-  new Promise((resolve) => setTimeout(resolve, duration));

@@ -40,6 +40,7 @@
     "@cypress/commit-info": "^2.2.0",
     "async-wait-until": "^2.0.12",
     "axios": "^1.2.0",
+    "axios-retry": "^3.4.0",
     "chalk": "^4.1.2",
     "commander": "^9.4.1",
     "common-path-prefix": "^3.0.0",
