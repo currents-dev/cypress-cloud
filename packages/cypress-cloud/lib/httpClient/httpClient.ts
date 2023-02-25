@@ -67,7 +67,7 @@ function onRetry(
 export const makeRequest = <T = any, D = any>(
   config: AxiosRequestConfig<D>
 ) => {
-  debug("network request: %O", config);
+  debug("network request: %o", config);
 
   return client<D, AxiosResponse<T>>(config)
     .then((res) => {

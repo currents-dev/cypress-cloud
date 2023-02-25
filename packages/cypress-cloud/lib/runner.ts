@@ -44,6 +44,7 @@ export async function runTillDone(
       config,
     });
     if (!newTasks.length) {
+      debug("No more tasks to run. Uploads queue: %d", uploadTasks.length);
       hasMore = false;
       break;
     }
@@ -51,7 +52,7 @@ export async function runTillDone(
       if (task.summary.specSummary) {
         summary[task.summary.spec] = task.summary.specSummary;
       }
-      uploadTasks.concat(task.uploadTasks);
+      uploadTasks.push(task.uploadTasks);
     });
   }
 
@@ -120,8 +121,6 @@ async function runBatch({
     config
   );
 
-  batch.specs.forEach((spec) => {});
-
   title("blue", "Reporting results and artifacts in background...");
 
   resetCapture();
@@ -137,7 +136,6 @@ async function runBatch({
         spec: spec.spec,
         specSummary,
       },
-
       uploadTasks: getUploadResultsTask({
         ...spec,
         runResult: normalizedResult,

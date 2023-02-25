@@ -1,9 +1,10 @@
 import Debug from "debug";
-import { CypressRun } from "../../types";
 import {
   reportInstanceResultsMerged,
   setInstanceTests,
+  SetInstanceTestsPayload,
   updateInstanceResults,
+  UpdateInstanceResultsPayload,
 } from "../api";
 import { uploadArtifacts, uploadStdoutSafe } from "../artifacts";
 import { getInitialOutput } from "../capture";
@@ -31,7 +32,7 @@ export async function getUploadResultsTask({
   return processCypressResults(
     instanceId,
     {
-      // replace the runs with the runs for the specified spec
+      // replace the runs with the run for the specified spec
       ...runResult,
       runs: [run],
     },
@@ -44,17 +45,17 @@ export async function processCypressResults(
   results: CypressCommandLine.CypressRunResult,
   stdout: string
 ) {
-  const runResult = results.runs[0];
-  if (!runResult) {
+  const run = results.runs[0];
+  if (!run) {
     throw new Error("No run found in Cypress results");
   }
-  const resultPayload = getInstanceResultPayload(runResult);
-  debug("result payload %o", resultPayload);
+  const instanceResults = getInstanceResultPayload(run);
+  const instanceTests = getInstanceTestsPayload(run, results.config);
 
   const { videoUploadUrl, screenshotUploadUrls } = await reportResults(
     instanceId,
-    runResult,
-    results.config
+    instanceTests,
+    instanceResults
   );
 
   debug("instance %s artifact upload instructions %o", instanceId, {
@@ -62,12 +63,12 @@ export async function processCypressResults(
     screenshotUploadUrls,
   });
 
-  await Promise.all([
+  return Promise.all([
     uploadArtifacts({
       videoUploadUrl,
-      videoPath: runResult.video,
+      videoPath: run.video,
       screenshotUploadUrls,
-      screenshots: resultPayload.screenshots,
+      screenshots: instanceResults.screenshots,
     }),
     uploadStdoutSafe(instanceId, getInitialOutput() + stdout),
   ]);
@@ -75,20 +76,18 @@ export async function processCypressResults(
 
 async function reportResults(
   instanceId: string,
-  run: CypressRun,
-  config: Cypress.ResolvedConfigOptions
+  instanceTests: SetInstanceTestsPayload,
+  instanceResults: UpdateInstanceResultsPayload
 ) {
-  const resultPayload = getInstanceResultPayload(run);
-  debug("result payload %o", resultPayload);
-
+  debug("reporting instance %s results...", instanceId);
   if (isCurrents()) {
     return reportInstanceResultsMerged(instanceId, {
-      tests: getInstanceTestsPayload(run, config),
-      results: resultPayload,
+      tests: instanceTests,
+      results: instanceResults,
     });
   }
 
-  await setInstanceTests(instanceId, getInstanceTestsPayload(run, config));
-
-  return updateInstanceResults(instanceId, resultPayload);
+  // run one after another
+  await setInstanceTests(instanceId, instanceTests);
+  return updateInstanceResults(instanceId, instanceResults);
 }

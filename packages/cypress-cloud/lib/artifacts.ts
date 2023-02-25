@@ -45,11 +45,16 @@ export async function uploadArtifacts({
   // upload screenshots
   if (screenshotUploadUrls.length) {
     await Promise.all(
-      screenshots.map((screenshot, i) => {
+      screenshots.map((screenshot) => {
         const url = screenshotUploadUrls.find(
           (urls) => urls.screenshotId === screenshot.screenshotId
         )?.uploadUrl;
         if (!url) {
+          debug(
+            "No upload url for screenshot %o, screenshotUploadUrls: %o",
+            screenshot,
+            screenshotUploadUrls
+          );
           warn("Cannot find upload url for screenshot: %s", screenshot.path);
           return Promise.resolve();
         }
