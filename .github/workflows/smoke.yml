@@ -38,5 +38,5 @@ jobs:
           npm link @currents/cypress
 
           npx cypress-cloud run --record --parallel \
-          --spec "./cypress/e2e/*.spec.js" \
+          --spec "./cypress/e2e_smoke/*.spec.js" \
           --browser chrome --key ${{ secrets.CURRENTS_RECORD_KEY }} \ --ci-build-id "${{ github.repository }}-${{ github.run_id }}-${{ github.run_attempt}}"
