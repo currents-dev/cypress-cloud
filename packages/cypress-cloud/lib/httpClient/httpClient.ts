@@ -76,6 +76,6 @@ export const makeRequest = <T = any, D = any>(
     })
     .catch((error) => {
       maybePrintErrors(error);
-      throw error;
+      throw new Error(error.message);
     });
 };
