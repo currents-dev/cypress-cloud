@@ -20,12 +20,13 @@ Install the package
 npm install @currents/cypress
 ```
 
-Create a new configuration file: `currents.config.js` in the project’s root and set the `projectId` and the record key obtained from [Currents](https://app.currents.dev) or your self-hosted instance of Sorry Cypress:
+Create a new configuration file: `currents.config.js` in the project’s root, set the `projectId` and the record key obtained from [Currents](https://app.currents.dev) or your self-hosted instance of Sorry Cypress:
 
 ```js
 module.exports = {
   projectId: "Ij0RfK",
   recordKey: "xxx",
+  cloudServiceUrl: "https://cy.currents.dev", // Sorry Cypress users - set the director service URL
 };
 ```
 
@@ -38,15 +39,13 @@ const { cloudPlugin } = require("@currents/cypress/plugin");
 module.exports = defineConfig({
   e2e: {
     setupNodeEvents(on, config) {
-      cloudPlugin(on, config);
+      return cloudPlugin(on, config);
     },
   },
 });
 ```
 
 ## Usage
-
-Obtain the record key from https://app.currents.dev (or use any value for Sorry Cypress)
 
 ```sh
 npx cypress-cloud --parallel --record --key <your_key> --ci-build-id hello-cypress-cloud
@@ -63,8 +62,15 @@ See an example in [examples/webapp](./example/webapp) directory
 ```js
 // currents.config.js
 module.exports = {
-  projectId: "Ij0RfK",
-  recordKey: "the record key from currents.dev",
+  projectId: "Ij0RfK", // ProjectID obtained from https://app.currents.dev or Sorry Cypress
+  recordKey: "XXXXXXX", // Record key obtained from https://app.currents.dev, any value for Sorry Cypress
+  cloudServiceUrl: "https://cy.currents.dev", // Sorry Cypress users - the director service URL
+  e2e: {
+    batchSize: 3, // orchestration batch size for e2e tests
+  },
+  component: {
+    batchSize: 5, // orchestration batch size for component tests
+  },
 };
 ```
 
@@ -105,11 +111,13 @@ const results = await run({
 
 ## Troubleshooting
 
-Enable the debug mode and run the command
+Enable the debug mode and run the command:
 
 ```sh
 DEBUG=currents:* npx cypress-cloud run ...
 ```
+
+Capture all the logs in a plain text file and submit an issue.
 
 ## Testing
 

@@ -15,12 +15,13 @@ export type ComponentConfig = {
 export type CurrentsConfig = {
   projectId?: string;
   recordKey?: string;
+  cloudServiceUrl?: string;
   e2e: E2EConfig;
   component: ComponentConfig;
 };
 
-export async function getCurrentsConfig(): Promise<CurrentsConfig> {
-  const configFilePath = await getConfigFilePath();
+export function getCurrentsConfig(): CurrentsConfig {
+  const configFilePath = getConfigFilePath();
   debug("loading currents config file from '%s'", configFilePath);
 
   const defaultConfig: CurrentsConfig = {
@@ -30,6 +31,7 @@ export async function getCurrentsConfig(): Promise<CurrentsConfig> {
     component: {
       batchSize: 5,
     },
+    cloudServiceUrl: "https://cy.currents.dev",
   };
 
   try {
