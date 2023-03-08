@@ -123,9 +123,10 @@ async function runBatch({
 
   title("blue", "Reporting results and artifacts in background...");
 
+  const output = getCapturedOutput();
   resetCapture();
 
-  return batch.specs.map((spec) => {
+  const batchResult = batch.specs.map((spec) => {
     const specSummary = getSummaryForSpec(spec.spec, normalizedResult);
     if (!specSummary) {
       warn('Cannot find run result for spec "%s"', spec.spec);
@@ -139,8 +140,10 @@ async function runBatch({
       uploadTasks: getUploadResultsTask({
         ...spec,
         runResult: normalizedResult,
-        output: getCapturedOutput(),
+        output,
       }).catch(error),
     };
   });
+
+  return batchResult;
 }
