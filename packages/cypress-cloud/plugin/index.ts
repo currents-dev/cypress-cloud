@@ -1,7 +1,12 @@
+/// <reference types="Cypress" />
+
 import fs from "fs";
 import { format } from "util";
-// @ts-ignore
-export async function cloudPlugin(on, config) {
+
+export async function cloudPlugin(
+  _on: Cypress.PluginEvents,
+  config: Cypress.PluginConfigOptions
+) {
   function debug(...args: unknown[]) {
     if (config.env.currents_debug_enabled) {
       console.debug("[currents:plugin]", format(...args));

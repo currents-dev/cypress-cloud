@@ -51,10 +51,7 @@ export async function run(params: CurrentsRunParameters) {
     return;
   }
 
-  info(
-    "Discovered %d spec files, connecting to cloud orchestration service...",
-    specs.length
-  );
+  info("Discovered %d spec files", specs.length);
 
   const osPlatformInfo = await getPlatformInfo();
   const platform = {
@@ -64,6 +61,12 @@ export async function run(params: CurrentsRunParameters) {
   const ci = getCI(ciBuildId);
   const commit = await getGitInfo(config.projectRoot);
 
+  info(
+    `Tags: ${tag?.join(",") ?? false}; Group: ${group ?? false}; Parallel: ${
+      parallel ?? false
+    }; Batch Size: ${batchSize}`
+  );
+  info("Connecting to cloud orchestration service...");
   const run = await createRun({
     ci,
     specs: specs.map((spec) => spec.relative),
@@ -80,12 +83,6 @@ export async function run(params: CurrentsRunParameters) {
     batchSize,
   });
 
-  info(
-    "Params:",
-    `Tags: ${tag?.join(",") ?? false}; Group: ${group ?? false}; Parallel: ${
-      parallel ?? false
-    }; Batch Size: ${batchSize}`
-  );
   info("🎥 Run URL:", bold(run.runUrl));
 
   setRunId(run.runId);

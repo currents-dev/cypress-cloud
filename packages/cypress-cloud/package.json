@@ -1,7 +1,7 @@
 {
   "name": "cypress-cloud",
   "version": "1.0.0",
-  "main": "./out/index.js",
+  "main": "./dist/index.js",
   "types": "./index.ts",
   "author": "Currents Software Inc",
   "license": "GPL-3.0-or-later",
@@ -11,8 +11,8 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "release": "release-it",
-    "dev": "npm run build -- --watch --sourcemap",
-    "build": "esbuild ./index.ts ./bin/*.ts  ./plugin/*.ts ./support/*.ts --bundle --minify --platform=node --target=node14 --packages=external --outdir=out --external:'../index'"
+    "dev": "tsup --watch",
+    "build": "tsup --dts"
   },
   "devDependencies": {
     "@release-it/conventional-changelog": "^5.1.1",
@@ -32,6 +32,7 @@
     "release-it": "^15.5.1",
     "rimraf": "^3.0.2",
     "tsconfig": "*",
+    "tsup": "^6.6.3",
     "typescript": "^4.5.2"
   },
   "dependencies": {
@@ -57,26 +58,40 @@
     "ws": "^8.12.1"
   },
   "bin": {
-    "cypress-cloud": "./out/bin/index.js"
+    "cypress-cloud": "./dist/bin/cli.js"
+  },
+  "tsup": {
+    "entry": [
+      "./index.ts",
+      "./bin/*.ts",
+      "./plugin/*.ts",
+      "./support/*.ts "
+    ],
+    "external": [
+      "cypress"
+    ],
+    "splitting": false,
+    "sourcemap": true,
+    "clean": true,
+    "platform": "node",
+    "target": "node14"
   },
   "files": [
-    "out",
-    "LICENSE",
-    "!**/*.map",
-    "!**/*/*.map"
+    "dist",
+    "LICENSE"
   ],
   "exports": {
     ".": {
-      "import": "./out/index.js",
-      "require": "./out/index.js"
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
     },
     "./plugin": {
-      "import": "./out/plugin/index.js",
-      "require": "./out/plugin/index.js"
+      "import": "./dist/plugin/index.js",
+      "require": "./dist/plugin/index.js"
     },
     "./support": {
-      "import": "./out/support/index.js",
-      "require": "./out/support/index.js"
+      "import": "./dist/support/index.js",
+      "require": "./dist/support/index.js"
     },
     "./package.json": "./package.json"
   },

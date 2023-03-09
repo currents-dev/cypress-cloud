@@ -14,7 +14,7 @@
     "strict": true,
     "outDir": "dist",
     "module": "commonjs",
-    "types": ["jest"],
+    "types": ["jest", "node"],
     "target": "ES2019",
     "declaration": true,
     "emitDeclarationOnly": false,

@@ -12,7 +12,7 @@ Integrate Cypress with alternative cloud services like Currents or Sorry Cypress
 
 <p align="center">
 <a href="./CHANGELOG.md">Changelog</a> | <a href="https://currents.dev/readme/guides/cypress-compatibility">Compatibility</a> |
-<a href="https://currents.dev/readme">Documentation</a> | <a href="./LICENCE.md">License</a>
+<a href="https://currents.dev/readme">Documentation</a> | <a href="./packages/cypress-cloud/LICENSE.md">License</a>
 
 </p>
 
@@ -31,6 +31,7 @@ npm install cypress-cloud
 Create a new configuration file: `currents.config.js` in the project’s root, set the `projectId` and the record key obtained from [Currents](https://app.currents.dev) or your self-hosted instance of Sorry Cypress:
 
 ```js
+// currents.config.js
 module.exports = {
   projectId: "Ij0RfK",
   recordKey: "xxx",
@@ -44,7 +45,7 @@ Add `cypress-cloud/plugin` to `cypress.config.{js|ts|mjs}`
 ```js
 // cypress.config.js
 const { defineConfig } = require("cypress");
-const { cloudPlugin } = require("cypress-cloud/plugin");
+const cloudPlugin = require("cypress-cloud/plugin");
 module.exports = defineConfig({
   e2e: {
     setupNodeEvents(on, config) {
