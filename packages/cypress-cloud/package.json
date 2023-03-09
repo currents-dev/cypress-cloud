@@ -1,7 +1,7 @@
 {
   "name": "cypress-cloud",
-  "version": "1.4.2",
-  "main": "./index.js",
+  "version": "1.4.2-beta.0",
+  "main": ".",
   "author": "Currents Software Inc",
   "homepage": "https://github.com/currents-dev/cypress-cloud",
   "bugs": {
@@ -97,23 +97,15 @@
     "target": "node14"
   },
   "exports": {
-    ".": "./dist",
-    "./plugin": {
-      "import": "./dist/plugin/index.js",
-      "require": "./dist/plugin/index.js",
-      "types": "./dist/plugin/index.d.ts"
-    },
-    "./support": {
-      "import": "./dist/support/index.js",
-      "require": "./dist/support/index.js",
-      "types": "./dist/support/index.d.ts"
-    },
+    ".": "./",
+    "./plugin": "./plugin",
+    "./support": "./support",
     "./package.json": "./package.json"
   },
   "release-it": {
     "hooks": {
       "before:init": "npm run rm && npm run build",
-      "before:npm:publish": "cp package.json dist/package.json && cp README.md dist/README.md && cp LICENSE.md dist/LICENSE.md && cd dist"
+      "before:npm:release": "cp package.json dist/package.json && cp README.md dist/README.md && cp LICENSE.md dist/LICENSE.md && cd dist"
     },
     "github": {
       "release": true,
