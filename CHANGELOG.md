@@ -1,3 +1,7 @@
+## [1.4.1](https://github.com/currents-dev/cypress-cloud/compare/v1.4.0...v1.4.1) (2023-03-09)
+
+- Fix documentation for npm
+
 # [1.4.0](https://github.com/currents-dev/cypress-cloud/compare/v1.3.2...v1.4.0) (2023-03-09)
 
 ### Bug Fixes
