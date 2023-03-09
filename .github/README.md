@@ -11,7 +11,7 @@ Integrate Cypress with alternative cloud services like Currents or Sorry Cypress
 </p>
 
 <p align="center">
-<a href="./CHANGELOG.md">Changelog</a> | <a href="https://currents.dev/readme/guides/cypress-compatibility">Compatibility</a> |
+<a href="../CHANGELOG.md">Changelog</a> | <a href="https://currents.dev/readme/guides/cypress-compatibility">Compatibility</a> |
 <a href="https://currents.dev/readme">Documentation</a> | <a href="./packages/cypress-cloud/LICENSE.md">License</a>
 
 </p>
