@@ -14,7 +14,7 @@ Integrate Cypress with alternative cloud services like Currents or Sorry Cypress
 
 ## Setup
 
-Install the package
+The package requires cypress version 10+. Install the package:
 
 ```sh
 npm install @currents/cypress
@@ -66,10 +66,10 @@ module.exports = {
   recordKey: "XXXXXXX", // Record key obtained from https://app.currents.dev, any value for Sorry Cypress
   cloudServiceUrl: "https://cy.currents.dev", // Sorry Cypress users - the director service URL
   e2e: {
-    batchSize: 3, // orchestration batch size for e2e tests
+    batchSize: 3, // orchestration batch size for e2e tests (Currents only)
   },
   component: {
-    batchSize: 5, // orchestration batch size for component tests
+    batchSize: 5, // orchestration batch size for component tests (Currents only)
   },
 };
 ```
