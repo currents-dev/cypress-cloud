@@ -4,7 +4,23 @@
   "main": "./dist/index.js",
   "types": "./index.ts",
   "author": "Currents Software Inc",
+  "homepage": "https://github.com/currents-dev/cypress-cloud",
+  "bugs": {
+    "url": "https://github.com/currents-dev/cypress-cloud/issues",
+    "email": "support@currents.dev"
+  },
   "license": "GPL-3.0-or-later",
+  "engines": {
+    "node": ">=14.7.0"
+  },
+  "keywords": [
+    "cypress",
+    "sorry-cypress",
+    "cloud",
+    "ci",
+    "test",
+    "automation"
+  ],
   "scripts": {
     "rm": "rimraf out",
     "lint": "TIMING=1 eslint \"**/*.ts*\"",
@@ -79,7 +95,7 @@
   "files": [
     "dist",
     "LICENSE.md",
-    "../../README.md"
+    "README.md"
   ],
   "exports": {
     ".": {
