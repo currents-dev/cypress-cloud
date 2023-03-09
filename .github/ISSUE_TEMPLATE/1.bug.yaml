@@ -8,7 +8,7 @@ body:
       label: |
         Before opening, please confirm:
       options:
-        - label: I have searched for duplicate or closed issues](https://github.com/currents-dev/cypress-cloud/issues) and [discussions](https://github.com/currents-dev/cypress-cloud/discussions).
+        - label: I have searched for [duplicate or closed issues](https://github.com/currents-dev/cypress-cloud/issues) and [discussions](https://github.com/currents-dev/cypress-cloud/discussions).
           required: true
         - label: I have done my best to include a minimal, self-contained set of instructions for consistently reproducing the issue.
           required: true
