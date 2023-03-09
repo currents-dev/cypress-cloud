@@ -1,3 +1,23 @@
+# [1.4.0](https://github.com/currents-dev/cypress-cloud/compare/v1.3.2...v1.4.0) (2023-03-09)
+
+### Bug Fixes
+
+- capture output ([007cf96](https://github.com/currents-dev/cypress-cloud/commit/007cf96a3181b2248a673e27fb8cf92a427ed992))
+- report results to sorry-cypress ([7d68b1c](https://github.com/currents-dev/cypress-cloud/commit/7d68b1c519b6d0a4f22694c27b7e3a43b7090b4e))
+- screenshots and upload queue ([ac89d74](https://github.com/currents-dev/cypress-cloud/commit/ac89d74cc738220f7639ad11f0332b62ad45c8c6))
+- unit test -- use color ([636f3bf](https://github.com/currents-dev/cypress-cloud/commit/636f3bf4c2566b00774aa7ee465fd15404fc5484))
+
+### Features
+
+- add benchmark CI ([fd0b6f8](https://github.com/currents-dev/cypress-cloud/commit/fd0b6f8b9f751b10a74c4261aa632b233a76ddc5))
+- add message when build id is not supported ([#58](https://github.com/currents-dev/cypress-cloud/issues/58)) ([57b2b42](https://github.com/currents-dev/cypress-cloud/commit/57b2b42b4e1cc4f96aeb248fdb236834dfaac459))
+- add cloudServiceUrl config option ([18c1dbd](https://github.com/currents-dev/cypress-cloud/commit/18c1dbd3a5598465a7cddc01c1dd85fb3491445c))
+- optimize uploading results ([c8aa917](https://github.com/currents-dev/cypress-cloud/commit/c8aa917ddd6e780c9ee8f1cbf30ead4249e368e8))
+- prepar for release ([3ee6757](https://github.com/currents-dev/cypress-cloud/commit/3ee6757f5d7ba6408f9d9b50d2308ac9478f91bd))
+- refactor and add tests ([5189c61](https://github.com/currents-dev/cypress-cloud/commit/5189c61341367ee44b4a8ee8291b5303ce9417ca))
+- support batched claims ([0b333e5](https://github.com/currents-dev/cypress-cloud/commit/0b333e53d8ceca54ecd49122ad79beeed29b10dd))
+- use axios-retry ([b3d2fd5](https://github.com/currents-dev/cypress-cloud/commit/b3d2fd56863afdf3403ef00674ec18a8d89a01d2))
+
 ## [1.3.2](https://github.com/currents-dev/cypress-cloud/compare/v1.3.1...v1.3.2) (2022-12-29)
 
 ### Bug Fixes
