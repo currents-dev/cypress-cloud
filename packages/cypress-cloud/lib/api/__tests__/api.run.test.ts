@@ -1,11 +1,11 @@
-import { createRun, CreateRunResponse } from "@currents/cypress/lib/api";
-import { getBaseUrl } from "@currents/cypress/lib/httpClient/config";
+import { createRun, CreateRunResponse } from "cypress-cloud/lib/api";
+import { getBaseUrl } from "cypress-cloud/lib/httpClient/config";
 import nock from "nock";
 import { printWarnings } from "../warnings";
 import { createRunPayload, createRunResponse } from "./fixtures/run";
 
 jest.mock("../warnings");
-jest.mock("@currents/cypress/lib/httpClient/config", () => ({
+jest.mock("cypress-cloud/lib/httpClient/config", () => ({
   getBaseUrl: jest.fn().mockReturnValue("http://localhost:1234"),
 }));
 

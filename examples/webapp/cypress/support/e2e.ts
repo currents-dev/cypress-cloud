@@ -1,5 +1,5 @@
 require("cypress-terminal-report/src/installLogsCollector")();
-require("@currents/cypress/support");
+require("cypress-cloud/support");
 require("./commands");
 beforeEach(() => {
   cy.visit("/");

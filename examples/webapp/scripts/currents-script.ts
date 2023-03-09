@@ -1,4 +1,4 @@
-import { run } from "@currents/cypress";
+import { run } from "cypress-cloud";
 
 (async function runTests() {
   const projectId = process.env.CURRENTS_PROJECT_ID || "";

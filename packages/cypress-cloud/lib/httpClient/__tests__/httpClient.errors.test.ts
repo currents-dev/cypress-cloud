@@ -1,9 +1,10 @@
-import * as log from "@currents/cypress/lib/log";
+import { expect } from "@jest/globals";
+import * as log from "cypress-cloud/lib/log";
 import nock from "nock";
 import { makeRequest } from "../httpClient";
 import { formatGenericError } from "../printErrors";
 
-jest.mock("@currents/cypress/lib/log");
+jest.mock("cypress-cloud/lib/log");
 
 const apiMock = nock("https://cy.currents.dev");
 

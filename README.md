@@ -1,4 +1,4 @@
-# Cypress Cloud (@currents/cypress)
+# Cypress Cloud: Debug, troubleshoot and record Cypress CI tests in Cloud
 
 Integrate Cypress with alternative cloud services like Currents or Sorry Cypress.
 
@@ -12,12 +12,16 @@ Integrate Cypress with alternative cloud services like Currents or Sorry Cypress
 
 [Changelog](./CHANGELOG.md) | [License](./LICENSE)
 
+## Requirements
+
+The package requires cypress version 10+.
+
 ## Setup
 
-The package requires cypress version 10+. Install the package:
+Install the package:
 
 ```sh
-npm install @currents/cypress
+npm install cypress-cloud
 ```
 
 Create a new configuration file: `currents.config.js` in the project’s root, set the `projectId` and the record key obtained from [Currents](https://app.currents.dev) or your self-hosted instance of Sorry Cypress:
@@ -30,12 +34,12 @@ module.exports = {
 };
 ```
 
-Add `@currents/cypress/plugin` plugin to `cypress.config.{js|ts|mjs}`
+Add `cypress-cloud/plugin` to `cypress.config.{js|ts|mjs}`
 
 ```js
 // cypress.config.js
 const { defineConfig } = require("cypress");
-const { cloudPlugin } = require("@currents/cypress/plugin");
+const { cloudPlugin } = require("cypress-cloud/plugin");
 module.exports = defineConfig({
   e2e: {
     setupNodeEvents(on, config) {
@@ -97,7 +101,7 @@ run(params: CurrentsRunParameters): Promise<CypressCommandLine.CypressRunResult 
 Example:
 
 ```ts
-import { run } from "@currents/cypress";
+import { run } from "cypress-cloud";
 
 const results = await run({
   reporter: "junit",

@@ -35,7 +35,7 @@ jobs:
         env:
           CURRENTS_API_URL: http://localhost:1234
         run: |
-          npm link @currents/cypress
+          npm link cypress-cloud
 
           npx cypress-cloud run --record --parallel \
           --spec "./cypress/e2e_smoke/*.spec.js" \

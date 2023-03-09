@@ -1,5 +1,5 @@
 {
-  "name": "@currents/cypress",
+  "name": "cypress-cloud",
   "version": "1.0.0",
   "main": "./out/index.js",
   "types": "./index.ts",

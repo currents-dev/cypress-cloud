@@ -8,7 +8,7 @@
     "cypress:script": "ts-node scripts/currents-script.ts"
   },
   "dependencies": {
-    "@currents/cypress": "*",
+    "cypress-cloud": "*",
     "cypress": "^12.6.0",
     "cypress-terminal-report": "^5.0.0",
     "next": "^13.2.1",

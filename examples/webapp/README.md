@@ -1,12 +1,14 @@
-# Example Usage of Cypress Cloud (@currents/cypress)
+# Example Usage of Cypress Cloud
 
 ## CLI Usage
 
 To run the example, make sure that you have an account at https://app.currents.dev (or Sorry Cypress instance).
 
-### E2E tests
+### Configuration
 
-Update `currents.config.js` with the `projectId` obtained from a cloud orchestration service.
+Update `currents.config.js` with the `projectId`, `recordKey` obtained from a cloud orchestration service. Sorry Cypress users - use the director service URL as `recordServiceUrl`.
+
+### E2E tests
 
 ```sh
 npm install

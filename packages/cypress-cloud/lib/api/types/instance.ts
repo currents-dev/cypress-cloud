@@ -1,4 +1,4 @@
-import { Platform, ScreenshotArtifact } from "@currents/cypress/types";
+import { Platform, ScreenshotArtifact } from "cypress-cloud/types";
 import { SetTestsPayload, Test } from "./test";
 
 export interface Screenshot {

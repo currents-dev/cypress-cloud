@@ -1,5 +1,5 @@
-import { CiParams, CiProvider } from "@currents/cypress/lib/ciProvider";
-import { Platform } from "@currents/cypress/types";
+import { CiParams, CiProvider } from "cypress-cloud/lib/ciProvider";
+import { Platform } from "cypress-cloud/types";
 
 export type CreateRunPayload = {
   ci: {

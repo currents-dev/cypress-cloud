@@ -2,7 +2,7 @@ import {
   CypressResult,
   ScreenshotArtifact,
   TestsResult,
-} from "@currents/cypress/types";
+} from "cypress-cloud/types";
 import Debug from "debug";
 import { nanoid } from "nanoid";
 import {

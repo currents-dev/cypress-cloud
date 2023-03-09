@@ -44,7 +44,7 @@ jobs:
           FORCE_COLOR: 2 # for chalk tests
           COMMIT_INFO_MESSAGE: "[cypress-cloud] ${{ github.event.head_commit.message }}"
         run: |
-          npm link @currents/cypress
+          npm link cypress-cloud
           npx cypress-cloud run --record --parallel \
           --spec "./cypress/e2e*/*.spec.js" \
           --browser chrome --key ${{ secrets.CURRENTS_RECORD_KEY }} \ --ci-build-id "cloud-${{ github.repository }}-${{ github.run_id }}-${{ github.run_attempt}}" --tag cypress-cloud,gha

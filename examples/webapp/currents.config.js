@@ -7,6 +7,6 @@ module.exports = {
   },
   projectId: !!(process.env.GITHUB_ACTION || process.env.CIRCLE_BRANCH)
     ? "Ij0RfK"
-    : "Ij0RfK",
+    : "l4zuz8",
   // recordKey: process.env.CURRENTS_RECORD_KEY,
 };
