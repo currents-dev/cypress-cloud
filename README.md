@@ -34,7 +34,8 @@ Create a new configuration file: `currents.config.js` in the project’s root, s
 module.exports = {
   projectId: "Ij0RfK",
   recordKey: "xxx",
-  cloudServiceUrl: "https://cy.currents.dev", // Sorry Cypress users - set the director service URL
+  // Sorry Cypress users - set the director service URL
+  cloudServiceUrl: "http://cy.currents.dev",
 };
 ```
 
@@ -59,7 +60,7 @@ module.exports = defineConfig({
 npx cypress-cloud --parallel --record --key <your_key> --ci-build-id hello-cypress-cloud
 ```
 
-See all the available options `npx cypress-cloud --help`. Learn more about [CI Build Id](https://currents.dev/readme/guides/cypress-ci-build-id).
+See all the available options `npx cypress-cloud --help`. Learn more about [CI Build ID](https://currents.dev/readme/guides/cypress-ci-build-id).
 
 ## Example
 

@@ -1,4 +1,4 @@
-# Example Usage of Cypress Cloud
+# Example Usage of cypress-cloud
 
 ## CLI Usage
 
@@ -6,7 +6,7 @@ To run the example, make sure that you have an account at https://app.currents.d
 
 ### Configuration
 
-Update `currents.config.js` with the `projectId`, `recordKey` obtained from a cloud orchestration service. Sorry Cypress users - use the director service URL as `recordServiceUrl`.
+Update `currents.config.js` with the `projectId`, `recordKey` obtained from a cloud orchestration service. Sorry Cypress users - use the director service URL as `cloudServiceUrl`.
 
 ### E2E tests
 
