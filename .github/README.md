@@ -45,7 +45,7 @@ Add `cypress-cloud/plugin` to `cypress.config.{js|ts|mjs}`
 ```js
 // cypress.config.js
 const { defineConfig } = require("cypress");
-const cloudPlugin = require("cypress-cloud/plugin");
+const { cloudPlugin } = require("cypress-cloud/plugin");
 module.exports = defineConfig({
   e2e: {
     setupNodeEvents(on, config) {
@@ -136,3 +136,28 @@ npm run test
 ```
 
 > Please note, we use `esbuild` for building and `swc` for testing. In addition, jest has built-in module aliases, but eslint does not. Beware of importing aliases in non-testing code.
+
+## Releasing
+
+### Beta channel
+
+```sh
+cd packages/cypress-cloud
+npm run release -- --preRelease=beta && npm run release:npm -- -t beta
+```
+
+### Latest channel
+
+```sh
+cd packages/cypress-cloud
+npm run release && npm run release:npm -- -t latest
+```
+
+### Localhost
+
+```sh
+docker run -it --rm --name verdaccio -p 4873:4873 verdaccio/verdaccio
+npm adduser --registry http://localhost:4873
+npm login --registry http://localhost:4873
+npm publish --registry http://localhost:4873 --tag beta
+```

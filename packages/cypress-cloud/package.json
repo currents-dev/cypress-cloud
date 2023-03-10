@@ -1,7 +1,7 @@
 {
   "name": "cypress-cloud",
-  "version": "1.4.2-beta.0",
-  "main": ".",
+  "version": "1.4.2",
+  "main": "./dist",
   "author": "Currents Software Inc",
   "homepage": "https://github.com/currents-dev/cypress-cloud",
   "bugs": {
@@ -16,8 +16,7 @@
     "cypress",
     "sorry-cypress",
     "ci",
-    "test",
-    "automation",
+    "e2e",
     "cypress-cloud"
   ],
   "scripts": {
@@ -26,6 +25,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "release": "release-it",
+    "release:npm": "./publish.js",
     "dev": "tsup --watch",
     "build": "tsup --dts"
   },
@@ -76,9 +76,7 @@
     "cypress-cloud": "./bin/cli.js"
   },
   "files": [
-    "dist/*",
-    "LICENSE.md",
-    "README.md"
+    "dist"
   ],
   "tsup": {
     "entry": [
@@ -103,15 +101,13 @@
     "./package.json": "./package.json"
   },
   "release-it": {
-    "hooks": {
-      "before:init": "npm run rm && npm run build",
-      "before:npm:release": "cp package.json dist/package.json && cp README.md dist/README.md && cp LICENSE.md dist/LICENSE.md && cd dist"
-    },
     "github": {
       "release": true,
       "releaseName": "v${version}"
     },
-    "npm": {},
+    "npm": {
+      "publish": false
+    },
     "git": {
       "requireCleanWorkingDir": false,
       "commitMessage": "chore: release v${version}",
