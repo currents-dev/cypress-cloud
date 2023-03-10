@@ -20,7 +20,12 @@ export type CurrentsConfig = {
   component: ComponentConfig;
 };
 
+let _config: CurrentsConfig | null = null;
 export function getCurrentsConfig(): CurrentsConfig {
+  if (_config) {
+    return _config;
+  }
+
   const configFilePath = getConfigFilePath();
   debug("loading currents config file from '%s'", configFilePath);
 
@@ -36,13 +41,15 @@ export function getCurrentsConfig(): CurrentsConfig {
 
   try {
     const fsConfig = require(configFilePath);
-    return {
+    _config = {
       ...defaultConfig,
       ...fsConfig,
-    };
+    } as CurrentsConfig;
+    return _config;
   } catch (e) {
     warn("failed to load currents config file: %s", configFilePath);
-    return defaultConfig;
+    _config = defaultConfig;
+    return _config;
   }
 }
 

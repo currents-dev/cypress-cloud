@@ -6,6 +6,7 @@ import {
   TestingType,
 } from "../../types";
 import { getCurrentsConfig } from "../config";
+import { withError } from "../log";
 import { sanitizeAndConvertNestedArgs } from "./parser";
 import { program } from "./program";
 
@@ -115,7 +116,9 @@ export async function getRunParameters(
 
   if (!key) {
     return program.error(
-      "Missing 'key'. Please either pass it as a cli flag '-k, --key <record-key>', set it in currents.config.js, or set CURRENTS_RECORD_KEY environment variable."
+      withError(
+        "Missing 'key'. Please either pass it as a cli flag '-k, --key <record-key>', set it in currents.config.js, or set CURRENTS_RECORD_KEY environment variable."
+      )
     );
   }
 
@@ -123,7 +126,9 @@ export async function getRunParameters(
 
   if (!_projectId) {
     return program.error(
-      "Missing 'projectId'. Please either set it in currents.config.js, or as CURRENTS_PROJECT_ID environment variable."
+      withError(
+        "Missing 'projectId'. Please either set it in currents.config.js, or as CURRENTS_PROJECT_ID environment variable."
+      )
     );
   }
 

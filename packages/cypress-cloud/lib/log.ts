@@ -1,18 +1,23 @@
 import chalk from "chalk";
 import util from "util";
 
-const log = (...args: unknown[]) => console.log("  ", util.format(...args));
+const log = (...args: unknown[]) => console.log(util.format(...args));
 
 export const info = log;
 
+export const withError = (msg: string) =>
+  chalk.bgRed.white(" ERROR ") + " " + msg;
+export const withWarning = (msg: string) =>
+  chalk.bgYellow.black(" WARNING ") + " " + msg;
+
 export const warn = (...args: unknown[]) =>
-  log(chalk.bgYellow.black(" WARNING "), util.format(...args));
+  log(withWarning(util.format(...args)));
 
 export const success = (...args: unknown[]) =>
   log(chalk.green(util.format(...args)));
 
 export const error = (...args: unknown[]) =>
-  log(chalk.bgRed.white(" ERROR "), util.format(...args));
+  log(withError(util.format(...args)));
 
 type Color = "red" | "green" | "yellow" | "blue" | "magenta" | "cyan" | "white";
 export const title = (color: Color, ...args: unknown[]) =>
@@ -21,7 +26,7 @@ export const title = (color: Color, ...args: unknown[]) =>
 export const divider = () =>
   console.log("\n" + chalk.gray(Array(100).fill("=").join("")) + "\n");
 
-export const spacer = (n: number = 2) =>
+export const spacer = (n: number = 0) =>
   console.log(Array(n).fill("").join("\n"));
 
 export const cyan = chalk.cyan;
