@@ -7,7 +7,7 @@ import { customAlphabet } from "nanoid";
 import { CurrentsRunParameters } from "../types";
 import { getCLICypressOptions, serializeOptions } from "./cli/cli";
 import { createTempFile } from "./fs";
-import { error } from "./log";
+import { warn } from "./log";
 
 const debug = Debug("currents:boot");
 const getDummySpec = customAlphabet("abcdefghijklmnopqrstuvwxyz", 10);
@@ -73,11 +73,12 @@ export const bootCypress = async (
     return JSON.parse(f);
   } catch (err) {
     debug("read config temp file failed: %o", err);
-    error("Resolving cypress configuration failed:");
-    console.dir({
-      stdout: child.stdout.toString("utf-8").split("\n"),
-      stderr: child.stderr.toString("utf-8").split("\n"),
-    });
+    warn("Cypress stdout:\n%s", child.stdout.toString("utf-8"));
+    warn("Cypress stderr:\n%s", child.stderr.toString("utf-8"));
+    warn(
+      "Resolving cypress configuration failed.\n   - make sure that 'cypress-cloud/plugin' is installed\n   - report the issue together with cypress stdout and stderr"
+    );
+
     throw new Error("Unable to resolve cypress configuration");
   }
 };

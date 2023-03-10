@@ -26,8 +26,8 @@
     "test:watch": "jest --watch",
     "release": "release-it",
     "release:npm": "./publish.js",
-    "dev": "tsup --watch",
-    "build": "tsup --dts"
+    "dev": "tsup-node --watch",
+    "build": "tsup-node --dts"
   },
   "devDependencies": {
     "@release-it/conventional-changelog": "^5.1.1",
@@ -51,13 +51,12 @@
     "typescript": "^4.5.2"
   },
   "dependencies": {
-    "@commander-js/extra-typings": "^9.4.1",
     "@cypress/commit-info": "^2.2.0",
     "async-wait-until": "^2.0.12",
     "axios": "^1.2.0",
     "axios-retry": "^3.4.0",
     "chalk": "^4.1.2",
-    "commander": "^9.4.1",
+    "commander": "^10.0.0",
     "common-path-prefix": "^3.0.0",
     "cy2": "^3.4.2",
     "debug": "^4.3.4",
@@ -95,9 +94,17 @@
     "target": "node14"
   },
   "exports": {
-    ".": "./",
-    "./plugin": "./plugin",
-    "./support": "./support",
+    ".": "./dist",
+    "./plugin": {
+      "import": "./dist/plugin/index.js",
+      "require": "./dist/plugin/index.js",
+      "types": "./dist/plugin/index.d.ts"
+    },
+    "./support": {
+      "import": "./dist/support/index.js",
+      "require": "./dist/support/index.js",
+      "types": "./dist/support/index.d.ts"
+    },
     "./package.json": "./package.json"
   },
   "release-it": {
