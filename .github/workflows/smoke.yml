@@ -4,7 +4,7 @@ on:
   push:
 
 jobs:
-  e2e-network:
+  e2e-smoke:
     if: "!contains(toJSON(github.event.commits.*.message), '[skip ci]')"
     runs-on: ubuntu-latest
 
@@ -36,7 +36,7 @@ jobs:
           CURRENTS_API_URL: http://localhost:1234
         run: |
           npm link cypress-cloud
-
-          npx cypress-cloud run --record --parallel \
+          ../../node_modules/cypress-cloud/dist/bin/cli.js run --record --parallel \
           --spec "./cypress/e2e_smoke/*.spec.js" \
-          --browser chrome --key ${{ secrets.CURRENTS_RECORD_KEY }} \ --ci-build-id "${{ github.repository }}-${{ github.run_id }}-${{ github.run_attempt}}"
+          --browser chrome --key ${{ secrets.CURRENTS_RECORD_KEY }} \
+          --ci-build-id "${{ github.repository }}-${{ github.run_id }}-${{ github.run_attempt}}"
