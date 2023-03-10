@@ -44,10 +44,7 @@ fs.writeFileSync(
   JSON.stringify(newPkg, null, 2),
   "utf-8"
 );
-execSync(
-  `npm pack --dry-run && npm publish --tag ${options.tag} --registry http://localhost:4873`,
-  {
-    cwd: "./dist",
-    stdio: "inherit",
-  }
-);
+execSync(`npm pack --dry-run && npm publish --tag ${options.tag}`, {
+  cwd: "./dist",
+  stdio: "inherit",
+});
