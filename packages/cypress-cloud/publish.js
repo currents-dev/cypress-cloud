@@ -4,7 +4,7 @@ const { execSync } = require("child_process");
 const fs = require("fs");
 const pkg = require("./package.json");
 
-const { Command, Option } = require("@commander-js/extra-typings");
+const { Command, Option } = require("./lib/cli/@commander-js/extra-typings");
 
 const program = new Command()
   .name("publish")

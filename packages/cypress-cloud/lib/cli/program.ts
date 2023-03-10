@@ -1,4 +1,7 @@
-import { Command, Option } from "@commander-js/extra-typings";
+// https://github.com/currents-dev/cypress-cloud/issues/71
+// keep the local copy to prevent from importing
+// commander.js from the global node_modules
+import { Command, Option } from "./@commander-js/extra-typings";
 
 export const createProgram = (command: Command = new Command()) =>
   command
