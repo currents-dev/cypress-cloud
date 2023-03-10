@@ -1,3 +1,12 @@
+
+
+## [1.4.3](https://github.com/currents-dev/cypress-cloud/compare/v1.4.2-beta.0...v1.4.3) (2023-03-10)
+
+
+### Bug Fixes
+
+* use local @commander-js/extra-typings ([#73](https://github.com/currents-dev/cypress-cloud/issues/73)) ([1c51d66](https://github.com/currents-dev/cypress-cloud/commit/1c51d66b568553b0c946c681784e905e7d3d0a7e)), closes [#71](https://github.com/currents-dev/cypress-cloud/issues/71)
+
 ## [1.4.2](https://github.com/currents-dev/cypress-cloud/compare/v1.4.2-beta.0...v1.4.2) (2023-03-10)
 
 ### Bug Fixes
