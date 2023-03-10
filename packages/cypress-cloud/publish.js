@@ -4,7 +4,7 @@ const { execSync } = require("child_process");
 const fs = require("fs");
 const pkg = require("./package.json");
 
-const { Command, Option } = require("@commander-js/extra-typings");
+const { Command, Option } = require("./lib/cli/@commander-js/extra-typings");
 
 const program = new Command()
   .name("publish")
@@ -44,7 +44,10 @@ fs.writeFileSync(
   JSON.stringify(newPkg, null, 2),
   "utf-8"
 );
-execSync(`npm pack --dry-run && npm publish --tag ${options.tag}`, {
-  cwd: "./dist",
-  stdio: "inherit",
-});
+execSync(
+  `npm pack --dry-run && npm publish --tag ${options.tag} --registry http://localhost:4873`,
+  {
+    cwd: "./dist",
+    stdio: "inherit",
+  }
+);

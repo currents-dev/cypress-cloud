@@ -1,0 +1,60 @@
+{
+  "name": "@commander-js/extra-typings",
+  "version": "10.0.3",
+  "description": "Infer strong typings for commander options and action handlers",
+  "main": "index.js",
+  "scripts": {
+    "test": "tsd && jest",
+    "prepublishOnly": "npm run --silent test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/commander-js/extra-typings.git"
+  },
+  "files": [
+    "esm.mjs",
+    "index.js",
+    "index.d.ts"
+  ],
+  "type": "commonjs",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "require": "./index.js",
+      "import": "./esm.mjs"
+    },
+    "./esm.mjs": "./esm.mjs"
+  },
+  "types": "index.d.ts",
+  "tsd": {
+    "directory": "tests"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/commander-js/extra-typings/issues"
+  },
+  "homepage": "https://github.com/commander-js/extra-typings#readme",
+  "jest": {
+    "testEnvironment": "node",
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testPathIgnorePatterns": [
+      "/node_modules/"
+    ]
+  },
+  "peerDependencies": {
+    "commander": "10.0.x"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.2.6",
+    "@types/node": "^18.7.16",
+    "commander": "~10.0.0",
+    "jest": "^29.3.1",
+    "ts-jest": "^29.0.5",
+    "tsd": "^0.22.0",
+    "typescript": "^4.7.4"
+  }
+}
