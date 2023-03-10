@@ -1,6 +1,6 @@
 {
   "name": "cypress-cloud",
-  "version": "1.4.3",
+  "version": "1.4.4",
   "main": "./dist",
   "author": "Currents Software Inc",
   "homepage": "https://github.com/currents-dev/cypress-cloud",

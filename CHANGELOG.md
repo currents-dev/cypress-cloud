@@ -1,5 +1,13 @@
 
 
+## [1.4.4](https://github.com/currents-dev/cypress-cloud/compare/v1.4.3...v1.4.4) (2023-03-10)
+
+
+### Bug Fixes
+
+* no multiple warning for loading config file ([#74](https://github.com/currents-dev/cypress-cloud/issues/74)) ([a87ffc7](https://github.com/currents-dev/cypress-cloud/commit/a87ffc7e057a9c202791117ae8ba663fe61d3455)), closes [#68](https://github.com/currents-dev/cypress-cloud/issues/68)
+* publish readme on npm ([e9b3f55](https://github.com/currents-dev/cypress-cloud/commit/e9b3f55fdce7dbf2c32f611965ee90322007db0f))
+
 ## [1.4.3](https://github.com/currents-dev/cypress-cloud/compare/v1.4.2-beta.0...v1.4.3) (2023-03-10)
 
 
