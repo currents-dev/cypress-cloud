@@ -1,10 +1,3 @@
-## [1.4.2](https://github.com/currents-dev/cypress-cloud/compare/v1.4.1...v1.4.2-beta.0) (2023-03-10)
-
-### Bug Fixes
-
-- fix TS and CJS exports for published package ([1d3eb57](https://github.com/currents-dev/cypress-cloud/commit/1d3eb5710e5a76057e51ccd5fb92658f6e14ba47))
-- use release script ([8f29211](https://github.com/currents-dev/cypress-cloud/commit/8f292119e81a584d17f3c421a2f7a764bf7b27ad))
-
 ## [1.4.2](https://github.com/currents-dev/cypress-cloud/compare/v1.4.2-beta.0...v1.4.2) (2023-03-10)
 
 ### Bug Fixes
