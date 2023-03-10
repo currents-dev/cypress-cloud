@@ -1,7 +1,7 @@
 {
   "name": "cypress-cloud",
-  "version": "1.4.2-beta.0",
-  "main": ".",
+  "version": "1.4.2-beta.5",
+  "main": "./dist",
   "author": "Currents Software Inc",
   "homepage": "https://github.com/currents-dev/cypress-cloud",
   "bugs": {
@@ -16,8 +16,7 @@
     "cypress",
     "sorry-cypress",
     "ci",
-    "test",
-    "automation",
+    "e2e",
     "cypress-cloud"
   ],
   "scripts": {
@@ -26,6 +25,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "release": "release-it",
+    "release:npm": "./publish.js",
     "dev": "tsup --watch",
     "build": "tsup --dts"
   },
@@ -60,6 +60,7 @@
     "commander": "^9.4.1",
     "common-path-prefix": "^3.0.0",
     "cy2": "^3.4.2",
+    "cypress-cloud": "^1.4.2-beta.13",
     "debug": "^4.3.4",
     "getos": "^3.2.1",
     "globby": "^11.1.0",
@@ -76,9 +77,7 @@
     "cypress-cloud": "./bin/cli.js"
   },
   "files": [
-    "dist/*",
-    "LICENSE.md",
-    "README.md"
+    "dist"
   ],
   "tsup": {
     "entry": [
@@ -97,21 +96,27 @@
     "target": "node14"
   },
   "exports": {
-    ".": "./",
-    "./plugin": "./plugin",
-    "./support": "./support",
+    ".": "./dist",
+    "./plugin": {
+      "import": "./dist/plugin/index.js",
+      "require": "./dist/plugin/index.js",
+      "types": "./dist/plugin/index.d.ts"
+    },
+    "./support": {
+      "import": "./dist/support/index.js",
+      "require": "./dist/support/index.js",
+      "types": "./dist/support/index.d.ts"
+    },
     "./package.json": "./package.json"
   },
   "release-it": {
-    "hooks": {
-      "before:init": "npm run rm && npm run build",
-      "before:npm:release": "cp package.json dist/package.json && cp README.md dist/README.md && cp LICENSE.md dist/LICENSE.md && cd dist"
-    },
     "github": {
       "release": true,
       "releaseName": "v${version}"
     },
-    "npm": {},
+    "npm": {
+      "publish": false
+    },
     "git": {
       "requireCleanWorkingDir": false,
       "commitMessage": "chore: release v${version}",
