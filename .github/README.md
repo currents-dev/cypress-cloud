@@ -65,7 +65,7 @@ See all the available options `npx cypress-cloud --help`. Learn more about [CI B
 
 ## Example
 
-See an example in [examples/webapp](./example/webapp) directory.
+See an example in [examples/webapp](https://github.com/currents-dev/cypress-cloud/blob/main/examples/webapp) directory.
 
 ## Configuration
 
