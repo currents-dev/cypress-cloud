@@ -38,6 +38,7 @@ const newPkg = {
     "./package.json": "./package.json",
   },
 };
+fs.copyFileSync("./README.md", "./dist/README.md");
 fs.copyFileSync("./LICENSE.md", "./dist/LICENSE.md");
 fs.writeFileSync(
   "./dist/package.json",
