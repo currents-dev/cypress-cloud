@@ -37,9 +37,10 @@ jobs:
         working-directory: ./examples/webapp
         env:
           FORCE_COLOR: 2 # for chalk tests
+          CYPRESS_API_URL: https://cy-staging.currents.dev
           COMMIT_INFO_MESSAGE: "[@currents/cli] ${{ github.event.head_commit.message }}"
         run: |
           npm install @currents/cli
-          npx currents run --record --parallel \
-          --spec "./cypress/e2e*/*.spec.js" \
-          --browser chrome --key ${{ secrets.CURRENTS_RECORD_KEY }} \ --ci-build-id "cy-${{ github.repository }}-${{ github.run_id }}-${{ github.run_attempt}}" --tag currents-cli,gha
+          ../../node_modules/cypress-cloud/dist/bin/cli.js run --record --parallel \
+          --spec "./cypress/benchmark_short/*.spec.js" \
+          --browser chrome --key ${{ secrets.CURRENTS_STAGING_RECORD_KEY }} \ --ci-build-id "cy-${{ github.repository }}-${{ github.run_id }}-${{ github.run_attempt}}" --tag currents-cli,gha

@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "cypress-cloud": "*",
-    "cypress": "^12.6.0",
+    "cypress": "^12.5.1",
     "cypress-terminal-report": "^5.0.0",
     "next": "^13.2.1",
     "react": "^18.2.0",
