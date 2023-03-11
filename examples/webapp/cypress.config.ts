@@ -4,7 +4,7 @@ import currents from "cypress-cloud/plugin";
 module.exports = defineConfig({
   e2e: {
     projectId: !!(process.env.GITHUB_ACTION || process.env.CIRCLE_BRANCH)
-      ? "Ij0RfK"
+      ? "pLJwwO"
       : "1OPP8c",
     baseUrl: "https://todomvc.com/examples/vanillajs",
     videoUploadOnPasses: false,
