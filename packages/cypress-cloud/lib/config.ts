@@ -3,7 +3,6 @@ import path from "path";
 import { CurrentsRunParameters, DetectedBrowser } from "../types";
 import { bootCypress } from "./bootstrap";
 import { warn } from "./log";
-import { getRandomPort } from "./utils";
 const debug = Debug("currents:config");
 
 export type E2EConfig = {
@@ -28,7 +27,6 @@ export function getCurrentsConfig(): CurrentsConfig {
 
   const configFilePath = getConfigFilePath();
   debug("loading currents config file from '%s'", configFilePath);
-
   const defaultConfig: CurrentsConfig = {
     e2e: {
       batchSize: 3,
@@ -62,7 +60,7 @@ export async function getConfig(params: CurrentsRunParameters) {
         rawJson: Record<string, unknown>;
         browsers: DetectedBrowser[];
       })
-    | undefined = await bootCypress(getRandomPort(), params);
+    | undefined = await bootCypress(params);
 
   debug("cypress resolvedConfig: %O", cypressResolvedConfig);
 

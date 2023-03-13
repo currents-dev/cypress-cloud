@@ -1,0 +1,315 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 5,
+    "passes": 4,
+    "pending": 0,
+    "skipped": 0,
+    "failures": 1,
+    "wallClockStartedAt": "2023-03-12T22:12:54.367Z",
+    "wallClockEndedAt": "2023-03-12T22:13:05.327Z",
+    "wallClockDuration": 10960
+  },
+  "reporterStats": {
+    "suites": 1,
+    "tests": 5,
+    "passes": 4,
+    "pending": 0,
+    "failures": 1,
+    "start": "2023-03-12T22:12:54.368Z",
+    "end": "2023-03-12T22:13:05.330Z",
+    "duration": 10962
+  },
+  "exception": null,
+  "video": true,
+  "screenshots": [
+    {
+      "screenshotId": "00mq0",
+      "name": null,
+      "testId": "r4",
+      "testAttemptIndex": 0,
+      "takenAt": "2023-03-12T22:13:01.129Z",
+      "path": "/Users/agoldis/cypress-cloud/examples/webapp/cypress/screenshots/edit.spec.js/Editing -- should save edits on blur (failed).png",
+      "height": 1440,
+      "width": 2560
+    }
+  ],
+  "tests": [
+    {
+      "displayError": null,
+      "state": "passed",
+      "hooks": [
+        {
+          "hookId": "h1",
+          "hookName": "before each",
+          "title": ["\"before each\" hook"],
+          "body": "function () {\n    cy.visit(\"/\");\n}"
+        },
+        {
+          "hookId": "h4",
+          "hookName": "before each",
+          "title": ["\"before each\" hook"],
+          "body": "function () {\n    cy.createDefaultTodos().as(\"todos\");\n  }"
+        },
+        {
+          "hookId": "h3",
+          "hookName": "after each",
+          "title": ["\"after each\" hook"],
+          "body": "function () {\n      self.sendLogsToPrinter(self.collectorState.getCurrentLogStackIndex(), self.collectorState.getCurrentTest());\n    }"
+        },
+        {
+          "hookId": "h2",
+          "hookName": "after all",
+          "title": ["\"after all\" hook"],
+          "body": "function () {\n      // Need to wait otherwise some last commands get omitted from logs.\n      cy.task(CONSTANTS.TASK_NAME_OUTPUT, null, {log: false});\n    }"
+        }
+      ],
+      "attempts": [
+        {
+          "state": "passed",
+          "error": null,
+          "timings": {
+            "lifecycle": 24,
+            "before each": [
+              { "hookId": "h1", "fnDuration": 431, "afterFnDuration": 0 },
+              { "hookId": "h4", "fnDuration": 806, "afterFnDuration": 0 }
+            ],
+            "test": { "fnDuration": 87, "afterFnDuration": 0 },
+            "after each": [
+              { "hookId": "h3", "fnDuration": 9, "afterFnDuration": 0 }
+            ]
+          },
+          "failedFromHookId": null,
+          "wallClockStartedAt": "2023-03-12T22:12:54.383Z",
+          "wallClockDuration": 1363,
+          "videoTimestamp": 1668
+        }
+      ],
+      "clientId": "r0"
+    },
+    {
+      "displayError": "AssertionError: Timed out retrying after 4000ms: expected '<li..>' to contain 'buy some sausages XXX'\n    at Context.eval (webpack:///./cypress/e2e/edit.spec.js:36:26)",
+      "state": "failed",
+      "hooks": [
+        {
+          "hookId": "h1",
+          "hookName": "before each",
+          "title": ["\"before each\" hook"],
+          "body": "function () {\n    cy.visit(\"/\");\n}"
+        },
+        {
+          "hookId": "h4",
+          "hookName": "before each",
+          "title": ["\"before each\" hook"],
+          "body": "function () {\n    cy.createDefaultTodos().as(\"todos\");\n  }"
+        },
+        {
+          "hookId": "h3",
+          "hookName": "after each",
+          "title": ["\"after each\" hook"],
+          "body": "function () {\n      self.sendLogsToPrinter(self.collectorState.getCurrentLogStackIndex(), self.collectorState.getCurrentTest());\n    }"
+        },
+        {
+          "hookId": "h2",
+          "hookName": "after all",
+          "title": ["\"after all\" hook"],
+          "body": "function () {\n      // Need to wait otherwise some last commands get omitted from logs.\n      cy.task(CONSTANTS.TASK_NAME_OUTPUT, null, {log: false});\n    }"
+        }
+      ],
+      "attempts": [
+        {
+          "state": "failed",
+          "error": {
+            "name": "AssertionError",
+            "message": "Timed out retrying after 4000ms: expected '<li..>' to contain 'buy some sausages XXX'",
+            "stack": "    at Context.eval (webpack:///./cypress/e2e/edit.spec.js:36:26)",
+            "codeFrame": {
+              "line": 36,
+              "column": 27,
+              "originalFile": "cypress/e2e/edit.spec.js",
+              "relativeFile": "examples/webapp/cypress/e2e/edit.spec.js",
+              "absoluteFile": "/Users/agoldis/cypress-cloud/examples/webapp/cypress/e2e/edit.spec.js",
+              "frame": "  34 |     cy.get(\"@todos\").eq(0).should(\"contain\", TODO_ITEM_ONE);\n  35 | \n> 36 |     cy.get(\"@secondTodo\").should(\"contain\", \"buy some sausages XXX\");\n     |                           ^\n  37 |     cy.get(\"@todos\").eq(2).should(\"contain\", TODO_ITEM_THREE);\n  38 |   });\n  39 | ",
+              "language": "js"
+            }
+          },
+          "timings": {
+            "lifecycle": 17,
+            "before each": [
+              { "hookId": "h1", "fnDuration": 59, "afterFnDuration": 0 },
+              { "hookId": "h4", "fnDuration": 872, "afterFnDuration": 0 }
+            ],
+            "test": { "fnDuration": 4423, "afterFnDuration": 219 },
+            "after each": [
+              { "hookId": "h3", "fnDuration": 11, "afterFnDuration": 1 }
+            ]
+          },
+          "failedFromHookId": null,
+          "wallClockStartedAt": "2023-03-12T22:12:55.748Z",
+          "wallClockDuration": 5604,
+          "videoTimestamp": 3033
+        }
+      ],
+      "clientId": "r1"
+    },
+    {
+      "displayError": null,
+      "state": "passed",
+      "hooks": [
+        {
+          "hookId": "h1",
+          "hookName": "before each",
+          "title": ["\"before each\" hook"],
+          "body": "function () {\n    cy.visit(\"/\");\n}"
+        },
+        {
+          "hookId": "h4",
+          "hookName": "before each",
+          "title": ["\"before each\" hook"],
+          "body": "function () {\n    cy.createDefaultTodos().as(\"todos\");\n  }"
+        },
+        {
+          "hookId": "h3",
+          "hookName": "after each",
+          "title": ["\"after each\" hook"],
+          "body": "function () {\n      self.sendLogsToPrinter(self.collectorState.getCurrentLogStackIndex(), self.collectorState.getCurrentTest());\n    }"
+        },
+        {
+          "hookId": "h2",
+          "hookName": "after all",
+          "title": ["\"after all\" hook"],
+          "body": "function () {\n      // Need to wait otherwise some last commands get omitted from logs.\n      cy.task(CONSTANTS.TASK_NAME_OUTPUT, null, {log: false});\n    }"
+        }
+      ],
+      "attempts": [
+        {
+          "state": "passed",
+          "error": null,
+          "timings": {
+            "lifecycle": 13,
+            "before each": [
+              { "hookId": "h1", "fnDuration": 54, "afterFnDuration": 0 },
+              { "hookId": "h4", "fnDuration": 862, "afterFnDuration": 0 }
+            ],
+            "test": { "fnDuration": 563, "afterFnDuration": 0 },
+            "after each": [
+              { "hookId": "h3", "fnDuration": 9, "afterFnDuration": 0 }
+            ]
+          },
+          "failedFromHookId": null,
+          "wallClockStartedAt": "2023-03-12T22:13:01.365Z",
+          "wallClockDuration": 1507,
+          "videoTimestamp": 8650
+        }
+      ],
+      "clientId": "r2"
+    },
+    {
+      "displayError": null,
+      "state": "passed",
+      "hooks": [
+        {
+          "hookId": "h1",
+          "hookName": "before each",
+          "title": ["\"before each\" hook"],
+          "body": "function () {\n    cy.visit(\"/\");\n}"
+        },
+        {
+          "hookId": "h4",
+          "hookName": "before each",
+          "title": ["\"before each\" hook"],
+          "body": "function () {\n    cy.createDefaultTodos().as(\"todos\");\n  }"
+        },
+        {
+          "hookId": "h3",
+          "hookName": "after each",
+          "title": ["\"after each\" hook"],
+          "body": "function () {\n      self.sendLogsToPrinter(self.collectorState.getCurrentLogStackIndex(), self.collectorState.getCurrentTest());\n    }"
+        },
+        {
+          "hookId": "h2",
+          "hookName": "after all",
+          "title": ["\"after all\" hook"],
+          "body": "function () {\n      // Need to wait otherwise some last commands get omitted from logs.\n      cy.task(CONSTANTS.TASK_NAME_OUTPUT, null, {log: false});\n    }"
+        }
+      ],
+      "attempts": [
+        {
+          "state": "passed",
+          "error": null,
+          "timings": {
+            "lifecycle": 18,
+            "before each": [
+              { "hookId": "h1", "fnDuration": 55, "afterFnDuration": 1 },
+              { "hookId": "h4", "fnDuration": 860, "afterFnDuration": 0 }
+            ],
+            "test": { "fnDuration": 224, "afterFnDuration": 0 },
+            "after each": [
+              { "hookId": "h3", "fnDuration": 9, "afterFnDuration": 0 }
+            ]
+          },
+          "failedFromHookId": null,
+          "wallClockStartedAt": "2023-03-12T22:13:02.873Z",
+          "wallClockDuration": 1173,
+          "videoTimestamp": 10158
+        }
+      ],
+      "clientId": "r3"
+    },
+    {
+      "displayError": null,
+      "state": "passed",
+      "hooks": [
+        {
+          "hookId": "h1",
+          "hookName": "before each",
+          "title": ["\"before each\" hook"],
+          "body": "function () {\n    cy.visit(\"/\");\n}"
+        },
+        {
+          "hookId": "h4",
+          "hookName": "before each",
+          "title": ["\"before each\" hook"],
+          "body": "function () {\n    cy.createDefaultTodos().as(\"todos\");\n  }"
+        },
+        {
+          "hookId": "h3",
+          "hookName": "after each",
+          "title": ["\"after each\" hook"],
+          "body": "function () {\n      self.sendLogsToPrinter(self.collectorState.getCurrentLogStackIndex(), self.collectorState.getCurrentTest());\n    }"
+        },
+        {
+          "hookId": "h2",
+          "hookName": "after all",
+          "title": ["\"after all\" hook"],
+          "body": "function () {\n      // Need to wait otherwise some last commands get omitted from logs.\n      cy.task(CONSTANTS.TASK_NAME_OUTPUT, null, {log: false});\n    }"
+        }
+      ],
+      "attempts": [
+        {
+          "state": "passed",
+          "error": null,
+          "timings": {
+            "lifecycle": 17,
+            "before each": [
+              { "hookId": "h1", "fnDuration": 91, "afterFnDuration": 0 },
+              { "hookId": "h4", "fnDuration": 895, "afterFnDuration": 0 }
+            ],
+            "test": { "fnDuration": 257, "afterFnDuration": 0 },
+            "after each": [
+              { "hookId": "h3", "fnDuration": 9, "afterFnDuration": 0 }
+            ],
+            "after all": [
+              { "hookId": "h2", "fnDuration": 4, "afterFnDuration": 0 }
+            ]
+          },
+          "failedFromHookId": null,
+          "wallClockStartedAt": "2023-03-12T22:13:04.049Z",
+          "wallClockDuration": 1278,
+          "videoTimestamp": 11334
+        }
+      ],
+      "clientId": "r4"
+    }
+  ]
+}

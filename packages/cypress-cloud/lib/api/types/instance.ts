@@ -1,38 +1,6 @@
 import { Platform, ScreenshotArtifact } from "cypress-cloud/types";
-import { SetTestsPayload, Test } from "./test";
-
-export interface Screenshot {
-  screenshotId: string;
-  name: string | null;
-  testId: string;
-  takenAt: string;
-  height: number;
-  width: number;
-  screenshotURL: string;
-}
-
-export interface InstanceResultStats {
-  suites: number;
-  tests: number;
-  passes: number;
-  pending: number;
-  skipped: number;
-  failures: number;
-  wallClockStartedAt: string;
-  wallClockEndedAt: string;
-  wallClockDuration: number;
-}
-
-export interface ReporterStats {
-  suites: number;
-  tests: number;
-  passes: number;
-  pending: number;
-  failures: number;
-  start: string;
-  end: string;
-  duration: number;
-}
+import { ReporterStats, Screenshot, Stats, Test } from "../../result.types";
+import { SetTestsPayload } from "./test";
 
 export interface CypressConfig {
   video: boolean;
@@ -41,16 +9,17 @@ export interface CypressConfig {
 }
 
 export interface InstanceResult {
-  stats: InstanceResultStats;
+  stats: Stats;
   tests: Test[];
   error?: string;
   reporterStats: ReporterStats;
   exception: null | string;
   cypressConfig?: PickedCypressConfig | null;
   screenshots: Screenshot[];
-  video: boolean;
-  videoUrl?: string;
+  video: string | null;
 }
+
+// as reported by after:spec
 
 export interface AssetUploadInstruction {
   uploadUrl: string;
@@ -63,7 +32,7 @@ export interface ScreenshotUploadInstruction extends AssetUploadInstruction {
 
 export type SetResultsTestsPayload = Pick<
   Test,
-  "state" | "displayError" | "attempts"
+  "state" | "displayError" | "attempts" | "title" | "testId" | "hookIds"
 > & { clientId: string };
 
 export interface SetInstanceTestsPayload {

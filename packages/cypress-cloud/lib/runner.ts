@@ -11,6 +11,7 @@ import {
 } from "./api/types/instance";
 import { runSpecFileSafe } from "./cypress";
 import { isCurrents } from "./env";
+import { setInstanceIds } from "./execution.state";
 import { divider, error, info, title, warn } from "./log";
 import { getUploadResultsTask } from "./results/uploadResults";
 
@@ -102,6 +103,8 @@ async function runBatch({
   if (batch.specs.length === 0) {
     return [];
   }
+
+  setInstanceIds(batch.specs);
 
   divider();
   info(

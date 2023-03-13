@@ -6,20 +6,16 @@ import {
   updateInstanceResults,
   UpdateInstanceResultsPayload,
 } from "../api";
-import { uploadArtifacts, uploadStdoutSafe } from "../artifacts";
-import { getInitialOutput } from "../capture";
 import { isCurrents } from "../env";
+import { setResults } from "../execution.state";
 import { warn } from "../log";
-import { getInstanceResultPayload, getInstanceTestsPayload } from "./results";
 const debug = Debug("currents:results");
 
 export async function getUploadResultsTask({
-  instanceId,
   spec,
   runResult,
   output,
 }: {
-  instanceId: string;
   spec: string;
   runResult: CypressCommandLine.CypressRunResult;
   output: string;
@@ -30,7 +26,6 @@ export async function getUploadResultsTask({
     return;
   }
   return processCypressResults(
-    instanceId,
     {
       // replace the runs with the run for the specified spec
       ...runResult,
@@ -41,7 +36,6 @@ export async function getUploadResultsTask({
 }
 
 export async function processCypressResults(
-  instanceId: string,
   results: CypressCommandLine.CypressRunResult,
   stdout: string
 ) {
@@ -49,32 +43,33 @@ export async function processCypressResults(
   if (!run) {
     throw new Error("No run found in Cypress results");
   }
-  const instanceResults = getInstanceResultPayload(run);
-  const instanceTests = getInstanceTestsPayload(run, results.config);
+  return setResults(run.spec.name, run, stdout);
+  // const instanceResults = getInstanceResultPayload(run);
+  // const instanceTests = getInstanceTestsPayload(run, results.config);
 
-  const { videoUploadUrl, screenshotUploadUrls } = await reportResults(
-    instanceId,
-    instanceTests,
-    instanceResults
-  );
+  // const { videoUploadUrl, screenshotUploadUrls } = await uploadSpecResults(
+  // instanceId,
+  // instanceTests,
+  // instanceResults
+  // );
 
-  debug("instance %s artifact upload instructions %o", instanceId, {
-    videoUploadUrl,
-    screenshotUploadUrls,
-  });
+  // debug("instance %s artifact upload instructions %o", instanceId, {
+  //   videoUploadUrl,
+  //   screenshotUploadUrls,
+  // });
 
-  return Promise.all([
-    uploadArtifacts({
-      videoUploadUrl,
-      videoPath: run.video,
-      screenshotUploadUrls,
-      screenshots: instanceResults.screenshots,
-    }),
-    uploadStdoutSafe(instanceId, getInitialOutput() + stdout),
-  ]);
+  // return Promise.all([
+  // uploadArtifacts({
+  //   videoUploadUrl,
+  //   videoPath: run.video,
+  //   screenshotUploadUrls,
+  //   screenshots: instanceResults.screenshots,
+  // }),
+  // uploadStdoutSafe(instanceId, getInitialOutput() + stdout),
+  // ]);
 }
 
-async function reportResults(
+export async function uploadSpecResults(
   instanceId: string,
   instanceTests: SetInstanceTestsPayload,
   instanceResults: UpdateInstanceResultsPayload

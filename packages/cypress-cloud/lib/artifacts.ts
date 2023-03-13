@@ -17,8 +17,6 @@ export async function uploadArtifacts({
   screenshots,
   screenshotUploadUrls,
 }: UploadArtifacts) {
-  // title("blue", "Uploading  Results");
-
   debug("uploading artifacts: %o", {
     videoPath,
     videoUploadUrl,
@@ -28,7 +26,6 @@ export async function uploadArtifacts({
 
   const totalUploads = (videoPath ? 1 : 0) + screenshots.length;
   if (totalUploads === 0) {
-    // info("Nothing to upload");
     return;
   }
 
@@ -36,8 +33,6 @@ export async function uploadArtifacts({
   if (videoUploadUrl && videoPath) {
     await safe(
       uploadFile,
-      // () => info("- Failed Uploading", red(videoPath)),
-      // () => info("- Done Uploading", cyan(videoPath))
       () => {},
       () => {}
     )(videoPath, videoUploadUrl);
@@ -60,8 +55,6 @@ export async function uploadArtifacts({
         }
         return safe(
           uploadFile,
-          // () => warn("- Failed Uploading", red(screenshot.path)),
-          // () => info("- Done Uploading", cyan(screenshot.path))
           () => {},
           () => {}
         )(screenshot.path, url);

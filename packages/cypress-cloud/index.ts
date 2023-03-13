@@ -1,6 +1,10 @@
 import("./lib/init");
 
-import { cutInitialOutput } from "./lib/capture";
+import {
+  cutInitialOutput,
+  getCapturedOutput,
+  getInitialOutput,
+} from "./lib/capture";
 import { getConfig } from "./lib/config";
 import { setRunId } from "./lib/httpClient";
 import { summarizeTestResults } from "./lib/results";
@@ -10,12 +14,15 @@ import { CurrentsRunParameters } from "./types";
 import Debug from "debug";
 import { createRun } from "./lib/api/api";
 import { guessBrowser } from "./lib/browser";
+import { bus } from "./lib/bus";
 import { getCI } from "./lib/ciProvider";
+import { setResults } from "./lib/execution.state";
 import { getGitInfo } from "./lib/git";
 import { bold, divider, info, spacer, title } from "./lib/log";
 import { getPlatformInfo } from "./lib/platform";
 import { runTillDone } from "./lib/runner";
 import { summaryTable } from "./lib/table";
+import { startWSS } from "./lib/ws";
 
 const debug = Debug("currents:index");
 
@@ -27,7 +34,7 @@ const debug = Debug("currents:index");
  */
 export async function run(params: CurrentsRunParameters) {
   spacer();
-
+  listenToBus();
   const {
     key: recordKey,
     projectId,
@@ -89,6 +96,7 @@ export async function run(params: CurrentsRunParameters) {
 
   cutInitialOutput();
 
+  await startWSS();
   const results = await runTillDone(
     {
       runId: run.runId,
@@ -110,4 +118,20 @@ export async function run(params: CurrentsRunParameters) {
 
   spacer();
   return testResults;
+}
+
+function listenToBus() {
+  bus.on(
+    "after:spec",
+    async ({
+      spec,
+      results,
+    }: {
+      spec: Cypress.Spec;
+      results: CypressCommandLine.RunResult;
+    }) => {
+      // TODO: what about errored specs?
+      setResults(spec.name, results, getInitialOutput() + getCapturedOutput());
+    }
+  );
 }

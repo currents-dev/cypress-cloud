@@ -12,10 +12,7 @@ import { warn } from "./log";
 const debug = Debug("currents:boot");
 const getDummySpec = customAlphabet("abcdefghijklmnopqrstuvwxyz", 10);
 
-export const bootCypress = async (
-  port: number,
-  params: CurrentsRunParameters
-) => {
+export const bootCypress = async (params: CurrentsRunParameters) => {
   debug("booting cypress...");
   const tempFilePath = await createTempFile();
   const serializedOptions = chain(getCLICypressOptions(params))
@@ -25,7 +22,6 @@ export const bootCypress = async (
       env: {
         ...(opts.env ?? {}),
         currents_temp_file: tempFilePath,
-        currents_port: port,
         currents_debug_enabled: process.env.DEBUG?.includes("currents:")
           ? "true"
           : "false",

@@ -33,7 +33,7 @@ context("Editing", function () {
 
     cy.get("@todos").eq(0).should("contain", TODO_ITEM_ONE);
 
-    cy.get("@secondTodo").should("contain", "buy some sausages");
+    cy.get("@secondTodo").should("contain", "buy some sausages XXX");
     cy.get("@todos").eq(2).should("contain", TODO_ITEM_THREE);
   });
 

@@ -1,0 +1,609 @@
+{
+  "status": "finished",
+  "startedTestsAt": "2023-03-12T21:11:14.707Z",
+  "endedTestsAt": "2023-03-12T21:11:32.976Z",
+  "totalDuration": 12374,
+  "totalSuites": 3,
+  "totalTests": 7,
+  "totalPassed": 6,
+  "totalPending": 0,
+  "totalFailed": 1,
+  "totalSkipped": 0,
+  "runs": [
+    {
+      "stats": {
+        "suites": 1,
+        "tests": 5,
+        "passes": 4,
+        "pending": 0,
+        "skipped": 0,
+        "failures": 1,
+        "duration": 11057,
+        "startedAt": "2023-03-12T21:11:14.707Z",
+        "endedAt": "2023-03-12T21:11:25.764Z"
+      },
+      "reporter": "spec",
+      "reporterStats": {
+        "suites": 1,
+        "tests": 5,
+        "passes": 4,
+        "pending": 0,
+        "failures": 1,
+        "start": "2023-03-12T21:11:14.708Z",
+        "end": "2023-03-12T21:11:25.768Z",
+        "duration": 11060
+      },
+      "hooks": [
+        {
+          "hookName": "before each",
+          "title": ["\"before each\" hook"],
+          "body": "function () {\n    cy.visit(\"/\");\n}"
+        },
+        {
+          "hookName": "before each",
+          "title": ["\"before each\" hook"],
+          "body": "function () {\n    cy.createDefaultTodos().as(\"todos\");\n  }"
+        },
+        {
+          "hookName": "after each",
+          "title": ["\"after each\" hook"],
+          "body": "function () {\n      self.sendLogsToPrinter(self.collectorState.getCurrentLogStackIndex(), self.collectorState.getCurrentTest());\n    }"
+        },
+        {
+          "hookName": "after all",
+          "title": ["\"after all\" hook"],
+          "body": "function () {\n      // Need to wait otherwise some last commands get omitted from logs.\n      cy.task(CONSTANTS.TASK_NAME_OUTPUT, null, {log: false});\n    }"
+        }
+      ],
+      "tests": [
+        {
+          "title": ["Editing", "should hide other controls when editing"],
+          "state": "passed",
+          "body": "function () {\n    cy.get(\"@todos\").eq(1).as(\"secondTodo\").find(\"label\").dblclick();\n    cy.get(\"@secondTodo\").find(\".toggle\").should(\"not.be.visible\");\n    cy.get(\"@secondTodo\").find(\"label\").should(\"not.be.visible\");\n  }",
+          "displayError": null,
+          "attempts": [
+            {
+              "state": "passed",
+              "error": null,
+              "videoTimestamp": 1812,
+              "duration": 1431,
+              "startedAt": "2023-03-12T21:11:14.711Z",
+              "screenshots": []
+            }
+          ]
+        },
+        {
+          "title": ["Editing", "should save edits on blur"],
+          "state": "failed",
+          "body": "function () {\n    cy.get(\"@todos\").eq(1).as(\"secondTodo\").find(\"label\").dblclick();\n    cy.get(\"@secondTodo\").find(\".edit\").clear().type(\"buy some sausages\")\n    // we can just send the blur event directly\n    // to the input instead of having to click\n    // on another button on the page. though you\n    // could do that its just more mental work\n    .blur();\n    cy.get(\"@todos\").eq(0).should(\"contain\", TODO_ITEM_ONE);\n    cy.get(\"@secondTodo\").should(\"contain\", \"buy some sausages XXX\");\n    cy.get(\"@todos\").eq(2).should(\"contain\", TODO_ITEM_THREE);\n  }",
+          "displayError": "AssertionError: Timed out retrying after 4000ms: expected '<li..>' to contain 'buy some sausages XXX'\n    at Context.eval (webpack:///./cypress/e2e/edit.spec.js:36:26)",
+          "attempts": [
+            {
+              "state": "failed",
+              "error": {
+                "name": "AssertionError",
+                "message": "Timed out retrying after 4000ms: expected '<li..>' to contain 'buy some sausages XXX'",
+                "stack": "    at Context.eval (webpack:///./cypress/e2e/edit.spec.js:36:26)",
+                "codeFrame": {
+                  "line": 36,
+                  "column": 27,
+                  "originalFile": "cypress/e2e/edit.spec.js",
+                  "relativeFile": "examples/webapp/cypress/e2e/edit.spec.js",
+                  "absoluteFile": "/Users/agoldis/cypress-cloud/examples/webapp/cypress/e2e/edit.spec.js",
+                  "frame": "  34 |     cy.get(\"@todos\").eq(0).should(\"contain\", TODO_ITEM_ONE);\n  35 | \n> 36 |     cy.get(\"@secondTodo\").should(\"contain\", \"buy some sausages XXX\");\n     |                           ^\n  37 |     cy.get(\"@todos\").eq(2).should(\"contain\", TODO_ITEM_THREE);\n  38 |   });\n  39 | ",
+                  "language": "js"
+                }
+              },
+              "videoTimestamp": 3244,
+              "duration": 5574,
+              "startedAt": "2023-03-12T21:11:16.143Z",
+              "screenshots": [
+                {
+                  "name": null,
+                  "takenAt": "2023-03-12T21:11:21.494Z",
+                  "path": "/Users/agoldis/cypress-cloud/examples/webapp/cypress/screenshots/edit.spec.js/Editing -- should save edits on blur (failed).png",
+                  "height": 1440,
+                  "width": 2560
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": ["Editing", "should trim entered text"],
+          "state": "passed",
+          "body": "function () {\n    cy.get(\"@todos\").eq(1).as(\"secondTodo\").find(\"label\").dblclick();\n    cy.get(\"@secondTodo\").find(\".edit\").clear().type(\"    buy some sausages    \").type(\"{enter}\");\n    cy.get(\"@todos\").eq(0).should(\"contain\", TODO_ITEM_ONE);\n    cy.get(\"@secondTodo\").should(\"contain\", \"buy some sausages\");\n    cy.get(\"@todos\").eq(2).should(\"contain\", TODO_ITEM_THREE);\n  }",
+          "displayError": null,
+          "attempts": [
+            {
+              "state": "passed",
+              "error": null,
+              "videoTimestamp": 8834,
+              "duration": 1543,
+              "startedAt": "2023-03-12T21:11:21.733Z",
+              "screenshots": []
+            }
+          ]
+        },
+        {
+          "title": [
+            "Editing",
+            "should remove the item if an empty text string was entered"
+          ],
+          "state": "passed",
+          "body": "function () {\n    cy.get(\"@todos\").eq(1).as(\"secondTodo\").find(\"label\").dblclick();\n    cy.get(\"@secondTodo\").find(\".edit\").clear().type(\"{enter}\");\n    cy.get(\"@todos\").should(\"have.length\", 2);\n  }",
+          "displayError": null,
+          "attempts": [
+            {
+              "state": "passed",
+              "error": null,
+              "videoTimestamp": 10378,
+              "duration": 1237,
+              "startedAt": "2023-03-12T21:11:23.277Z",
+              "screenshots": []
+            }
+          ]
+        },
+        {
+          "title": ["Editing", "should cancel edits on escape"],
+          "state": "passed",
+          "body": "function () {\n    cy.get(\"@todos\").eq(1).as(\"secondTodo\").find(\"label\").dblclick();\n    cy.get(\"@secondTodo\").find(\".edit\").clear().type(\"foo{esc}\");\n    cy.get(\"@todos\").eq(0).should(\"contain\", TODO_ITEM_ONE);\n    cy.get(\"@todos\").eq(1).should(\"contain\", TODO_ITEM_TWO);\n    cy.get(\"@todos\").eq(2).should(\"contain\", TODO_ITEM_THREE);\n  }",
+          "displayError": null,
+          "attempts": [
+            {
+              "state": "passed",
+              "error": null,
+              "videoTimestamp": 11616,
+              "duration": 1249,
+              "startedAt": "2023-03-12T21:11:24.515Z",
+              "screenshots": []
+            }
+          ]
+        }
+      ],
+      "error": null,
+      "video": "/Users/agoldis/cypress-cloud/examples/webapp/cypress/videos/edit.spec.js.mp4",
+      "spec": {
+        "fileExtension": ".js",
+        "baseName": "edit.spec.js",
+        "fileName": "edit",
+        "specFileExtension": ".spec.js",
+        "relativeToCommonRoot": "edit.spec.js",
+        "specType": "integration",
+        "name": "cypress/e2e/edit.spec.js",
+        "relative": "cypress/e2e/edit.spec.js",
+        "absolute": "/Users/agoldis/cypress-cloud/examples/webapp/cypress/e2e/edit.spec.js"
+      },
+      "shouldUploadVideo": true
+    },
+    {
+      "stats": {
+        "suites": 1,
+        "tests": 1,
+        "passes": 1,
+        "pending": 0,
+        "skipped": 0,
+        "failures": 0,
+        "duration": 251,
+        "startedAt": "2023-03-12T21:11:29.773Z",
+        "endedAt": "2023-03-12T21:11:30.024Z"
+      },
+      "reporter": "spec",
+      "reporterStats": {
+        "suites": 1,
+        "tests": 1,
+        "passes": 1,
+        "pending": 0,
+        "failures": 0,
+        "start": "2023-03-12T21:11:29.774Z",
+        "end": "2023-03-12T21:11:30.027Z",
+        "duration": 253
+      },
+      "hooks": [
+        {
+          "hookName": "before each",
+          "title": ["\"before each\" hook"],
+          "body": "function () {\n    cy.visit(\"/\");\n}"
+        },
+        {
+          "hookName": "after each",
+          "title": ["\"after each\" hook"],
+          "body": "function () {\n      self.sendLogsToPrinter(self.collectorState.getCurrentLogStackIndex(), self.collectorState.getCurrentTest());\n    }"
+        },
+        {
+          "hookName": "after all",
+          "title": ["\"after all\" hook"],
+          "body": "function () {\n      // Need to wait otherwise some last commands get omitted from logs.\n      cy.task(CONSTANTS.TASK_NAME_OUTPUT, null, {log: false});\n    }"
+        }
+      ],
+      "tests": [
+        {
+          "title": ["No Todos", "should hide #main and #footer"],
+          "state": "passed",
+          "body": "function () {\n    // Unlike the TodoMVC tests, we don't need to create\n    // a gazillion helper functions which are difficult to\n    // parse through. Instead we'll opt to use real selectors\n    // so as to make our testing intentions as clear as possible.\n    //\n    // http://on.cypress.io/get\n    cy.get(\".todo-list li\").should(\"not.exist\");\n    cy.get('[data-layer=\"Content\"]').should(\"not.exist\");\n    cy.get(\".footer\").should(\"not.be.visible\");\n  }",
+          "displayError": null,
+          "attempts": [
+            {
+              "state": "passed",
+              "error": null,
+              "videoTimestamp": 723,
+              "duration": 246,
+              "startedAt": "2023-03-12T21:11:29.777Z",
+              "screenshots": []
+            }
+          ]
+        }
+      ],
+      "error": null,
+      "video": null,
+      "spec": {
+        "fileExtension": ".js",
+        "baseName": "todo.no-items.spec.js",
+        "fileName": "todo.no-items",
+        "specFileExtension": ".spec.js",
+        "relativeToCommonRoot": "todo.no-items.spec.js",
+        "specType": "integration",
+        "name": "cypress/e2e/todo.no-items.spec.js",
+        "relative": "cypress/e2e/todo.no-items.spec.js",
+        "absolute": "/Users/agoldis/cypress-cloud/examples/webapp/cypress/e2e/todo.no-items.spec.js"
+      },
+      "shouldUploadVideo": false
+    },
+    {
+      "stats": {
+        "suites": 1,
+        "tests": 1,
+        "passes": 1,
+        "pending": 0,
+        "skipped": 0,
+        "failures": 0,
+        "duration": 1066,
+        "startedAt": "2023-03-12T21:11:31.910Z",
+        "endedAt": "2023-03-12T21:11:32.976Z"
+      },
+      "reporter": "spec",
+      "reporterStats": {
+        "suites": 1,
+        "tests": 1,
+        "passes": 1,
+        "pending": 0,
+        "failures": 0,
+        "start": "2023-03-12T21:11:31.911Z",
+        "end": "2023-03-12T21:11:32.979Z",
+        "duration": 1068
+      },
+      "hooks": [
+        {
+          "hookName": "before each",
+          "title": ["\"before each\" hook"],
+          "body": "function () {\n    cy.visit(\"/\");\n}"
+        },
+        {
+          "hookName": "after each",
+          "title": ["\"after each\" hook"],
+          "body": "function () {\n      self.sendLogsToPrinter(self.collectorState.getCurrentLogStackIndex(), self.collectorState.getCurrentTest());\n    }"
+        },
+        {
+          "hookName": "after all",
+          "title": ["\"after all\" hook"],
+          "body": "function () {\n      // Need to wait otherwise some last commands get omitted from logs.\n      cy.task(CONSTANTS.TASK_NAME_OUTPUT, null, {log: false});\n    }"
+        }
+      ],
+      "tests": [
+        {
+          "title": ["TodoMVC", "adds 2 todos"],
+          "state": "passed",
+          "body": "function () {\n    cy.get(\".new-todo\").type(\"learn testing{enter}\").type(\"be cool{enter}\");\n    cy.get(\".todo-list li\").should(\"have.length\", 2);\n  }",
+          "displayError": null,
+          "attempts": [
+            {
+              "state": "passed",
+              "error": null,
+              "videoTimestamp": 721,
+              "duration": 1062,
+              "startedAt": "2023-03-12T21:11:31.913Z",
+              "screenshots": []
+            }
+          ]
+        }
+      ],
+      "error": null,
+      "video": null,
+      "spec": {
+        "fileExtension": ".js",
+        "baseName": "labels.spec.js",
+        "fileName": "labels",
+        "specFileExtension": ".spec.js",
+        "relativeToCommonRoot": "labels.spec.js",
+        "specType": "integration",
+        "name": "cypress/e2e/labels.spec.js",
+        "relative": "cypress/e2e/labels.spec.js",
+        "absolute": "/Users/agoldis/cypress-cloud/examples/webapp/cypress/e2e/labels.spec.js"
+      },
+      "shouldUploadVideo": false
+    }
+  ],
+  "browserPath": "",
+  "browserName": "electron",
+  "browserVersion": "106.0.5249.51",
+  "osName": "darwin",
+  "osVersion": "22.1.0",
+  "cypressVersion": "12.7.0",
+  "config": {
+    "configFile": "/Users/agoldis/cypress-cloud/examples/webapp/cypress.config.ts",
+    "testingType": "e2e",
+    "projectId": "l4zuz8",
+    "baseUrl": "https://todomvc.com/examples/vanillajs",
+    "videoUploadOnPasses": false,
+    "supportFile": "/Users/agoldis/cypress-cloud/examples/webapp/cypress/support/e2e.ts",
+    "specPattern": "cypress/*/*.spec.js",
+    "setupNodeEvents": "[Function setupNodeEvents]",
+    "projectRoot": "/Users/agoldis/cypress-cloud/examples/webapp",
+    "projectName": "webapp",
+    "repoRoot": "/Users/agoldis/cypress-cloud",
+    "rawJson": {
+      "e2e": {
+        "projectId": "l4zuz8",
+        "baseUrl": "https://todomvc.com/examples/vanillajs",
+        "videoUploadOnPasses": false,
+        "supportFile": "cypress/support/e2e.ts",
+        "specPattern": "cypress/*/*.spec.js",
+        "setupNodeEvents": "[Function setupNodeEvents]"
+      },
+      "component": {
+        "specPattern": ["pages/__tests__/*.spec.tsx"],
+        "setupNodeEvents": "[Function setupNodeEvents]",
+        "devServer": { "framework": "next", "bundler": "webpack" }
+      },
+      "projectId": "l4zuz8",
+      "baseUrl": "https://todomvc.com/examples/vanillajs",
+      "videoUploadOnPasses": false,
+      "supportFile": "cypress/support/e2e.ts",
+      "specPattern": "cypress/*/*.spec.js",
+      "setupNodeEvents": "[Function setupNodeEvents]",
+      "envFile": {},
+      "projectRoot": "/Users/agoldis/cypress-cloud/examples/webapp",
+      "projectName": "webapp",
+      "repoRoot": "/Users/agoldis/cypress-cloud"
+    },
+    "morgan": false,
+    "isTextTerminal": true,
+    "socketId": "nyal82gbq7",
+    "report": true,
+    "trashAssetsBeforeRuns": false,
+    "animationDistanceThreshold": 5,
+    "arch": "arm64",
+    "blockHosts": null,
+    "chromeWebSecurity": true,
+    "clientCertificates": [],
+    "defaultCommandTimeout": 4000,
+    "downloadsFolder": "/Users/agoldis/cypress-cloud/examples/webapp/cypress/downloads",
+    "env": { "currents_ws": 55127 },
+    "execTimeout": 60000,
+    "experimentalFetchPolyfill": false,
+    "experimentalInteractiveRunEvents": false,
+    "experimentalRunAllSpecs": false,
+    "experimentalMemoryManagement": false,
+    "experimentalModifyObstructiveThirdPartyCode": false,
+    "experimentalSkipDomainInjection": null,
+    "experimentalOriginDependencies": false,
+    "experimentalSourceRewriting": false,
+    "experimentalSingleTabRunMode": false,
+    "experimentalStudio": false,
+    "experimentalWebKitSupport": false,
+    "fileServerFolder": "/Users/agoldis/cypress-cloud/examples/webapp",
+    "fixturesFolder": "/Users/agoldis/cypress-cloud/examples/webapp/cypress/fixtures",
+    "excludeSpecPattern": "*.hot-update.js",
+    "includeShadowDom": false,
+    "keystrokeDelay": 0,
+    "modifyObstructiveCode": true,
+    "numTestsKeptInMemory": 0,
+    "platform": "darwin",
+    "pageLoadTimeout": 60000,
+    "port": 55142,
+    "redirectionLimit": 20,
+    "reporter": "spec",
+    "reporterOptions": null,
+    "requestTimeout": 5000,
+    "resolvedNodePath": "/Users/agoldis/.nvm/versions/node/v16.17.1/bin/node",
+    "resolvedNodeVersion": "16.17.1",
+    "responseTimeout": 30000,
+    "retries": { "runMode": 0, "openMode": 0 },
+    "screenshotOnRunFailure": true,
+    "screenshotsFolder": "/Users/agoldis/cypress-cloud/examples/webapp/cypress/screenshots",
+    "slowTestThreshold": 10000,
+    "scrollBehavior": "top",
+    "supportFolder": "/Users/agoldis/cypress-cloud/examples/webapp/cypress/support",
+    "taskTimeout": 60000,
+    "testIsolation": true,
+    "userAgent": null,
+    "video": true,
+    "videoCompression": 32,
+    "videosFolder": "/Users/agoldis/cypress-cloud/examples/webapp/cypress/videos",
+    "viewportHeight": 660,
+    "viewportWidth": 1000,
+    "waitForAnimations": true,
+    "watchForFileChanges": false,
+    "additionalIgnorePattern": [],
+    "autoOpen": false,
+    "browsers": [
+      {
+        "name": "chrome",
+        "family": "chromium",
+        "channel": "stable",
+        "displayName": "Chrome",
+        "version": "111.0.5563.64",
+        "path": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+        "minSupportedVersion": 64,
+        "majorVersion": "111"
+      },
+      {
+        "name": "firefox",
+        "family": "firefox",
+        "channel": "stable",
+        "displayName": "Firefox",
+        "version": "108.0",
+        "path": "/Applications/Firefox.app/Contents/MacOS/firefox",
+        "minSupportedVersion": 86,
+        "majorVersion": "108"
+      },
+      {
+        "name": "electron",
+        "channel": "stable",
+        "family": "chromium",
+        "displayName": "Electron",
+        "version": "106.0.5249.51",
+        "path": "",
+        "majorVersion": 106
+      }
+    ],
+    "clientRoute": "/__/",
+    "cypressBinaryRoot": "/Users/agoldis/Library/Caches/Cypress/12.7.0/Cypress.app/Contents/Resources/app",
+    "devServerPublicPathRoute": "/__cypress/src",
+    "hosts": null,
+    "isInteractive": true,
+    "namespace": "__cypress",
+    "reporterRoute": "/__cypress/reporter",
+    "socketIoCookie": "__socket",
+    "socketIoRoute": "/__socket",
+    "version": "12.7.0",
+    "cypressEnv": "production",
+    "resolved": {
+      "animationDistanceThreshold": { "value": 5, "from": "default" },
+      "arch": { "value": "arm64", "from": "default" },
+      "baseUrl": {
+        "value": "https://todomvc.com/examples/vanillajs",
+        "from": "config"
+      },
+      "blockHosts": { "value": null, "from": "default" },
+      "chromeWebSecurity": { "value": true, "from": "default" },
+      "clientCertificates": { "value": [], "from": "default" },
+      "defaultCommandTimeout": { "value": 4000, "from": "default" },
+      "downloadsFolder": { "value": "cypress/downloads", "from": "default" },
+      "env": { "currents_ws": { "value": 55127, "from": "cli" } },
+      "execTimeout": { "value": 60000, "from": "default" },
+      "experimentalFetchPolyfill": { "value": false, "from": "default" },
+      "experimentalInteractiveRunEvents": { "value": false, "from": "default" },
+      "experimentalRunAllSpecs": { "value": false, "from": "default" },
+      "experimentalMemoryManagement": { "value": false, "from": "default" },
+      "experimentalModifyObstructiveThirdPartyCode": {
+        "value": false,
+        "from": "default"
+      },
+      "experimentalSkipDomainInjection": { "value": null, "from": "default" },
+      "experimentalOriginDependencies": { "value": false, "from": "default" },
+      "experimentalSourceRewriting": { "value": false, "from": "default" },
+      "experimentalSingleTabRunMode": { "value": false, "from": "default" },
+      "experimentalStudio": { "value": false, "from": "default" },
+      "experimentalWebKitSupport": { "value": false, "from": "default" },
+      "fileServerFolder": { "value": "", "from": "default" },
+      "fixturesFolder": { "value": "cypress/fixtures", "from": "default" },
+      "excludeSpecPattern": { "value": "*.hot-update.js", "from": "default" },
+      "includeShadowDom": { "value": false, "from": "default" },
+      "keystrokeDelay": { "value": 0, "from": "default" },
+      "modifyObstructiveCode": { "value": true, "from": "default" },
+      "nodeVersion": { "from": "default" },
+      "numTestsKeptInMemory": { "value": 0, "from": "config" },
+      "platform": { "value": "darwin", "from": "default" },
+      "pageLoadTimeout": { "value": 60000, "from": "default" },
+      "port": { "value": null, "from": "default" },
+      "projectId": { "value": "l4zuz8", "from": "config" },
+      "redirectionLimit": { "value": 20, "from": "default" },
+      "reporter": { "value": "spec", "from": "default" },
+      "reporterOptions": { "value": null, "from": "default" },
+      "requestTimeout": { "value": 5000, "from": "default" },
+      "resolvedNodePath": { "value": null, "from": "default" },
+      "resolvedNodeVersion": { "value": null, "from": "default" },
+      "responseTimeout": { "value": 30000, "from": "default" },
+      "retries": {
+        "value": { "runMode": 0, "openMode": 0 },
+        "from": "default"
+      },
+      "screenshotOnRunFailure": { "value": true, "from": "default" },
+      "screenshotsFolder": {
+        "value": "cypress/screenshots",
+        "from": "default"
+      },
+      "slowTestThreshold": { "value": 10000, "from": "default" },
+      "scrollBehavior": { "value": "top", "from": "default" },
+      "supportFile": { "value": "cypress/support/e2e.ts", "from": "config" },
+      "supportFolder": { "value": false, "from": "default" },
+      "taskTimeout": { "value": 60000, "from": "default" },
+      "testIsolation": { "value": true, "from": "default" },
+      "trashAssetsBeforeRuns": { "value": false, "from": "cli" },
+      "userAgent": { "value": null, "from": "default" },
+      "video": { "value": true, "from": "default" },
+      "videoCompression": { "value": 32, "from": "default" },
+      "videosFolder": { "value": "cypress/videos", "from": "default" },
+      "videoUploadOnPasses": { "value": false, "from": "config" },
+      "viewportHeight": { "value": 660, "from": "default" },
+      "viewportWidth": { "value": 1000, "from": "default" },
+      "waitForAnimations": { "value": true, "from": "default" },
+      "watchForFileChanges": { "value": false, "from": "config" },
+      "specPattern": { "value": "cypress/*/*.spec.js", "from": "config" },
+      "browsers": {
+        "value": [
+          {
+            "name": "chrome",
+            "family": "chromium",
+            "channel": "stable",
+            "displayName": "Chrome",
+            "version": "111.0.5563.64",
+            "path": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+            "minSupportedVersion": 64,
+            "majorVersion": "111"
+          },
+          {
+            "name": "firefox",
+            "family": "firefox",
+            "channel": "stable",
+            "displayName": "Firefox",
+            "version": "108.0",
+            "path": "/Applications/Firefox.app/Contents/MacOS/firefox",
+            "minSupportedVersion": 86,
+            "majorVersion": "108"
+          },
+          {
+            "name": "electron",
+            "channel": "stable",
+            "family": "chromium",
+            "displayName": "Electron",
+            "version": "106.0.5249.51",
+            "path": "",
+            "majorVersion": 106,
+            "isHeadless": true,
+            "isHeaded": false
+          }
+        ],
+        "from": "runtime"
+      },
+      "hosts": { "value": null, "from": "default" },
+      "isInteractive": { "value": true, "from": "default" },
+      "configFile": {
+        "value": "/Users/agoldis/cypress-cloud/examples/webapp/cypress.config.ts",
+        "from": "plugin"
+      },
+      "testingType": { "value": "e2e", "from": "plugin" }
+    },
+    "remote": {
+      "origin": "https://todomvc.com",
+      "strategy": "http",
+      "fileServer": null,
+      "domainName": "todomvc.com",
+      "props": {
+        "port": "443",
+        "protocol": "https:",
+        "subdomain": null,
+        "domain": "todomvc",
+        "tld": "com"
+      }
+    },
+    "browser": null,
+    "specs": [],
+    "proxyUrl": "http://localhost:55142",
+    "browserUrl": "https://todomvc.com/__/",
+    "reporterUrl": "https://todomvc.com/__cypress/reporter",
+    "proxyServer": "http://localhost:55142",
+    "state": {}
+  }
+}

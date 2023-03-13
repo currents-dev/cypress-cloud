@@ -3,14 +3,13 @@ import {
   ScreenshotArtifact,
   TestsResult,
 } from "cypress-cloud/types";
+import { match, P } from "ts-pattern";
+
 import Debug from "debug";
 import { nanoid } from "nanoid";
-import {
-  SetInstanceTestsPayload,
-  TestState,
-  UpdateInstanceResultsPayload,
-} from "../api";
+import { SetInstanceTestsPayload, UpdateInstanceResultsPayload } from "../api";
 import { ResolvedConfig } from "../config";
+import { SpecResult, Stats, TestAttempt, TestState } from "../result.types";
 
 const debug = Debug("currents:results");
 
@@ -23,38 +22,82 @@ export const isSuccessResult = (
 export const getScreenshotsSummary = (
   tests: CypressCommandLine.TestResult[] = []
 ): ScreenshotArtifact[] => {
+  console.dir(tests, {
+    depth: 10,
+  });
   return tests.flatMap((test, i) =>
     test.attempts.flatMap((a, ai) =>
-      a.screenshots.flatMap((s) => ({
-        ...s,
-        testId: `r${i}`,
-        testAttemptIndex: ai,
-        screenshotId: nanoid(),
-      }))
+      a.screenshots?.flatMap(
+        (s) =>
+          ({
+            ...s,
+            testId: `r${i}`,
+            testAttemptIndex: ai,
+            screenshotId: nanoid(),
+          } ?? [])
+      )
     )
   );
 };
 
-export const getStats = (stats: CypressCommandLine.RunResult["stats"]) => {
-  return {
-    ...stats,
-    wallClockDuration: stats.duration,
-    wallClockStartedAt: stats.startedAt,
-    wallClockEndedAt: stats.endedAt,
-  };
-};
+export const getStats = (
+  stats: CypressCommandLine.RunResult["stats"] | SpecResult["stats"]
+): Stats =>
+  match(stats)
+    .with(
+      {
+        wallClockDuration: P.number,
+        wallClockStartedAt: P.string,
+        wallClockEndedAt: P.string,
+      },
+      (stats) => ({
+        ...stats,
+        wallClockDuration: stats.wallClockDuration,
+        wallClockStartedAt: stats.wallClockStartedAt,
+        wallClockEndedAt: stats.wallClockEndedAt,
+      })
+    )
+    .otherwise((stats) => ({
+      ...stats,
+      wallClockDuration: stats.duration,
+      wallClockStartedAt: stats.startedAt,
+      wallClockEndedAt: stats.endedAt,
+    }));
 
-export const getTestAttempt = (attempt: CypressCommandLine.AttemptResult) => {
-  return {
-    ...attempt,
-    state: attempt.state as TestState,
-    wallClockDuration: attempt.duration,
-    wallClockStartedAt: attempt.startedAt,
-  };
-};
+export const getTestAttempt = (
+  attempt: CypressCommandLine.AttemptResult | TestAttempt
+): TestAttempt =>
+  match(attempt)
+    .with(
+      {
+        wallClockDuration: P.number,
+        wallClockStartedAt: P.string,
+      },
+      (attempt) => attempt
+    )
+    .with(
+      {
+        duration: P.number,
+      },
+      (attempt) => ({
+        ...attempt,
+        state: attempt.state as TestState,
+        failedFromHookId: null,
+        wallClockDuration: attempt.duration,
+        wallClockStartedAt: attempt.startedAt,
+        timings: null,
+      })
+    )
+    .otherwise((attempt) => ({
+      ...attempt,
+      failedFromHookId: attempt.failedFromHookId ?? null,
+      wallClockDuration: null,
+      wallClockStartedAt: null,
+      timings: null,
+    }));
 
 export const getInstanceResultPayload = (
-  runResult: CypressCommandLine.RunResult
+  runResult: CypressCommandLine.RunResult | SpecResult
 ): UpdateInstanceResultsPayload => {
   const altTests = [];
   if (runResult.error && !runResult.tests?.length) {
@@ -64,10 +107,14 @@ export const getInstanceResultPayload = (
     stats: getStats(runResult.stats),
     reporterStats: runResult.reporterStats,
     exception: runResult.error ?? null,
-    video: !!runResult.video, // Did the instance generate a video?
-    screenshots: getScreenshotsSummary(runResult.tests ?? []),
+    video: runResult.video,
+    // result from after:spec has screenshots, fron `run` doesn't
+    screenshots:
+      // @ts-ignore
+      runResult.screenshots ?? getScreenshotsSummary(runResult.tests ?? []),
     tests:
       runResult.tests?.map((test, i) => ({
+        title: test.title,
         displayError: test.displayError,
         state: test.state as TestState,
         hooks: runResult.hooks,
@@ -79,7 +126,7 @@ export const getInstanceResultPayload = (
 
 function getFakeTestFromException(
   error: string,
-  stats: CypressCommandLine.RunResult["stats"]
+  stats: CypressCommandLine.RunResult["stats"] | SpecResult["stats"]
 ) {
   return {
     title: ["Unknown"],
@@ -97,7 +144,7 @@ function getFakeTestFromException(
           stack: error,
         },
         screenshots: [],
-        startedAt: stats.startedAt,
+        startedAt: stats.wallClockStartedAt ?? stats.startedAt,
         videoTimestamp: 0,
       }),
     ],
@@ -106,7 +153,7 @@ function getFakeTestFromException(
 }
 
 export const getInstanceTestsPayload = (
-  runResult: CypressCommandLine.RunResult,
+  runResult: CypressCommandLine.RunResult | SpecResult,
   config: Cypress.ResolvedConfigOptions
 ): SetInstanceTestsPayload => {
   const altTests = [];

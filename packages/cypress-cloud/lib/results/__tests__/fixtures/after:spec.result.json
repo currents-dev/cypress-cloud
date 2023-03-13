@@ -1,0 +1,236 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 5,
+    "passes": 4,
+    "pending": 0,
+    "skipped": 0,
+    "failures": 1,
+    "wallClockStartedAt": "2023-03-12T21:11:14.707Z",
+    "wallClockEndedAt": "2023-03-12T21:11:25.764Z",
+    "wallClockDuration": 11057
+  },
+  "reporter": "spec",
+  "reporterStats": {
+    "suites": 1,
+    "tests": 5,
+    "passes": 4,
+    "pending": 0,
+    "failures": 1,
+    "start": "2023-03-12T21:11:14.708Z",
+    "end": "2023-03-12T21:11:25.768Z",
+    "duration": 11060
+  },
+  "hooks": [
+    {
+      "hookId": "h1",
+      "hookName": "before each",
+      "title": ["\"before each\" hook"],
+      "body": "function () {\n    cy.visit(\"/\");\n}"
+    },
+    {
+      "hookId": "h4",
+      "hookName": "before each",
+      "title": ["\"before each\" hook"],
+      "body": "function () {\n    cy.createDefaultTodos().as(\"todos\");\n  }"
+    },
+    {
+      "hookId": "h3",
+      "hookName": "after each",
+      "title": ["\"after each\" hook"],
+      "body": "function () {\n      self.sendLogsToPrinter(self.collectorState.getCurrentLogStackIndex(), self.collectorState.getCurrentTest());\n    }"
+    },
+    {
+      "hookId": "h2",
+      "hookName": "after all",
+      "title": ["\"after all\" hook"],
+      "body": "function () {\n      // Need to wait otherwise some last commands get omitted from logs.\n      cy.task(CONSTANTS.TASK_NAME_OUTPUT, null, {log: false});\n    }"
+    }
+  ],
+  "tests": [
+    {
+      "testId": "r3",
+      "title": ["Editing", "should hide other controls when editing"],
+      "state": "passed",
+      "body": "function () {\n    cy.get(\"@todos\").eq(1).as(\"secondTodo\").find(\"label\").dblclick();\n    cy.get(\"@secondTodo\").find(\".toggle\").should(\"not.be.visible\");\n    cy.get(\"@secondTodo\").find(\"label\").should(\"not.be.visible\");\n  }",
+      "displayError": null,
+      "attempts": [
+        {
+          "state": "passed",
+          "error": null,
+          "timings": {
+            "lifecycle": 23,
+            "before each": [
+              { "hookId": "h1", "fnDuration": 499, "afterFnDuration": 0 },
+              { "hookId": "h4", "fnDuration": 803, "afterFnDuration": 0 }
+            ],
+            "test": { "fnDuration": 90, "afterFnDuration": 0 },
+            "after each": [
+              { "hookId": "h3", "fnDuration": 10, "afterFnDuration": 0 }
+            ]
+          },
+          "failedFromHookId": null,
+          "wallClockStartedAt": "2023-03-12T21:11:14.711Z",
+          "wallClockDuration": 1431,
+          "videoTimestamp": 1812
+        }
+      ]
+    },
+    {
+      "testId": "r4",
+      "title": ["Editing", "should save edits on blur"],
+      "state": "failed",
+      "body": "function () {\n    cy.get(\"@todos\").eq(1).as(\"secondTodo\").find(\"label\").dblclick();\n    cy.get(\"@secondTodo\").find(\".edit\").clear().type(\"buy some sausages\")\n    // we can just send the blur event directly\n    // to the input instead of having to click\n    // on another button on the page. though you\n    // could do that its just more mental work\n    .blur();\n    cy.get(\"@todos\").eq(0).should(\"contain\", TODO_ITEM_ONE);\n    cy.get(\"@secondTodo\").should(\"contain\", \"buy some sausages XXX\");\n    cy.get(\"@todos\").eq(2).should(\"contain\", TODO_ITEM_THREE);\n  }",
+      "displayError": "AssertionError: Timed out retrying after 4000ms: expected '<li..>' to contain 'buy some sausages XXX'\n    at Context.eval (webpack:///./cypress/e2e/edit.spec.js:36:26)",
+      "attempts": [
+        {
+          "state": "failed",
+          "error": {
+            "name": "AssertionError",
+            "message": "Timed out retrying after 4000ms: expected '<li..>' to contain 'buy some sausages XXX'",
+            "stack": "    at Context.eval (webpack:///./cypress/e2e/edit.spec.js:36:26)",
+            "codeFrame": {
+              "line": 36,
+              "column": 27,
+              "originalFile": "cypress/e2e/edit.spec.js",
+              "relativeFile": "examples/webapp/cypress/e2e/edit.spec.js",
+              "absoluteFile": "/Users/agoldis/cypress-cloud/examples/webapp/cypress/e2e/edit.spec.js",
+              "frame": "  34 |     cy.get(\"@todos\").eq(0).should(\"contain\", TODO_ITEM_ONE);\n  35 | \n> 36 |     cy.get(\"@secondTodo\").should(\"contain\", \"buy some sausages XXX\");\n     |                           ^\n  37 |     cy.get(\"@todos\").eq(2).should(\"contain\", TODO_ITEM_THREE);\n  38 |   });\n  39 | ",
+              "language": "js"
+            }
+          },
+          "timings": {
+            "lifecycle": 17,
+            "before each": [
+              { "hookId": "h1", "fnDuration": 57, "afterFnDuration": 0 },
+              { "hookId": "h4", "fnDuration": 864, "afterFnDuration": 1 }
+            ],
+            "test": { "fnDuration": 4401, "afterFnDuration": 220 },
+            "after each": [
+              { "hookId": "h3", "fnDuration": 10, "afterFnDuration": 0 }
+            ]
+          },
+          "failedFromHookId": null,
+          "wallClockStartedAt": "2023-03-12T21:11:16.143Z",
+          "wallClockDuration": 5574,
+          "videoTimestamp": 3244
+        }
+      ]
+    },
+    {
+      "testId": "r5",
+      "title": ["Editing", "should trim entered text"],
+      "state": "passed",
+      "body": "function () {\n    cy.get(\"@todos\").eq(1).as(\"secondTodo\").find(\"label\").dblclick();\n    cy.get(\"@secondTodo\").find(\".edit\").clear().type(\"    buy some sausages    \").type(\"{enter}\");\n    cy.get(\"@todos\").eq(0).should(\"contain\", TODO_ITEM_ONE);\n    cy.get(\"@secondTodo\").should(\"contain\", \"buy some sausages\");\n    cy.get(\"@todos\").eq(2).should(\"contain\", TODO_ITEM_THREE);\n  }",
+      "displayError": null,
+      "attempts": [
+        {
+          "state": "passed",
+          "error": null,
+          "timings": {
+            "lifecycle": 13,
+            "before each": [
+              { "hookId": "h1", "fnDuration": 73, "afterFnDuration": 0 },
+              { "hookId": "h4", "fnDuration": 864, "afterFnDuration": 0 }
+            ],
+            "test": { "fnDuration": 575, "afterFnDuration": 0 },
+            "after each": [
+              { "hookId": "h3", "fnDuration": 9, "afterFnDuration": 0 }
+            ]
+          },
+          "failedFromHookId": null,
+          "wallClockStartedAt": "2023-03-12T21:11:21.733Z",
+          "wallClockDuration": 1543,
+          "videoTimestamp": 8834
+        }
+      ]
+    },
+    {
+      "testId": "r6",
+      "title": [
+        "Editing",
+        "should remove the item if an empty text string was entered"
+      ],
+      "state": "passed",
+      "body": "function () {\n    cy.get(\"@todos\").eq(1).as(\"secondTodo\").find(\"label\").dblclick();\n    cy.get(\"@secondTodo\").find(\".edit\").clear().type(\"{enter}\");\n    cy.get(\"@todos\").should(\"have.length\", 2);\n  }",
+      "displayError": null,
+      "attempts": [
+        {
+          "state": "passed",
+          "error": null,
+          "timings": {
+            "lifecycle": 17,
+            "before each": [
+              { "hookId": "h1", "fnDuration": 110, "afterFnDuration": 0 },
+              { "hookId": "h4", "fnDuration": 872, "afterFnDuration": 0 }
+            ],
+            "test": { "fnDuration": 224, "afterFnDuration": 0 },
+            "after each": [
+              { "hookId": "h3", "fnDuration": 9, "afterFnDuration": 0 }
+            ]
+          },
+          "failedFromHookId": null,
+          "wallClockStartedAt": "2023-03-12T21:11:23.277Z",
+          "wallClockDuration": 1237,
+          "videoTimestamp": 10378
+        }
+      ]
+    },
+    {
+      "attempts": [
+        {
+          "state": "passed",
+          "error": null,
+          "timings": {
+            "lifecycle": 16,
+            "before each": [
+              { "hookId": "h1", "fnDuration": 62, "afterFnDuration": 0 },
+              { "hookId": "h4", "fnDuration": 890, "afterFnDuration": 1 }
+            ],
+            "test": { "fnDuration": 259, "afterFnDuration": 0 },
+            "after each": [
+              { "hookId": "h3", "fnDuration": 9, "afterFnDuration": 0 }
+            ],
+            "after all": [
+              { "hookId": "h2", "fnDuration": 4, "afterFnDuration": 0 }
+            ]
+          },
+          "failedFromHookId": null,
+          "wallClockStartedAt": "2023-03-12T21:11:24.515Z",
+          "wallClockDuration": 1249,
+          "videoTimestamp": 11616
+        }
+      ],
+      "body": "function () {\n    cy.get(\"@todos\").eq(1).as(\"secondTodo\").find(\"label\").dblclick();\n    cy.get(\"@secondTodo\").find(\".edit\").clear().type(\"foo{esc}\");\n    cy.get(\"@todos\").eq(0).should(\"contain\", TODO_ITEM_ONE);\n    cy.get(\"@todos\").eq(1).should(\"contain\", TODO_ITEM_TWO);\n    cy.get(\"@todos\").eq(2).should(\"contain\", TODO_ITEM_THREE);\n  }",
+      "displayError": null,
+      "state": "passed",
+      "testId": "r7",
+      "title": ["Editing", "should cancel edits on escape"]
+    }
+  ],
+  "error": null,
+  "video": "/Users/agoldis/cypress-cloud/examples/webapp/cypress/videos/edit.spec.js.mp4",
+  "screenshots": [
+    {
+      "height": 1440,
+      "name": null,
+      "path": "/Users/agoldis/cypress-cloud/examples/webapp/cypress/screenshots/edit.spec.js/Editing -- should save edits on blur (failed).png",
+      "screenshotId": "rs3gv",
+      "takenAt": "2023-03-12T21:11:21.494Z",
+      "testAttemptIndex": 0,
+      "testId": "r4",
+      "width": 2560
+    }
+  ],
+  "spec": {
+    "absolute": "/Users/agoldis/cypress-cloud/examples/webapp/cypress/e2e/edit.spec.js",
+    "baseName": "edit.spec.js",
+    "fileExtension": ".js",
+    "fileName": "edit",
+    "name": "cypress/e2e/edit.spec.js",
+    "relative": "cypress/e2e/edit.spec.js",
+    "relativeToCommonRoot": "edit.spec.js",
+    "specFileExtension": ".spec.js",
+    "specType": "integration"
+  }
+}
