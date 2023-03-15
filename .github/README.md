@@ -36,7 +36,7 @@ module.exports = {
   projectId: "Ij0RfK",
   recordKey: "xxx",
   // Sorry Cypress users - set the director service URL
-  cloudServiceUrl: "http://cy.currents.dev",
+  cloudServiceUrl: "https://cy.currents.dev",
 };
 ```
 
