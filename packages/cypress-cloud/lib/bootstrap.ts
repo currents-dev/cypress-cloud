@@ -1,6 +1,6 @@
-import cp from "child_process";
 import { getBinPath } from "cy2";
 import Debug from "debug";
+import execa, { ExecaError } from "execa";
 import fs from "fs";
 import { chain } from "lodash";
 import { customAlphabet } from "nanoid";
@@ -48,16 +48,7 @@ export const bootCypress = async (
   debug("booting cypress with args: %o", args);
   const cypressBin = await getBinPath(require.resolve("cypress"));
   debug("cypress executable location: %s", cypressBin);
-
-  const child = cp.spawnSync(cypressBin, args, {
-    stdio: "pipe",
-    env: {
-      ...process.env,
-      // prevent warnings about recording mode
-      CYPRESS_RECORD_KEY: undefined,
-    },
-  });
-
+  const { stdout, stderr } = await execCypress(cypressBin, args);
   if (!fs.existsSync(tempFilePath)) {
     throw new Error(
       `Cannot resolve cypress configuration from ${tempFilePath}. Please report the issue.`
@@ -65,7 +56,6 @@ export const bootCypress = async (
   }
   try {
     const f = fs.readFileSync(tempFilePath, "utf-8");
-
     if (!f) {
       throw new Error("Is cypress-cloud/plugin installed?");
     }
@@ -73,8 +63,8 @@ export const bootCypress = async (
     return JSON.parse(f);
   } catch (err) {
     debug("read config temp file failed: %o", err);
-    warn("Cypress stdout:\n%s", child.stdout.toString("utf-8"));
-    warn("Cypress stderr:\n%s", child.stderr.toString("utf-8"));
+    warn("Cypress stdout:\n%s", stdout);
+    warn("Cypress stderr:\n%s", stderr);
     warn(
       "Resolving cypress configuration failed.\n   - make sure that 'cypress-cloud/plugin' is installed\n   - report the issue together with cypress stdout and stderr"
     );
@@ -82,3 +72,23 @@ export const bootCypress = async (
     throw new Error("Unable to resolve cypress configuration");
   }
 };
+
+async function execCypress(cypressBin: string, args: readonly string[]) {
+  let stdout = "";
+  let stderr = "";
+  try {
+    await execa(cypressBin, args, {
+      stdio: "pipe",
+      env: {
+        ...process.env,
+        // prevent warnings about recording mode
+        CYPRESS_RECORD_KEY: undefined,
+      },
+    });
+  } catch (err) {
+    debug("exec cypress failed (certain failures are expected): %o", err);
+    stdout = (err as ExecaError).stdout;
+    stderr = (err as ExecaError).stderr;
+  }
+  return { stdout, stderr };
+}

@@ -26,6 +26,7 @@ const newPkg = {
     "cypress-cloud": "./bin/cli.js",
   },
   files: ["*"],
+  bin: "./bin/cli.js",
   exports: {
     ".": {
       import: "./index.mjs",
