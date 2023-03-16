@@ -28,7 +28,5 @@ jobs:
 
       - name: Run Cypress with cypress-cloud
         working-directory: ./examples/webapp
-        env:
-          CURRENTS_API_URL: http://localhost:1234
         run: |
-          npx cypress-cloud run --help
+          npx cypress-cloud run --parallel --record --key ${{ secrets.CURRENTS_RECORD_KEY }} --ci-build-id "smoke-${{ github.repository }}-${{ github.run_id }}-${{ github.run_attempt}}" --spec "cypress/e2e/smoke.spec.js"
