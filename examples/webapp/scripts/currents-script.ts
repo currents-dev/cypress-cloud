@@ -7,6 +7,7 @@ import { run } from "cypress-cloud";
 
   const summarizedResults = await run({
     ciBuildId: `run-api-smoke-${new Date().toISOString()}`,
+    spec: ["cypress/e2e_smoke/*.spec.js"],
     projectId,
     key,
   });
