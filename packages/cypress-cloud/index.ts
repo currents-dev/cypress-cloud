@@ -19,10 +19,11 @@ import { summaryTable } from "./lib/table";
 import { validateRequiredParams } from "./lib/validateParams";
 
 const debug = Debug("currents:index");
+
 /**
  * Run the Cypress tests and return the results.
  *
- * @augments RunOptions
+ * @augments CurrentsRunParameters
  * @returns {TestsResult | undefined} The test results, or undefined if no tests were run.
  */
 export async function run(params: CurrentsRunParameters) {

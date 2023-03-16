@@ -122,24 +122,26 @@ export type StrippedCypressModuleAPIOptions = Omit<
   | "ciBuildId"
 >;
 
-// The parameters Currents accepts via its run API.
-// Explicitly add cloud-related parameters to avoid confusion with CypressModuleAPIRunOptions
 export type CurrentsRunParameters = StrippedCypressModuleAPIOptions & {
-  parallel?: boolean;
+  /** The CI build ID to use for the run */
   ciBuildId?: string;
-  group?: string;
-  testingType?: TestingType;
+  /** The batch size defines how many spec files will be served in one orchestration "batch". If not specified, will use the projectId from currents.config.js, the default value is 1 (i.e. no batching) */
+  batchSize?: number;
+  /** The environment variables to use for the run */
   env?: Record<string, unknown>;
-  spec?: string[];
-  tag?: string[];
-
+  /** The group id to use for the run */
+  group?: string;
   /**  The record key to use */
   key: string;
-
-  /** The project ID to use. If not specified, will use the projectId from currents.config.js or process.env.CURRENTS_PROJECT_ID */
+  /** Whether to run the spec files in parallel */
+  parallel?: boolean;
+  /** The project ID to use. */
   projectId: string;
-
-  /** The batch size defines how many spec files will be served in one orchestration "batch". If not specified, will use the projectId from currents.config.js, the default value is 3 */
-  batchSize?: number;
+  /** The array of spec patterns for the execution */
+  spec?: string[];
+  /** The array of tags for the execution */
+  tag?: string[];
+  /** "e2e" or "component", the default value is "e2e" */
+  testingType?: TestingType;
 };
 export type ArrayItemType<T> = T extends (infer U)[] ? U : T;
