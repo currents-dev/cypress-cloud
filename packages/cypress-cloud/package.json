@@ -60,6 +60,7 @@
     "common-path-prefix": "^3.0.0",
     "cy2": "^3.4.2",
     "debug": "^4.3.4",
+    "execa": "^5.1.1",
     "getos": "^3.2.1",
     "globby": "^11.1.0",
     "is-ci": "^3.0.1",
@@ -72,7 +73,7 @@
     "ws": "^8.12.1"
   },
   "bin": {
-    "cypress-cloud": "./bin/cli.js"
+    "cypress-cloud": "./dist/bin/cli.js"
   },
   "files": [
     "dist"

@@ -1,4 +1,4 @@
-name: e2e:smoke
+name: e2e-smoke-linux
 
 on:
   push:
@@ -7,6 +7,8 @@ jobs:
   e2e-smoke:
     if: "!contains(toJSON(github.event.commits.*.message), '[skip ci]')"
     runs-on: ubuntu-latest
+    env:
+      DEBUG: currents:*
 
     services:
       director:
@@ -26,17 +28,15 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Link
-        working-directory: ./packages/cypress-cloud
-        run: npm link
+      - name: Link monorepo packages
+        run: npm install
 
       - name: Run Cypress with cypress-cloud
         working-directory: ./examples/webapp
         env:
           CURRENTS_API_URL: http://localhost:1234
         run: |
-          npm link cypress-cloud
-          ../../node_modules/cypress-cloud/dist/bin/cli.js run --record --parallel \
+          npx cypress-cloud run --record --parallel \
           --spec "./cypress/e2e_smoke/*.spec.js" \
           --browser chrome --key ${{ secrets.CURRENTS_RECORD_KEY }} \
-          --ci-build-id "${{ github.repository }}-${{ github.run_id }}-${{ github.run_attempt}}"
+          --ci-build-id "smoke-linux-${{ github.repository }}-${{ github.run_id }}-${{ github.run_attempt}}" --tag smoke,linux

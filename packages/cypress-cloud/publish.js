@@ -23,6 +23,7 @@ const newPkg = {
   ...pkg,
   main: "./index.js",
   files: ["*"],
+  bin: "./bin/cli.js",
   exports: {
     ".": "./",
     "./plugin": {
