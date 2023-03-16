@@ -159,9 +159,17 @@ npm run release && npm run release:npm -- -t latest
 
 ### Localhost
 
+Publishing from `packages/cypress-cloud`:
+
 ```sh
 docker run -it --rm --name verdaccio -p 4873:4873 verdaccio/verdaccio
 npm adduser --registry http://localhost:4873
 npm login --registry http://localhost:4873
-npm publish --registry http://localhost:4873 --tag beta
+npm_config_registry=http://localhost:4873  npm run release:npm -- --tag latest
+```
+
+Using:
+
+```sh
+npm install cypress-cloud --registry http://localhost:4873
 ```
