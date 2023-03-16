@@ -9,8 +9,6 @@ import { run } from "cypress-cloud";
     ciBuildId: `run-api-smoke-${new Date().toISOString()}`,
     projectId,
     key,
-    testingType: "e2e",
-    record: true,
   });
 
   assert(summarizedResults?.passes === 1);

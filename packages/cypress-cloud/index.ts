@@ -35,7 +35,7 @@ export async function run(params: CurrentsRunParameters) {
     parallel,
     ciBuildId,
     tag,
-    testingType,
+    testingType = "e2e",
     batchSize = 1,
   } = params;
 
@@ -68,6 +68,7 @@ export async function run(params: CurrentsRunParameters) {
     }; Batch Size: ${batchSize}`
   );
   info("Connecting to cloud orchestration service...");
+
   const run = await createRun({
     ci,
     specs: specs.map((spec) => spec.relative),

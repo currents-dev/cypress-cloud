@@ -128,8 +128,7 @@ export type CurrentsRunParameters = StrippedCypressModuleAPIOptions & {
   parallel?: boolean;
   ciBuildId?: string;
   group?: string;
-  testingType: TestingType;
-  record: boolean;
+  testingType?: TestingType;
   env?: Record<string, unknown>;
   spec?: string[];
   tag?: string[];

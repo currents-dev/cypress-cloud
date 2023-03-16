@@ -5,8 +5,6 @@ export function validateRequiredParams(params: CurrentsRunParameters) {
   const requiredParameters: Array<keyof CurrentsRunParameters> = [
     "key",
     "projectId",
-    "ciBuildId",
-    "testingType",
   ];
   requiredParameters.forEach((key) => {
     if (typeof params[key] === "undefined") {
