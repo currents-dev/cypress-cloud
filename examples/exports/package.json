@@ -1,0 +1,23 @@
+{
+  "name": "test-exports",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "testexports": "concurrently \"npm:test:*\"",
+    "test:run:cjs": "node ./run.cjs.js",
+    "test:run:esm": "ts-node ./run.esm.ts",
+    "test:plugin:esm": "ts-node ./plugin.esm.ts",
+    "test:plugin:cjs": "node ./plugin.cjs.js"
+  },
+  "dependencies": {
+    "cypress-cloud": "*"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.12",
+    "concurrently": "^7.6.0",
+    "eslint-config-custom": "*",
+    "ts-node": "^10.9.1",
+    "tsconfig": "*",
+    "typescript": "^4.5.3"
+  }
+}

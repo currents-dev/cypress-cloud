@@ -22,9 +22,16 @@ if (!options.tag) {
 const newPkg = {
   ...pkg,
   main: "./index.js",
+  bin: {
+    "cypress-cloud": "./bin/cli.js",
+  },
   files: ["*"],
   exports: {
-    ".": "./",
+    ".": {
+      import: "./index.mjs",
+      require: "./index.js",
+      types: "./index.d.ts",
+    },
     "./plugin": {
       import: "./plugin/index.js",
       require: "./plugin/index.js",
