@@ -16,13 +16,14 @@ import { bold, divider, info, spacer, title } from "./lib/log";
 import { getPlatformInfo } from "./lib/platform";
 import { runTillDone } from "./lib/runner";
 import { summaryTable } from "./lib/table";
+import { validateRequiredParams } from "./lib/validateParams";
 
 const debug = Debug("currents:index");
 
 /**
  * Run the Cypress tests and return the results.
  *
- * @augments RunOptions
+ * @augments CurrentsRunParameters
  * @returns {TestsResult | undefined} The test results, or undefined if no tests were run.
  */
 export async function run(params: CurrentsRunParameters) {
@@ -35,11 +36,12 @@ export async function run(params: CurrentsRunParameters) {
     parallel,
     ciBuildId,
     tag,
-    testingType,
-    batchSize,
+    testingType = "e2e",
+    batchSize = 1,
   } = params;
 
   debug("run api params %o", params);
+  validateRequiredParams(params);
 
   // get the actual config parsed by Cypress
   const config = await getConfig(params);
@@ -67,6 +69,7 @@ export async function run(params: CurrentsRunParameters) {
     }; Batch Size: ${batchSize}`
   );
   info("Connecting to cloud orchestration service...");
+
   const run = await createRun({
     ci,
     specs: specs.map((spec) => spec.relative),

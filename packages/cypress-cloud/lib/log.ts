@@ -17,7 +17,7 @@ export const success = (...args: unknown[]) =>
   log(chalk.green(util.format(...args)));
 
 export const error = (...args: unknown[]) =>
-  log(withError(util.format(...args)));
+  log(withError(util.format(...args)) + "\n");
 
 type Color = "red" | "green" | "yellow" | "blue" | "magenta" | "cyan" | "white";
 export const title = (color: Color, ...args: unknown[]) =>
