@@ -1,5 +1,13 @@
 
 
+## [1.4.5-beta.1](https://github.com/currents-dev/cypress-cloud/compare/v1.4.4...v1.4.5-beta.1) (2023-03-16)
+
+
+### Bug Fixes
+
+* use execa to fix windows exec logic ([#86](https://github.com/currents-dev/cypress-cloud/issues/86)) ([40b99f8](https://github.com/currents-dev/cypress-cloud/commit/40b99f8a6577e9809a0dbdbbd5767720ca121e2f))
+* validate params and show verbose errors ([#91](https://github.com/currents-dev/cypress-cloud/issues/91)) ([cc8bfd8](https://github.com/currents-dev/cypress-cloud/commit/cc8bfd854c76aade0c728750ec4b1b239ecf8e76))
+
 ## [1.4.5-beta.0](https://github.com/currents-dev/cypress-cloud/compare/v1.4.4...v1.4.5-beta.0) (2023-03-16)
 
 
