@@ -1,12 +1,27 @@
 # Example Usage of cypress-cloud
 
-## CLI Usage
+To run the example, make sure that you have an account at https://app.currents.dev or Sorry Cypress instance. You can start a basic local instance of sorry-cypress:
 
-To run the example, make sure that you have an account at https://app.currents.dev (or Sorry Cypress instance).
+```sh
+docker run -p 1234:1234 --platform linux/amd64 agoldis/sorry-cypress-director
+```
 
-### Configuration
+## Configuration
 
 Update `currents.config.js` with the `projectId`, `recordKey` obtained from a cloud orchestration service. Sorry Cypress users - use the director service URL as `cloudServiceUrl`.
+
+```js
+// currents.config.js
+module.exports = {
+  projectId: "yyy", // the projectId, can be any values for sorry-cypress users
+  recordKey: "xxx", // the record key, can be any value for sorry-cypress users
+  cloudServiceUrl: "http://localhost:1234", // Sorry Cypress users - set the director service URL, Currents customer - remove this option
+};
+```
+
+## CLI Usage
+
+Use the following commands to run cypress tests
 
 ### E2E tests
 

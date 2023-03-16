@@ -16,9 +16,9 @@ import { bold, divider, info, spacer, title } from "./lib/log";
 import { getPlatformInfo } from "./lib/platform";
 import { runTillDone } from "./lib/runner";
 import { summaryTable } from "./lib/table";
+import { validateRequiredParams } from "./lib/validateParams";
 
 const debug = Debug("currents:index");
-
 /**
  * Run the Cypress tests and return the results.
  *
@@ -36,10 +36,11 @@ export async function run(params: CurrentsRunParameters) {
     ciBuildId,
     tag,
     testingType,
-    batchSize,
+    batchSize = 1,
   } = params;
 
   debug("run api params %o", params);
+  validateRequiredParams(params);
 
   // get the actual config parsed by Cypress
   const config = await getConfig(params);

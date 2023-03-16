@@ -141,6 +141,6 @@ export type CurrentsRunParameters = StrippedCypressModuleAPIOptions & {
   projectId: string;
 
   /** The batch size defines how many spec files will be served in one orchestration "batch". If not specified, will use the projectId from currents.config.js, the default value is 3 */
-  batchSize: number;
+  batchSize?: number;
 };
 export type ArrayItemType<T> = T extends (infer U)[] ? U : T;

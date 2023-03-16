@@ -6,14 +6,11 @@ import { run } from "cypress-cloud";
   const key = process.env.CURRENTS_RECORD_KEY || "";
 
   const summarizedResults = await run({
+    ciBuildId: `run-api-smoke-${new Date().toISOString()}`,
     projectId,
     key,
-    spec: ["cypress/e2e_smoke/*.spec.js"],
     testingType: "e2e",
     record: true,
-    ciBuildId: `run-api-smoke-${new Date().toISOString()}`,
-    tag: ["run-api-smoke"],
-    batchSize: 1,
   });
 
   assert(summarizedResults?.passes === 1);
