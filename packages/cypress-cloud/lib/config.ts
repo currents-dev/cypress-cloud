@@ -48,6 +48,7 @@ export function getCurrentsConfig(): CurrentsConfig {
     return _config;
   } catch (e) {
     warn("failed to load currents config file: %s", configFilePath);
+    debug("failure details: %s", e);
     _config = defaultConfig;
     return _config;
   }

@@ -36,7 +36,7 @@ module.exports = {
   projectId: "Ij0RfK",
   recordKey: "xxx",
   // Sorry Cypress users - set the director service URL
-  cloudServiceUrl: "http://cy.currents.dev",
+  cloudServiceUrl: "https://cy.currents.dev",
 };
 ```
 
@@ -76,10 +76,10 @@ module.exports = {
   recordKey: "XXXXXXX", // Record key obtained from https://app.currents.dev, any value for Sorry Cypress
   cloudServiceUrl: "https://cy.currents.dev", // Sorry Cypress users - the director service URL
   e2e: {
-    batchSize: 3, // orchestration batch size for e2e tests (Currents only)
+    batchSize: 3, // orchestration batch size for e2e tests (Currents only, read below)
   },
   component: {
-    batchSize: 5, // orchestration batch size for component tests (Currents only)
+    batchSize: 5, // orchestration batch size for component tests (Currents only, read below)
   },
 };
 ```
@@ -89,6 +89,10 @@ Override the default configuration values via environment variables:
 - `CURRENTS_API_URL` - sorry-cypress users - set the URL of your director service
 - `CURRENTS_PROJECT_ID` - set the `projectId`
 - `CURRENTS_RECORD_KEY` - cloud service record key
+
+## Batched Orchestration
+
+This package uses its own orchestration and reporting protocol that is independent of cypress native implementation. The new [orchestration protocol](https://currents.dev/readme/integration-with-cypress/cypress-cloud#batched-orchestration) allows multiple spec files to be batched together for better efficiency. You can adjust the batching configuration in `cypress.config.js` and use different values for e2e and component tests. 
 
 ## API
 
