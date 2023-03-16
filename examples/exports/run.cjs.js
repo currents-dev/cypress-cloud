@@ -1,2 +1,3 @@
+const assert = require("assert");
 const { run } = require("cypress-cloud");
-console.log(run);
+assert(typeof run === "function");

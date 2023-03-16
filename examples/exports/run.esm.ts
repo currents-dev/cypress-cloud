@@ -1,2 +1,4 @@
+import assert from "assert";
 import { run } from "cypress-cloud";
-console.log(run);
+
+assert(typeof run === "function");
