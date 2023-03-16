@@ -3,7 +3,7 @@ import { mapValues, sum } from "lodash";
 import prettyMS from "pretty-ms";
 import { table } from "table";
 import { SummaryResults } from "../types";
-import { blue, gray, green, red, white } from "./log";
+import { cyan, gray, green, red, white } from "./log";
 import { summarizeTestResults } from "./results/results";
 
 const failureIcon = red("✖");
@@ -32,7 +32,7 @@ export const summaryTable = (r: SummaryResults) => {
     white(v.totalTests ?? 0),
     v.totalPassed ? green(v.totalPassed) : gray("-"),
     v.totalFailed ? red(v.totalFailed) : gray("-"),
-    v.totalPending ? gray(v.totalPending) : gray("-"),
+    v.totalPending ? cyan(v.totalPending) : gray("-"),
     v.totalSkipped ? red(v.totalSkipped) : gray("-"),
   ]);
 
@@ -56,7 +56,7 @@ export const summaryTable = (r: SummaryResults) => {
         white(testsOverall.tests ?? 0),
         testsOverall.passes ? green(testsOverall.passes) : gray("-"),
         testsOverall.failures ? red(testsOverall.failures) : gray("-"),
-        testsOverall.pending ? blue(testsOverall.pending) : gray("-"),
+        testsOverall.pending ? cyan(testsOverall.pending) : gray("-"),
         testsOverall.skipped ? red(testsOverall.skipped) : gray("-"),
       ],
     ],

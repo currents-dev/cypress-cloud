@@ -1,5 +1,15 @@
 
 
+## [1.4.5-beta.0](https://github.com/currents-dev/cypress-cloud/compare/v1.4.4...v1.4.5-beta.0) (2023-03-16)
+
+
+### Bug Fixes
+
+* esm + cjs exports. Resovle [#80](https://github.com/currents-dev/cypress-cloud/issues/80). ([1e9ba34](https://github.com/currents-dev/cypress-cloud/commit/1e9ba34e3d66bf3ba74d81fa263710a943af8ab4))
+* prevent side effects on import... kind of ([3c4c794](https://github.com/currents-dev/cypress-cloud/commit/3c4c794c91f591248496211327db9da605c9f29e))
+* remove bg color for pending tests in summary ([6f93815](https://github.com/currents-dev/cypress-cloud/commit/6f93815b35cdbf9bf19728f0367ade41f268bce3))
+* use execa to fix windows exec logic ([#86](https://github.com/currents-dev/cypress-cloud/issues/86)) ([40b99f8](https://github.com/currents-dev/cypress-cloud/commit/40b99f8a6577e9809a0dbdbbd5767720ca121e2f))
+
 ## [1.4.4](https://github.com/currents-dev/cypress-cloud/compare/v1.4.3...v1.4.4) (2023-03-10)
 
 

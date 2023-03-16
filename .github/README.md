@@ -92,7 +92,7 @@ Override the default configuration values via environment variables:
 
 ## Batched Orchestration
 
-This package uses its own orchestration and reporting protocol that is independent of cypress native implementation. The new [orchestration protocol](https://currents.dev/readme/integration-with-cypress/cypress-cloud#batched-orchestration) allows multiple spec files to be batched together for better efficiency. You can adjust the batching configuration in `cypress.config.js` and use different values for e2e and component tests. 
+This package uses its own orchestration and reporting protocol that is independent of cypress native implementation. The new [orchestration protocol](https://currents.dev/readme/integration-with-cypress/cypress-cloud#batched-orchestration) allows multiple spec files to be batched together for better efficiency. You can adjust the batching configuration in `cypress.config.js` and use different values for e2e and component tests.
 
 ## API
 
@@ -159,9 +159,17 @@ npm run release && npm run release:npm -- -t latest
 
 ### Localhost
 
+Publishing from `packages/cypress-cloud`:
+
 ```sh
 docker run -it --rm --name verdaccio -p 4873:4873 verdaccio/verdaccio
 npm adduser --registry http://localhost:4873
 npm login --registry http://localhost:4873
-npm publish --registry http://localhost:4873 --tag beta
+npm_config_registry=http://localhost:4873  npm run release:npm -- --tag latest
+```
+
+Using:
+
+```sh
+npm install cypress-cloud --registry http://localhost:4873
 ```

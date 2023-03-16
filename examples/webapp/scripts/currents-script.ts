@@ -1,23 +1,21 @@
+import assert from "assert";
 import { run } from "cypress-cloud";
 
 (async function runTests() {
   const projectId = process.env.CURRENTS_PROJECT_ID || "";
   const key = process.env.CURRENTS_RECORD_KEY || "";
 
-  const spec = ["cypress/e2e/*.spec.js"];
-  const testingType = "e2e";
-  const record = true;
-
   const summarizedResults = await run({
     projectId,
     key,
-    spec,
-    testingType,
-    record,
-    ciBuildId: new Date().toISOString(),
-    batchSize: 3,
+    spec: ["cypress/e2e_smoke/*.spec.js"],
+    testingType: "e2e",
+    record: true,
+    ciBuildId: `run-api-smoke-${new Date().toISOString()}`,
+    tag: ["run-api-smoke"],
+    batchSize: 1,
   });
 
-  console.log("summarizedResults");
-  console.log(summarizedResults);
+  assert(summarizedResults?.passes === 1);
+  assert(summarizedResults?.tests === 1);
 })();

@@ -30,7 +30,7 @@ export const spacer = (n: number = 0) =>
   console.log(Array(n).fill("").join("\n"));
 
 export const cyan = chalk.cyan;
-export const blue = chalk.blueBright.bgWhite;
+export const blue = chalk.blueBright;
 export const red = chalk.red;
 export const green = chalk.greenBright;
 export const gray = chalk.gray;

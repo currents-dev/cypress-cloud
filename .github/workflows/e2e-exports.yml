@@ -1,0 +1,37 @@
+name: e2e-exports
+
+on:
+  push:
+
+jobs:
+  e2e-smoke:
+    if: "!contains(toJSON(github.event.commits.*.message), '[skip ci]')"
+    runs-on: ubuntu-latest
+    env:
+      DEBUG: currents:*
+
+    services:
+      director:
+        image: agoldis/sorry-cypress-director
+        ports:
+          - 1234:1234
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Link monorepo packages
+        run: npm install
+
+      - name: Test Exports
+        working-directory: ./examples/exports
+        run: |
+          npm run testexports
