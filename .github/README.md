@@ -90,6 +90,13 @@ Override the default configuration values via environment variables:
 - `CURRENTS_PROJECT_ID` - set the `projectId`
 - `CURRENTS_RECORD_KEY` - cloud service record key
 
+The configuration variables resolution is following the next order:
+
+- use environment variable if exist, otherwise
+- use CLI option value, otherwise
+- use the config file value, otherwise
+- use the default value, otherwise throw
+
 ## Batched Orchestration
 
 This package uses its own orchestration and reporting protocol that is independent of cypress native implementation. The new [orchestration protocol](https://currents.dev/readme/integration-with-cypress/cypress-cloud#batched-orchestration) allows multiple spec files to be batched together for better efficiency. You can adjust the batching configuration in `cypress.config.js` and use different values for e2e and component tests.
@@ -114,6 +121,7 @@ Example:
 import { run } from "cypress-cloud";
 
 const results = await run({
+  recordKey: "some",
   reporter: "junit",
   browser: "chrome",
   config: {

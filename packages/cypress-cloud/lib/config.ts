@@ -15,7 +15,7 @@ export type ComponentConfig = {
 export type CurrentsConfig = {
   projectId?: string;
   recordKey?: string;
-  cloudServiceUrl?: string;
+  cloudServiceUrl: string;
   e2e: E2EConfig;
   component: ComponentConfig;
 };
@@ -31,7 +31,7 @@ export function getCurrentsConfig(): CurrentsConfig {
 
   const defaultConfig: CurrentsConfig = {
     e2e: {
-      batchSize: 3,
+      batchSize: 1,
     },
     component: {
       batchSize: 5,
@@ -54,8 +54,8 @@ export function getCurrentsConfig(): CurrentsConfig {
   }
 }
 
-export type ResolvedConfig = Awaited<ReturnType<typeof getConfig>>;
-export async function getConfig(params: CurrentsRunParameters) {
+export type ResolvedConfig = Awaited<ReturnType<typeof getMergedConfig>>;
+export async function getMergedConfig(params: CurrentsRunParameters) {
   debug("resolving cypress config ");
   const cypressResolvedConfig:
     | (Cypress.ResolvedConfigOptions & {

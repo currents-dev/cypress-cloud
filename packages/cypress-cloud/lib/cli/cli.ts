@@ -5,8 +5,6 @@ import {
   StrippedCypressModuleAPIOptions,
   TestingType,
 } from "../../types";
-import { getCurrentsConfig } from "../config";
-import { withError } from "../log";
 import { sanitizeAndConvertNestedArgs } from "./parser";
 import { program } from "./program";
 
@@ -36,10 +34,12 @@ export function getStrippedCypressOptions(
 ): StrippedCypressModuleAPIOptions {
   return pickBy(
     omit(params, [
+      "cloudServiceUrl",
       "batchSize",
       "projectId",
       "record",
       "key",
+      "recordKey",
       "group",
       "parallel",
       "tag",
@@ -111,31 +111,9 @@ const dashed = (v: string) => v.replace(/[A-Z]/g, (m) => "-" + m.toLowerCase());
 export async function getRunParameters(
   cliOptions: ReturnType<typeof program.opts>
 ): Promise<CurrentsRunParameters> {
-  const { projectId, recordKey, e2e, component } = await getCurrentsConfig();
-  const key = cliOptions.key ?? process.env.CURRENTS_RECORD_KEY ?? recordKey;
-
-  if (!key) {
-    return program.error(
-      withError(
-        "Missing 'key'. Please either pass it as a cli flag '-k, --key <record-key>', set it in currents.config.js, or set CURRENTS_RECORD_KEY environment variable."
-      )
-    );
-  }
-
-  const _projectId = process.env.CURRENTS_PROJECT_ID ?? projectId;
-
-  if (!_projectId) {
-    return program.error(
-      withError(
-        "Missing 'projectId'. Please either set it in currents.config.js, or as CURRENTS_PROJECT_ID environment variable."
-      )
-    );
-  }
-
   const testingType = cliOptions.component
     ? "component"
     : ("e2e" as TestingType);
-  const batchSize = testingType === "e2e" ? e2e.batchSize : component.batchSize;
 
   const result = {
     ...omit({ ...cliOptions }, "e2e", "component"),
@@ -146,9 +124,6 @@ export async function getRunParameters(
       "reporterOptions"
     ),
     testingType,
-    key,
-    projectId: _projectId,
-    batchSize,
   };
 
   debug("parsed run params: %o", result);

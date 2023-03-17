@@ -1,7 +1,7 @@
 import("./lib/init");
 
 import { cutInitialOutput } from "./lib/capture";
-import { getConfig } from "./lib/config";
+import { getMergedConfig } from "./lib/config";
 import { setRunId } from "./lib/httpClient";
 import { summarizeTestResults } from "./lib/results";
 import { getSpecFiles, getSpecPattern } from "./lib/specMatcher";
@@ -12,16 +12,20 @@ import { createRun } from "./lib/api/api";
 import { guessBrowser } from "./lib/browser";
 import { getCI } from "./lib/ciProvider";
 import { getGitInfo } from "./lib/git";
+import { setBaseUrl } from "./lib/httpClient/config";
 import { bold, divider, info, spacer, title } from "./lib/log";
 import { getPlatformInfo } from "./lib/platform";
 import { runTillDone } from "./lib/runner";
 import { summaryTable } from "./lib/table";
-import { validateRequiredParams } from "./lib/validateParams";
+import {
+  getValidatedCurrentsConfig,
+  resolveCurrentsConfig,
+} from "./lib/validateParams";
 
 const debug = Debug("currents:index");
 
 /**
- * Run the Cypress tests and return the results.
+ * Run Cypress tests and return the results
  *
  * @augments CurrentsRunParameters
  * @returns {TestsResult | undefined} The test results, or undefined if no tests were run.
@@ -29,26 +33,34 @@ const debug = Debug("currents:index");
 export async function run(params: CurrentsRunParameters) {
   spacer();
 
+  debug("run api bare params %o", params);
+
+  const resolvedCurrentsConfig = getValidatedCurrentsConfig(
+    resolveCurrentsConfig(params)
+  );
+
   const {
-    key: recordKey,
+    recordKey,
     projectId,
     group,
     parallel,
     ciBuildId,
     tag,
-    testingType = "e2e",
-    batchSize = 1,
-  } = params;
+    testingType,
+    batchSize,
+  } = resolvedCurrentsConfig;
 
-  debug("run api params %o", params);
-  validateRequiredParams(params);
+  setBaseUrl(resolvedCurrentsConfig.cloudServiceUrl);
 
   // get the actual config parsed by Cypress
-  const config = await getConfig(params);
+  const config = await getMergedConfig(resolvedCurrentsConfig);
   // explicitly provided pattern or the default from the config file
-  const specPattern = getSpecPattern(config.specPattern, params.spec);
+  const specPattern = getSpecPattern(
+    config.specPattern,
+    resolvedCurrentsConfig.spec
+  );
   // find the spec files according to the resolved configuration
-  const specs = await getSpecFiles({ config, params });
+  const specs = await getSpecFiles({ config, params: resolvedCurrentsConfig });
   if (specs.length === 0) {
     return;
   }

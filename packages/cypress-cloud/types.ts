@@ -1,5 +1,6 @@
 export type TestingType = Cypress.TestingType;
 export type SpecType = "component" | "integration";
+export type ArrayItemType<T> = T extends (infer U)[] ? U : T;
 
 export type CypressRun = ArrayItemType<
   CypressCommandLine.CypressRunResult["runs"]
@@ -127,12 +128,14 @@ export type CurrentsRunParameters = StrippedCypressModuleAPIOptions & {
   ciBuildId?: string;
   /** The batch size defines how many spec files will be served in one orchestration "batch". If not specified, will use the projectId from currents.config.js, the default value is 1 (i.e. no batching) */
   batchSize?: number;
+  /** The URL of the currents server to use. If not specified, will use the one from currents.config.js */
+  cloudServiceUrl?: string;
   /** The environment variables to use for the run */
   env?: Record<string, unknown>;
   /** The group id to use for the run */
   group?: string;
   /**  The record key to use */
-  key: string;
+  recordKey: string;
   /** Whether to run the spec files in parallel */
   parallel?: boolean;
   /** The project ID to use. */
@@ -144,4 +147,11 @@ export type CurrentsRunParameters = StrippedCypressModuleAPIOptions & {
   /** "e2e" or "component", the default value is "e2e" */
   testingType?: TestingType;
 };
-export type ArrayItemType<T> = T extends (infer U)[] ? U : T;
+
+export interface ValidatedCurrentsConfig extends CurrentsRunParameters {
+  readonly projectId: string;
+  readonly cloudServiceUrl: string;
+  readonly batchSize: number;
+  readonly testingType: TestingType;
+  readonly recordKey: string;
+}
