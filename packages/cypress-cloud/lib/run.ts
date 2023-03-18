@@ -44,6 +44,9 @@ export async function run(params: CurrentsRunParameters) {
     config,
     browser: validatedParams.browser,
   });
+
+  divider();
+
   info("Discovered %d spec files", specs.length);
   info(
     `Tags: ${tag?.join(",") ?? false}; Group: ${group ?? false}; Parallel: ${

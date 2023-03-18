@@ -105,6 +105,6 @@ export function validateParams(
       throw new Error("Missing required parameter");
     }
   });
-  debug("Validated currents parameters: %o", params);
+  debug("validated currents parametes: %o", params);
   return params as ValidatedCurrentsParameters;
 }
