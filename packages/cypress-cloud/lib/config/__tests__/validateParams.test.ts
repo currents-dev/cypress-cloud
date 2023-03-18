@@ -1,3 +1,5 @@
+import { expect } from "@jest/globals";
+import { ValidationError } from "cypress-cloud/lib/errors";
 import { CurrentsRunParameters } from "cypress-cloud/types";
 import { getCurrentsConfig } from "../config";
 import {
@@ -6,7 +8,6 @@ import {
   projectIdError,
   recordKeyError,
   validateParams,
-  ValidationError,
 } from "../params";
 
 jest.mock("cypress-cloud/lib/log");

@@ -3,6 +3,7 @@ import {
   ValidatedCurrentsParameters,
 } from "cypress-cloud/types";
 import Debug from "debug";
+import { ValidationError } from "../errors";
 import { error } from "../log";
 import { getCurrentsConfig } from "./config";
 const debug = Debug("currents:validateParams");
@@ -66,13 +67,6 @@ export const recordKeyError = `Cannot resolve record key. Please use one of the 
 - pass it as a cli flag '-k, --key <record-key>'
 - set "recordKey" in "currents.config.js" file
 - provide it as a "recordKey" property for "run" API method`;
-
-export class ValidationError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = "ValidationError";
-  }
-}
 
 export function validateParams(
   _params: CurrentsRunParameters

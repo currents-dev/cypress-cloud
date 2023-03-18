@@ -3,6 +3,7 @@ import "source-map-support/register";
 
 import { parseCLIOptions } from "../lib/cli";
 import { program } from "../lib/cli/program";
+import { ValidationError } from "../lib/errors";
 import { withError } from "../lib/log";
 import { run } from "../lib/run";
 
@@ -23,5 +24,10 @@ main()
     process.exit(0);
   })
   .catch((err) => {
-    program.error(withError(err));
+    if (err instanceof ValidationError) {
+      program.error(withError(err.toString()));
+    } else {
+      console.error(err);
+    }
+    process.exit(1);
   });
