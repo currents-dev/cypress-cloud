@@ -76,7 +76,7 @@ module.exports = {
   recordKey: "XXXXXXX", // Record key obtained from https://app.currents.dev, any value for Sorry Cypress
   cloudServiceUrl: "https://cy.currents.dev", // Sorry Cypress users - the director service URL
   e2e: {
-    batchSize: 3, // orchestration batch size for e2e tests (Currents only, read below)
+    batchSize: 1, // orchestration batch size for e2e tests (Currents only, read below)
   },
   component: {
     batchSize: 5, // orchestration batch size for component tests (Currents only, read below)
@@ -94,7 +94,7 @@ The configuration variables will resolve as follows:
 
 - the corresponding CLI flag or `run` function parameter, otherwise
 - environment variable if exist, otherwise
-- the config file value, otherwise
+- `currents.config.js` value, otherwise
 - the default value, otherwise throw
 
 ## Batched Orchestration

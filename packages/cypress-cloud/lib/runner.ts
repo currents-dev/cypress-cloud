@@ -1,6 +1,6 @@
 import("./init");
 
-import { SummaryResult, ValidatedCurrentsConfig } from "../types";
+import { SummaryResult, ValidatedCurrentsParameters } from "../types";
 import { getCapturedOutput, resetCapture } from "./capture";
 import { MergedConfig } from "./config/config";
 import { getSummaryForSpec, normalizeRawResult } from "./results";
@@ -28,7 +28,7 @@ export async function runTillDone(
   }: CreateInstancePayload & {
     config: MergedConfig;
   },
-  params: ValidatedCurrentsConfig
+  params: ValidatedCurrentsParameters
 ) {
   const summary: SummaryResult = {};
   const uploadTasks: Promise<any>[] = [];
@@ -74,7 +74,7 @@ async function runBatch({
     platform: CreateInstancePayload["platform"];
   };
   config: MergedConfig;
-  params: ValidatedCurrentsConfig;
+  params: ValidatedCurrentsParameters;
 }) {
   let batch = {
     specs: [] as InstanceResponseSpecDetails[],

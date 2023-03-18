@@ -2,19 +2,6 @@ import { expect } from "@jest/globals";
 import { parseCLIOptions } from "../cli";
 import { createProgram } from "../program";
 
-jest.mock("../../config", () => ({
-  getCurrentsConfig: () => ({
-    projectId: "projectID",
-    recordKey: "key",
-    e2e: {
-      batchSize: 1,
-    },
-    component: {
-      batchSize: 2,
-    },
-  }),
-}));
-
 const getProgram = () =>
   createProgram()
     .exitOverride()
@@ -25,13 +12,7 @@ const getProgram = () =>
     });
 
 const p = (args: string[]) =>
-  parseCLIOptions(getProgram(), [
-    "program",
-    "command",
-    "--key",
-    "some",
-    ...args,
-  ]);
+  parseCLIOptions(getProgram(), ["program", "command", ...args]);
 
 const defaults = {
   parallel: false,
@@ -39,7 +20,13 @@ const defaults = {
   testingType: "e2e",
 };
 describe("CLI", () => {
-  process.env.CURRENTS_PROJECT_ID = "some";
+  beforeEach(() => {
+    ["CURRENTS_RECORD_KEY"].forEach((key) => {
+      process.env[key] = undefined;
+      delete process.env[key];
+    });
+  });
+
   it("has defaults", async () => expect(await p([])).toMatchObject(defaults));
   it("parses browser", async () => {
     expect(await p(["--browser", "some"])).toMatchObject({
@@ -122,6 +109,13 @@ describe("CLI", () => {
   it("parses --key", async () => {
     expect(await p(["--key", "some"])).toMatchObject({
       key: "some",
+    });
+  });
+
+  it("parses --key from CURRENTS_RECORD_KEY", async () => {
+    process.env.CURRENTS_RECORD_KEY = "envKey";
+    expect(await p([])).toMatchObject({
+      key: "envKey",
     });
   });
 

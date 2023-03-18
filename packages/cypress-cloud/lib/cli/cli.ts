@@ -110,13 +110,12 @@ const dashed = (v: string) => v.replace(/[A-Z]/g, (m) => "-" + m.toLowerCase());
  */
 export function getRunParametersFromCLI(
   cliOptions: ReturnType<typeof program.opts>
-): Partial<CurrentsRunParameters> {
-  const testingType = cliOptions.component
-    ? "component"
-    : ("e2e" as TestingType);
+): CurrentsRunParameters {
+  const { component, e2e, ...restOptions } = cliOptions;
+  const testingType: TestingType = component ? "component" : "e2e";
 
   const result: Partial<CurrentsRunParameters> = {
-    ...omit({ ...cliOptions }, "e2e", "component"),
+    ...restOptions,
     config: sanitizeAndConvertNestedArgs(cliOptions.config, "config"),
     env: sanitizeAndConvertNestedArgs(cliOptions.env, "env"),
     reporterOptions: sanitizeAndConvertNestedArgs(

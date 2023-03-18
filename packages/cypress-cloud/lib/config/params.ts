@@ -1,13 +1,17 @@
 import {
   CurrentsRunParameters,
-  ValidatedCurrentsConfig,
+  ValidatedCurrentsParameters,
 } from "cypress-cloud/types";
 import Debug from "debug";
 import { error } from "../log";
 import { getCurrentsConfig } from "./config";
 const debug = Debug("currents:validateParams");
 
-function resolveCurrentsParams(
+export function fallback(...args: string[]) {
+  return args.find((arg) => arg !== undefined && arg !== null && arg !== "");
+}
+
+export function resolveCurrentsParams(
   params: CurrentsRunParameters
 ): CurrentsRunParameters {
   const configFromFile = getCurrentsConfig();
@@ -45,35 +49,54 @@ function resolveCurrentsParams(
   };
 }
 
-export function validateParams(
-  _params: CurrentsRunParameters
-): ValidatedCurrentsConfig {
-  const params = resolveCurrentsParams(_params);
-  if (!params.cloudServiceUrl) {
-    throw new Error(
-      `Cannot resolve cloud service URL. Please use one of the following:
-- set CURRENTS_API_URL environment variable
-- set "cloudServiceUrl" in "currents.config.js" file
-- provide it as a "cloudServiceUrl" property for "run" API method`
-    );
-  }
-  if (!params.projectId) {
-    throw new Error(
-      `Cannot resolve projectId. Please use one of the following:
+export const projectIdError = `Cannot resolve projectId. Please use one of the following:
 - set CURRENTS_PROJECT_ID environment variable
 - set "projectId" in "currents.config.js" file
-- provide it as a "projectId" property for "run" API method`
-    );
-  }
-  if (!params.recordKey) {
-    throw new Error(
-      `Cannot resolve record key. Please use one of the following:
+- provide it as a "projectId" property for "run" API method`;
+
+export const cloudServiceUrlError = `Cannot resolve cloud service URL. Please use one of the following:
+- set CURRENTS_API_URL environment variable
+- set "cloudServiceUrl" in "currents.config.js" file
+- provide it as a "cloudServiceUrl" property for "run" API method`;
+
+export const cloudServiceInvalidUrlError = `Invalid cloud service URL provided`;
+
+export const recordKeyError = `Cannot resolve record key. Please use one of the following:
 - set CURRENTS_RECORD_KEY environment variable
 - pass it as a cli flag '-k, --key <record-key>'
 - set "recordKey" in "currents.config.js" file
-- provide it as a "recordKey" property for "run" API method`
+- provide it as a "recordKey" property for "run" API method`;
+
+export class ValidationError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "ValidationError";
+  }
+}
+
+export function validateParams(
+  _params: CurrentsRunParameters
+): ValidatedCurrentsParameters {
+  const params = resolveCurrentsParams(_params);
+  if (!params.cloudServiceUrl) {
+    throw new ValidationError(cloudServiceUrlError);
+  }
+  if (!params.projectId) {
+    throw new ValidationError(projectIdError);
+  }
+  if (!params.recordKey) {
+    throw new ValidationError(recordKeyError);
+  }
+
+  // validate cloudServiceUrl
+  try {
+    new URL(params.cloudServiceUrl);
+  } catch (err) {
+    throw new ValidationError(
+      `${cloudServiceInvalidUrlError}: "${params.cloudServiceUrl}"`
     );
   }
+
   const requiredParameters: Array<keyof CurrentsRunParameters> = [
     "testingType",
     "batchSize",
@@ -89,5 +112,5 @@ export function validateParams(
     }
   });
   debug("Validated currents parameters: %o", params);
-  return params as ValidatedCurrentsConfig;
+  return params as ValidatedCurrentsParameters;
 }

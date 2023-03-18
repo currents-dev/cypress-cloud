@@ -1,4 +1,4 @@
-import { ValidatedCurrentsConfig } from "../../types";
+import { ValidatedCurrentsParameters } from "../../types";
 import { MergedConfig } from "../config/config";
 import { warn } from "../log";
 import { findSpecs } from "./specMatcher";
@@ -13,7 +13,7 @@ export const getSpecFiles = async ({
   params,
 }: {
   config: MergedConfig;
-  params: ValidatedCurrentsConfig;
+  params: ValidatedCurrentsParameters;
 }) => {
   const specPattern = getSpecPattern(config.specPattern, params.spec);
   // find the spec files according to the resolved configuration

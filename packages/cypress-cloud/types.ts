@@ -153,7 +153,7 @@ export interface CurrentsRunAPI extends CurrentsRunParameters {
 }
 
 // Params after validation and resolution
-export interface ValidatedCurrentsConfig extends CurrentsRunParameters {
+export interface ValidatedCurrentsParameters extends CurrentsRunParameters {
   readonly projectId: string;
   readonly cloudServiceUrl: string;
   readonly batchSize: number;

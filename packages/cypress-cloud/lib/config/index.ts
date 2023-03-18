@@ -1,2 +1,2 @@
 export * from "./config";
-export * from "./validateParams";
+export * from "./params";
