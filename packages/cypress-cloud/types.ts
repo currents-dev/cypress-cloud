@@ -1,6 +1,7 @@
 export type TestingType = Cypress.TestingType;
 export type SpecType = "component" | "integration";
 export type ArrayItemType<T> = T extends (infer U)[] ? U : T;
+export type NonEmptyArray<T> = [T, ...T[]];
 
 export type CypressRun = ArrayItemType<
   CypressCommandLine.CypressRunResult["runs"]
@@ -101,12 +102,9 @@ export interface TestsResult {
   tests: number;
 }
 
-export type SummaryResults = Record<
-  string,
-  CypressCommandLine.CypressRunResult
->;
+export type SummaryResult = Record<string, CypressCommandLine.CypressRunResult>;
 
-// All the cypress flags without cloud-related flags. We explicitly filter them out to avoid confusion and prevent accidental usage
+// Explicitly filter cypress-related flags and prevent triggering recording mode and to avoid confusion
 export type StrippedCypressModuleAPIOptions = Omit<
   Partial<CypressCommandLine.CypressRunOptions>,
   | "tag"
@@ -135,11 +133,11 @@ export type CurrentsRunParameters = StrippedCypressModuleAPIOptions & {
   /** The group id to use for the run */
   group?: string;
   /**  The record key to use */
-  recordKey: string;
+  recordKey?: string;
   /** Whether to run the spec files in parallel */
   parallel?: boolean;
   /** The project ID to use. */
-  projectId: string;
+  projectId?: string;
   /** The array of spec patterns for the execution */
   spec?: string[];
   /** The array of tags for the execution */
@@ -148,6 +146,13 @@ export type CurrentsRunParameters = StrippedCypressModuleAPIOptions & {
   testingType?: TestingType;
 };
 
+// User-facing interface
+export interface CurrentsRunAPI extends CurrentsRunParameters {
+  readonly projectId: string;
+  readonly recordKey: string;
+}
+
+// Params after validation and resolution
 export interface ValidatedCurrentsConfig extends CurrentsRunParameters {
   readonly projectId: string;
   readonly cloudServiceUrl: string;

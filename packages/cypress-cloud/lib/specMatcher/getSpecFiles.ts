@@ -1,10 +1,10 @@
-import { CurrentsRunParameters } from "../../types";
-import { ResolvedConfig } from "../config";
+import { ValidatedCurrentsConfig } from "../../types";
+import { MergedConfig } from "../config/config";
 import { warn } from "../log";
 import { findSpecs } from "./specMatcher";
 
-export const getSpecPattern = (
-  configPattern: ResolvedConfig["specPattern"],
+const getSpecPattern = (
+  configPattern: MergedConfig["specPattern"],
   explicit?: string[]
 ) => explicit || configPattern;
 
@@ -12,8 +12,8 @@ export const getSpecFiles = async ({
   config,
   params,
 }: {
-  config: ResolvedConfig;
-  params: CurrentsRunParameters;
+  config: MergedConfig;
+  params: ValidatedCurrentsConfig;
 }) => {
   const specPattern = getSpecPattern(config.specPattern, params.spec);
   // find the spec files according to the resolved configuration
@@ -35,7 +35,7 @@ export const getSpecFiles = async ({
       ].flat(2),
       testingType: params.testingType,
     });
-    return [];
+    return { specs: [], specPattern };
   }
-  return specs;
+  return { specs, specPattern };
 };

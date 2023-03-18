@@ -1,39 +1,33 @@
-import commonPathPrefix from "common-path-prefix";
 import { mapValues, sum } from "lodash";
 import prettyMS from "pretty-ms";
 import { table } from "table";
-import { SummaryResults } from "../types";
 import { cyan, gray, green, red, white } from "./log";
-import { summarizeTestResults } from "./results/results";
 
 const failureIcon = red("✖");
 const successIcon = green("✔");
 
-export const summaryTable = (r: SummaryResults) => {
-  const testsOverall = summarizeTestResults(Object.values(r));
-  const overallDuration = sum(Object.values(r).map((v) => v.totalDuration));
-  const overallSpecCount = Object.keys(r).length;
+export const summaryTable = (r: CypressCommandLine.CypressRunResult) => {
+  const overallSpecCount = r.runs.length;
   const failedSpecsCount = sum(
-    Object.values(r)
-      .filter((v) => v.totalFailed + v.totalSkipped > 0)
-      .map(() => 1)
+    r.runs.filter((v) => v.stats.failures + v.stats.skipped > 0).map(() => 1)
   );
   const hasFailed = failedSpecsCount > 0;
+
   const verdict = hasFailed
     ? red(`${failedSpecsCount} of ${overallSpecCount} failed`)
-    : "All specs passed!";
+    : overallSpecCount > 0
+    ? "All specs passed!"
+    : "No specs executed";
 
-  const commonPrefix = commonPathPrefix(Object.keys(r));
-
-  const data = Object.entries(r).map(([k, v]) => [
-    v.totalFailed + v.totalSkipped > 0 ? failureIcon : successIcon,
-    k.replace(commonPrefix, ""),
-    gray(prettyMS(v.totalDuration)),
-    white(v.totalTests ?? 0),
-    v.totalPassed ? green(v.totalPassed) : gray("-"),
-    v.totalFailed ? red(v.totalFailed) : gray("-"),
-    v.totalPending ? cyan(v.totalPending) : gray("-"),
-    v.totalSkipped ? red(v.totalSkipped) : gray("-"),
+  const data = r.runs.map((r) => [
+    r.stats.failures + r.stats.skipped > 0 ? failureIcon : successIcon,
+    r.spec.relativeToCommonRoot,
+    gray(prettyMS(r.stats.duration)),
+    white(r.stats.tests ?? 0),
+    r.stats.passes ? green(r.stats.passes) : gray("-"),
+    r.stats.failures ? red(r.stats.failures) : gray("-"),
+    r.stats.pending ? cyan(r.stats.pending) : gray("-"),
+    r.stats.skipped ? red(r.stats.skipped) : gray("-"),
   ]);
 
   return table(
@@ -52,12 +46,12 @@ export const summaryTable = (r: SummaryResults) => {
       [
         hasFailed ? failureIcon : successIcon, // marker
         verdict,
-        gray(prettyMS(overallDuration ?? 0)),
-        white(testsOverall.tests ?? 0),
-        testsOverall.passes ? green(testsOverall.passes) : gray("-"),
-        testsOverall.failures ? red(testsOverall.failures) : gray("-"),
-        testsOverall.pending ? cyan(testsOverall.pending) : gray("-"),
-        testsOverall.skipped ? red(testsOverall.skipped) : gray("-"),
+        gray(prettyMS(r.totalDuration ?? 0)),
+        overallSpecCount > 0 ? white(r.totalTests ?? 0) : gray("-"),
+        r.totalPassed ? green(r.totalPassed) : gray("-"),
+        r.totalFailed ? red(r.totalFailed) : gray("-"),
+        r.totalPending ? cyan(r.totalPending) : gray("-"),
+        r.totalSkipped ? red(r.totalSkipped) : gray("-"),
       ],
     ],
     {

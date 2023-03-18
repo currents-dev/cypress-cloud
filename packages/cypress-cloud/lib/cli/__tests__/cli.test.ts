@@ -1,5 +1,5 @@
 import { expect } from "@jest/globals";
-import { parseOptions } from "../cli";
+import { parseCLIOptions } from "../cli";
 import { createProgram } from "../program";
 
 jest.mock("../../config", () => ({
@@ -25,7 +25,13 @@ const getProgram = () =>
     });
 
 const p = (args: string[]) =>
-  parseOptions(getProgram(), ["program", "command", "--key", "some", ...args]);
+  parseCLIOptions(getProgram(), [
+    "program",
+    "command",
+    "--key",
+    "some",
+    ...args,
+  ]);
 
 const defaults = {
   parallel: false,

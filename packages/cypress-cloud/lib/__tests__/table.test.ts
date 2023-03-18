@@ -1,93 +1,41 @@
+import { expect } from "@jest/globals";
+import { ResolvedConfig } from "../config";
+import { summarizeTestResults } from "../results";
 import { summaryTable } from "../table";
+import commonPath from "./fixtures/payloads/cypressResult/no-exception/common-path";
+import mixedResults from "./fixtures/payloads/cypressResult/no-exception/mixed";
+import singleFailed from "./fixtures/payloads/cypressResult/no-exception/single-failed";
+import singlePassed from "./fixtures/payloads/cypressResult/no-exception/single-passed";
 
 describe("Table", () => {
   it("renders table with failed tests correctly", () => {
-    const result = summaryTable({
-      "spec.a.js": {
-        totalDuration: 42343,
-        totalPassed: 1,
-        totalFailed: 0,
-        totalPending: 0,
-        totalSkipped: 0,
-        totalTests: 1,
-      },
-      "spec.b.js": {
-        totalDuration: 112332,
-        totalPassed: 4,
-        totalFailed: 5,
-        totalPending: 3,
-        totalSkipped: 1,
-        totalTests: 13,
-      },
-      "spec.c.js": {
-        totalDuration: 33,
-        totalPassed: 4,
-        totalFailed: 5,
-        totalPending: 0,
-        totalSkipped: 0,
-        totalTests: 9,
-      },
-    });
+    const result = summaryTable(
+      summarizeTestResults(Object.values(singleFailed), {} as ResolvedConfig)
+    );
+
     expect(result).toMatchSnapshot();
   });
 
   it("renders table with only successful tests correctly", () => {
-    const result = summaryTable({
-      "spec.a.js": {
-        totalDuration: 42343,
-        totalPassed: 1,
-        totalFailed: 0,
-        totalPending: 0,
-        totalSkipped: 0,
-        totalTests: 1,
-      },
-      "spec.b.js": {
-        totalDuration: 112332,
-        totalPassed: 4,
-        totalFailed: 0,
-        totalPending: 3,
-        totalSkipped: 0,
-        totalTests: 7,
-      },
-      "spec.c.js": {
-        totalDuration: 343,
-        totalPassed: 4,
-        totalFailed: 0,
-        totalPending: 0,
-        totalSkipped: 0,
-        totalTests: 4,
-      },
-    });
+    const result = summaryTable(
+      summarizeTestResults(Object.values(singlePassed), {} as ResolvedConfig)
+    );
     expect(result).toMatchSnapshot();
   });
 
-  it("renders common path stripped", () => {
-    const result = summaryTable({
-      "cypress/b/spec.a.js": {
-        totalDuration: 42343,
-        totalPassed: 1,
-        totalFailed: 0,
-        totalPending: 0,
-        totalSkipped: 0,
-        totalTests: 1,
-      },
-      "cypress/b/spec.b.js": {
-        totalDuration: 112332,
-        totalPassed: 4,
-        totalFailed: 0,
-        totalPending: 3,
-        totalSkipped: 0,
-        totalTests: 7,
-      },
-      "cypress/a/spec.c.js": {
-        totalDuration: 343,
-        totalPassed: 4,
-        totalFailed: 0,
-        totalPending: 0,
-        totalSkipped: 0,
-        totalTests: 4,
-      },
-    });
+  it("renders table with mixed results ", () => {
+    const result = summaryTable(
+      summarizeTestResults(Object.values(mixedResults), {} as ResolvedConfig)
+    );
+    console.log(result);
+    expect(result).toMatchSnapshot();
+  });
+
+  it.only("renders common path stripped", () => {
+    const result = summaryTable(
+      summarizeTestResults(Object.values(commonPath), {} as ResolvedConfig)
+    );
+    console.log(result);
     expect(result).toMatchSnapshot();
   });
 });

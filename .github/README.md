@@ -90,12 +90,12 @@ Override the default configuration values via environment variables:
 - `CURRENTS_PROJECT_ID` - set the `projectId`
 - `CURRENTS_RECORD_KEY` - cloud service record key
 
-The configuration variables resolution is following the next order:
+The configuration variables will resolve as follows:
 
-- use environment variable if exist, otherwise
-- use CLI option value, otherwise
-- use the config file value, otherwise
-- use the default value, otherwise throw
+- the corresponding CLI flag or `run` function parameter, otherwise
+- environment variable if exist, otherwise
+- the config file value, otherwise
+- the default value, otherwise throw
 
 ## Batched Orchestration
 
@@ -108,12 +108,12 @@ This package uses its own orchestration and reporting protocol that is independe
 Run Cypress tests programmatically
 
 ```ts
-run(params: CurrentsRunParameters): Promise<CypressCommandLine.CypressRunResult | CypressCommandLine.CypressFailedRunResult>
+run(params: CurrentsRunAPI): Promise<CypressCommandLine.CypressRunResult | undefined>
 ```
 
-- `params` - [CurrentsRunParameters](./packages/cypress-cloud/types.ts#L123) list of params compatible with Cypress [Module API](https://docs.cypress.io/guides/guides/module-api)
+- `params` - [`CurrentsRunAPI`](./packages/cypress-cloud/types.ts) list of params. It is an extended version of Cypress [Module API](https://docs.cypress.io/guides/guides/module-api)
 
-- returns results as a [CypressRunResult](https://github.com/cypress-io/cypress/blob/19e091d0bc2d1f4e6a6e62d2f81ea6a2f60d531a/cli/types/cypress-npm-api.d.ts#L277)
+- returns execution results as [`CypressCommandLine.CypressRunResult| undefined`](./packages/cypress-cloud/types.ts)
 
 Example:
 

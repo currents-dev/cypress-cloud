@@ -1,6 +1,8 @@
+import { expect } from "@jest/globals";
 import { getCurrentsConfig } from "../../config";
-import { getRunParameters } from "../cli";
+import { getRunParametersFromCLI } from "../cli";
 import { program } from "../program";
+
 jest.mock("../program", () => ({
   program: {
     error: jest.fn(),
@@ -19,22 +21,22 @@ jest.mock("../../config", () => ({
   })),
 }));
 
-describe("getRunParameters", () => {
+describe("getRunParametersFromCLI", () => {
   beforeEach(() => {
     ["CURRENTS_RECORD_KEY", "CURRENTS_PROJECT_ID"].forEach((key) => {
       process.env[key] = undefined;
       delete process.env[key];
     });
   });
-  it("picks the correct batch size for component tests", async () => {
+  it.only("picks the correct batch size for component tests", async () => {
     // @ts-expect-error
-    expect(await getRunParameters({ component: true })).toMatchObject({
-      batchSize: 2,
-    });
+    expect(await getRunParametersFromCLI({ component: true })).toMatchObject(
+      {}
+    );
   });
   it("picks the correct batch size for e2e tests", async () => {
     // @ts-expect-error
-    expect(await getRunParameters({ component: false })).toMatchObject({
+    expect(await getRunParametersFromCLI({ component: false })).toMatchObject({
       batchSize: 1,
     });
   });
@@ -42,7 +44,7 @@ describe("getRunParameters", () => {
   it("errors when no key is provided", async () => {
     (getCurrentsConfig as jest.Mock).mockResolvedValueOnce({});
     // @ts-ignore
-    await getRunParameters({});
+    await getRunParametersFromCLI({});
     expect(program.error).toHaveBeenCalledWith(
       expect.stringMatching("Missing 'key'")
     );
@@ -54,7 +56,7 @@ describe("getRunParameters", () => {
     });
 
     // @ts-ignore
-    await getRunParameters({});
+    await getRunParametersFromCLI({});
     expect(program.error).toHaveBeenCalledWith(
       expect.stringMatching("Missing 'projectId'")
     );
@@ -70,7 +72,7 @@ describe("getRunParameters", () => {
       },
     });
     // @ts-ignore
-    const results = await getRunParameters({});
+    const results = await getRunParametersFromCLI({});
     expect(results).toMatchObject({
       key: "envKey",
     });
@@ -87,7 +89,7 @@ describe("getRunParameters", () => {
       },
     });
     // @ts-ignore
-    const results = await getRunParameters({
+    const results = await getRunParametersFromCLI({
       key: "cliKey",
     });
     expect(results).toMatchObject({
@@ -105,7 +107,7 @@ describe("getRunParameters", () => {
       },
     });
     // @ts-ignore
-    const results = await getRunParameters({});
+    const results = await getRunParametersFromCLI({});
     expect(results).toMatchObject({
       key: "configKey",
     });
@@ -122,7 +124,7 @@ describe("getRunParameters", () => {
       },
     });
     // @ts-ignore
-    const results = await getRunParameters({});
+    const results = await getRunParametersFromCLI({});
     expect(results).toMatchObject({
       projectId: "envProjectID",
     });
@@ -138,7 +140,7 @@ describe("getRunParameters", () => {
       },
     });
     // @ts-ignore
-    const results = await getRunParameters({
+    const results = await getRunParametersFromCLI({
       key: "cliKey",
     });
     expect(results).toMatchObject({

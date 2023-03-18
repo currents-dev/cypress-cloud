@@ -10,7 +10,7 @@ import { program } from "./program";
 
 const debug = Debug("currents:cli");
 
-export function parseOptions(
+export function parseCLIOptions(
   _program: typeof program = program,
   ...args: Parameters<typeof program.parse>
 ) {
@@ -22,7 +22,7 @@ export function parseOptions(
     _program.error("Cannot use both e2e and component options");
   }
 
-  return getRunParameters(_program.opts());
+  return getRunParametersFromCLI(_program.opts());
 }
 
 /**
@@ -108,14 +108,14 @@ const dashed = (v: string) => v.replace(/[A-Z]/g, (m) => "-" + m.toLowerCase());
  * @param cliOptions
  * @returns Currents run parameters
  */
-export async function getRunParameters(
+export function getRunParametersFromCLI(
   cliOptions: ReturnType<typeof program.opts>
-): Promise<CurrentsRunParameters> {
+): Partial<CurrentsRunParameters> {
   const testingType = cliOptions.component
     ? "component"
     : ("e2e" as TestingType);
 
-  const result = {
+  const result: Partial<CurrentsRunParameters> = {
     ...omit({ ...cliOptions }, "e2e", "component"),
     config: sanitizeAndConvertNestedArgs(cliOptions.config, "config"),
     env: sanitizeAndConvertNestedArgs(cliOptions.env, "env"),
@@ -124,6 +124,7 @@ export async function getRunParameters(
       "reporterOptions"
     ),
     testingType,
+    recordKey: cliOptions.key,
   };
 
   debug("parsed run params: %o", result);

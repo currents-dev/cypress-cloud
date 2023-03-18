@@ -1,3 +1,3 @@
-import { getBaseUrl } from "./httpClient/config";
+import { getAPIBaseUrl } from "./httpClient/config";
 
-export const isCurrents = () => getBaseUrl() === "https://cy.currents.dev";
+export const isCurrents = () => getAPIBaseUrl() === "https://cy.currents.dev";
