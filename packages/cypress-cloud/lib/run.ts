@@ -8,10 +8,9 @@ import { getGitInfo } from "./git";
 import { setAPIBaseUrl, setRunId } from "./httpClient";
 import { bold, divider, info, spacer, title } from "./log";
 import { getPlatform } from "./platform";
-import { summarizeTestResults } from "./results";
+import { summarizeTestResults, summaryTable } from "./results";
 import { runTillDone } from "./runner";
 import { getSpecFiles } from "./specMatcher";
-import { summaryTable } from "./table";
 
 const debug = Debug("currents:run");
 
@@ -88,7 +87,6 @@ export async function run(params: CurrentsRunParameters) {
 
   divider();
 
-  console.dir(results, { depth: null });
   const summary = summarizeTestResults(Object.values(results), config);
 
   title("white", "Cloud Run Finished");

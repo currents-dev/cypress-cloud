@@ -1,7 +1,7 @@
 import { mapValues, sum } from "lodash";
 import prettyMS from "pretty-ms";
 import { table } from "table";
-import { cyan, gray, green, red, white } from "./log";
+import { cyan, gray, green, red, white } from "../log";
 
 const failureIcon = red("✖");
 const successIcon = green("✔");
