@@ -7,7 +7,7 @@ import { error } from "../log";
 import { getCurrentsConfig } from "./config";
 const debug = Debug("currents:validateParams");
 
-function resolveCurrentsConfig(
+function resolveCurrentsParams(
   params: CurrentsRunParameters
 ): CurrentsRunParameters {
   const configFromFile = getCurrentsConfig();
@@ -45,10 +45,10 @@ function resolveCurrentsConfig(
   };
 }
 
-export function getValidatedCurrentsConfig(
+export function validateParams(
   _params: CurrentsRunParameters
 ): ValidatedCurrentsConfig {
-  const params = resolveCurrentsConfig(_params);
+  const params = resolveCurrentsParams(_params);
   if (!params.cloudServiceUrl) {
     throw new Error(
       `Cannot resolve cloud service URL. Please use one of the following:

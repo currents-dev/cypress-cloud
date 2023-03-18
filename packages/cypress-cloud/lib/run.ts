@@ -3,7 +3,7 @@ import { CurrentsRunParameters } from "../types";
 import { createRun } from "./api";
 import { cutInitialOutput } from "./capture";
 import { getCI } from "./ciProvider";
-import { getMergedConfig, getValidatedCurrentsConfig } from "./config";
+import { getMergedConfig, validateParams } from "./config";
 import { getGitInfo } from "./git";
 import { setAPIBaseUrl, setRunId } from "./httpClient";
 import { bold, divider, info, spacer, title } from "./log";
@@ -18,8 +18,8 @@ const debug = Debug("currents:run");
 export async function run(params: CurrentsRunParameters) {
   debug("run params %o", params);
 
-  const validatedCurrentsConfig = getValidatedCurrentsConfig(params);
-  setAPIBaseUrl(validatedCurrentsConfig.cloudServiceUrl);
+  const validatedParams = validateParams(params);
+  setAPIBaseUrl(validatedParams.cloudServiceUrl);
 
   const {
     recordKey,
@@ -30,14 +30,12 @@ export async function run(params: CurrentsRunParameters) {
     tag,
     testingType,
     batchSize,
-  } = validatedCurrentsConfig;
+  } = validatedParams;
 
-  const config = await getMergedConfig(validatedCurrentsConfig);
-
-  // find the spec files according to the resolved configuration
+  const config = await getMergedConfig(validatedParams);
   const { specs, specPattern } = await getSpecFiles({
     config,
-    params: validatedCurrentsConfig,
+    params: validatedParams,
   });
   if (specs.length === 0) {
     return;
@@ -45,7 +43,7 @@ export async function run(params: CurrentsRunParameters) {
 
   const platform = await getPlatform({
     config,
-    browser: validatedCurrentsConfig.browser,
+    browser: validatedParams.browser,
   });
   info("Discovered %d spec files", specs.length);
   info(
@@ -85,7 +83,7 @@ export async function run(params: CurrentsRunParameters) {
       platform,
       config,
     },
-    validatedCurrentsConfig
+    validatedParams
   );
 
   divider();
