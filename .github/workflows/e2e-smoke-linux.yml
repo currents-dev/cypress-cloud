@@ -35,8 +35,12 @@ jobs:
         working-directory: ./examples/webapp
         env:
           CURRENTS_API_URL: http://localhost:1234
-        run: |
-          npx cypress-cloud run --record --parallel \
-          --spec "./cypress/e2e_smoke/*.spec.js" \
-          --browser chrome --key ${{ secrets.CURRENTS_RECORD_KEY }} \
-          --ci-build-id "smoke-linux-${{ github.repository }}-${{ github.run_id }}-${{ github.run_attempt}}" --tag smoke,linux
+        run: >
+          npx cypress-cloud run
+          --record
+          --parallel
+          --key some-key
+          --browser chrome
+          --tag smoke,linux
+          --spec "./cypress/e2e_smoke/*.spec.js"
+          --ci-build-id "smoke-linux-${{ github.repository }}-${{ github.run_id }}-${{ github.run_attempt}}"

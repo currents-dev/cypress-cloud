@@ -4,7 +4,7 @@ on:
   push:
 
 jobs:
-  e2e-smoke:
+  e2e-smoke-component:
     if: "!contains(toJSON(github.event.commits.*.message), '[skip ci]')"
     runs-on: ubuntu-latest
     env:
@@ -38,8 +38,13 @@ jobs:
         working-directory: ./examples/webapp
         env:
           CURRENTS_API_URL: http://localhost:1234
-        run: |
-          npx cypress-cloud run --record --parallel \
+        run: >
+          npx cypress-cloud run 
+          --record
+          --parallel
           --component
-          --browser chrome --key ${{ secrets.CURRENTS_RECORD_KEY }} \
-          --ci-build-id "smoke-component-${{ github.repository }}-${{ github.run_id }}-${{ github.run_attempt}}" --tag smoke,component
+          --key some-key
+          --browser chrome
+          --tag smoke,component
+          --spec "pages/__tests__/smoke**"
+          --ci-build-id "smoke-component-${{ github.repository }}-${{ github.run_id }}-${{ github.run_attempt}}"
