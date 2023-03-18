@@ -1,13 +1,13 @@
 import * as log from "cypress-cloud/lib/log";
 import nock from "nock";
-import { getBaseUrl, getDelay, isRetriableError } from "../config";
+import { getAPIBaseUrl, getDelay, isRetriableError } from "../config";
 import { makeRequest } from "../httpClient";
 
 jest.mock("../config");
 jest.mock("cypress-cloud/lib/log");
 
-(getBaseUrl as jest.Mock).mockReturnValue("http://localhost:1234");
-const apiMock = nock(getBaseUrl()).persist();
+(getAPIBaseUrl as jest.Mock).mockReturnValue("http://localhost:1234");
+const apiMock = nock(getAPIBaseUrl()).persist();
 
 describe("HTTP Client Retries", () => {
   it("does not retry non-axios errors", async () => {
@@ -16,7 +16,7 @@ describe("HTTP Client Retries", () => {
 
     await expect(
       makeRequest({
-        baseURL: getBaseUrl(),
+        baseURL: getAPIBaseUrl(),
         method: "GET",
         url: "/",
       })
@@ -35,7 +35,7 @@ describe("HTTP Client Retries", () => {
 
     try {
       await makeRequest({
-        baseURL: getBaseUrl(),
+        baseURL: getAPIBaseUrl(),
         method: "GET",
         url: "/",
       });

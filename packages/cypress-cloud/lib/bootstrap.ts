@@ -6,8 +6,9 @@ import { chain } from "lodash";
 import { customAlphabet } from "nanoid";
 import { CurrentsRunParameters } from "../types";
 import { getCLICypressOptions, serializeOptions } from "./cli/cli";
+import { ValidationError } from "./errors";
 import { createTempFile } from "./fs";
-import { warn } from "./log";
+import { bold, info } from "./log";
 
 const debug = Debug("currents:boot");
 const getDummySpec = customAlphabet("abcdefghijklmnopqrstuvwxyz", 10);
@@ -63,13 +64,13 @@ export const bootCypress = async (
     return JSON.parse(f);
   } catch (err) {
     debug("read config temp file failed: %o", err);
-    warn("Cypress stdout:\n%s", stdout);
-    warn("Cypress stderr:\n%s", stderr);
-    warn(
-      "Resolving cypress configuration failed.\n   - make sure that 'cypress-cloud/plugin' is installed\n   - report the issue together with cypress stdout and stderr"
-    );
+    info(bold("Cypress stdout:\n"), stdout);
+    info(bold("Cypress stderr:\n"), stderr);
 
-    throw new Error("Unable to resolve cypress configuration");
+    throw new ValidationError(`Unable to resolve cypress configuration
+- make sure that 'cypress-cloud/plugin' is installed
+- report the issue together with cypress stdout and stderr
+`);
   }
 };
 

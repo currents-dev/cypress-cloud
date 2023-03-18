@@ -14,6 +14,7 @@ import {
   some,
   transform,
 } from "lodash";
+import { ValidationError } from "./errors";
 
 const debug = debugFn("currents:ci");
 
@@ -662,8 +663,8 @@ function checkForCiBuildFromCi(ciProvider: string | null) {
   if (ciProvider && detectableCiBuildIdProviders().includes(ciProvider))
     return true;
 
-  throw new Error(
-    "We could not determine CI build ID from the environment. Please provide a unique build ID using the --ci-build-id flag or 'ciBuildId' parameter for 'run' method."
+  throw new ValidationError(
+    `Could not determine CI build ID from the environment. Please provide a unique CI build ID using the --ci-build-id CLI flag or 'ciBuildId' parameter for 'run' method.`
   );
 }
 

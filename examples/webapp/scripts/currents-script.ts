@@ -2,16 +2,16 @@ import assert from "assert";
 import { run } from "cypress-cloud";
 
 (async function runTests() {
-  const projectId = process.env.CURRENTS_PROJECT_ID || "";
-  const key = process.env.CURRENTS_RECORD_KEY || "";
+  const projectId = process.env.CURRENTS_PROJECT_ID || "projectId";
+  const recordKey = process.env.CURRENTS_RECORD_KEY || "someKey";
 
-  const summarizedResults = await run({
+  const result = await run({
     ciBuildId: `run-api-smoke-${new Date().toISOString()}`,
-    spec: ["cypress/e2e_smoke/*.spec.js"],
+    spec: ["cypress/e2e_smoke/**/*.spec.js"],
     projectId,
-    key,
+    recordKey,
   });
 
-  assert(summarizedResults?.passes === 1);
-  assert(summarizedResults?.tests === 1);
+  assert(result?.totalPassed === 1);
+  assert(result?.totalTests === 1);
 })();

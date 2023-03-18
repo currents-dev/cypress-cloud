@@ -1,9 +1,9 @@
 import Debug from "debug";
 import path from "path";
-import { CurrentsRunParameters, DetectedBrowser } from "../types";
-import { bootCypress } from "./bootstrap";
-import { warn } from "./log";
-import { getRandomPort } from "./utils";
+import { CurrentsRunParameters, DetectedBrowser } from "../../types";
+import { bootCypress } from "../bootstrap";
+import { warn } from "../log";
+import { getRandomPort } from "../utils";
 const debug = Debug("currents:config");
 
 export type E2EConfig = {
@@ -15,7 +15,7 @@ export type ComponentConfig = {
 export type CurrentsConfig = {
   projectId?: string;
   recordKey?: string;
-  cloudServiceUrl?: string;
+  cloudServiceUrl: string;
   e2e: E2EConfig;
   component: ComponentConfig;
 };
@@ -47,15 +47,15 @@ export function getCurrentsConfig(): CurrentsConfig {
     } as CurrentsConfig;
     return _config;
   } catch (e) {
-    warn("failed to load currents config file: %s", configFilePath);
+    warn("failed to load config file: %s", configFilePath);
     debug("failure details: %s", e);
     _config = defaultConfig;
     return _config;
   }
 }
 
-export type ResolvedConfig = Awaited<ReturnType<typeof getConfig>>;
-export async function getConfig(params: CurrentsRunParameters) {
+export type MergedConfig = Awaited<ReturnType<typeof getMergedConfig>>;
+export async function getMergedConfig(params: CurrentsRunParameters) {
   debug("resolving cypress config ");
   const cypressResolvedConfig:
     | (Cypress.ResolvedConfigOptions & {

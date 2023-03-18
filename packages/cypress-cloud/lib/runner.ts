@@ -1,6 +1,8 @@
-import { CurrentsRunParameters, SummaryResults } from "../types";
+import("./init");
+
+import { SummaryResult, ValidatedCurrentsParameters } from "../types";
 import { getCapturedOutput, resetCapture } from "./capture";
-import { ResolvedConfig } from "./config";
+import { MergedConfig } from "./config/config";
 import { getSummaryForSpec, normalizeRawResult } from "./results";
 
 import Debug from "debug";
@@ -24,11 +26,11 @@ export async function runTillDone(
     platform,
     config,
   }: CreateInstancePayload & {
-    config: ResolvedConfig;
+    config: MergedConfig;
   },
-  params: CurrentsRunParameters
+  params: ValidatedCurrentsParameters
 ) {
-  const summary: SummaryResults = {};
+  const summary: SummaryResult = {};
   const uploadTasks: Promise<any>[] = [];
   let hasMore = true;
 
@@ -71,8 +73,8 @@ async function runBatch({
     machineId: string;
     platform: CreateInstancePayload["platform"];
   };
-  config: ResolvedConfig;
-  params: CurrentsRunParameters;
+  config: MergedConfig;
+  params: ValidatedCurrentsParameters;
 }) {
   let batch = {
     specs: [] as InstanceResponseSpecDetails[],

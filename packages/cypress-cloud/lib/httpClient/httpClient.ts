@@ -9,7 +9,7 @@ import Debug from "debug";
 import { omit } from "lodash";
 import prettyMilliseconds from "pretty-ms";
 import { warn } from "../log";
-import { getBaseUrl, getDelay, isRetriableError } from "./config";
+import { getAPIBaseUrl, getDelay, isRetriableError } from "./config";
 import { maybePrintErrors } from "./printErrors";
 
 const debug = Debug("currents:api");
@@ -23,7 +23,7 @@ export function getClient() {
     return _client;
   }
   _client = axios.create({
-    baseURL: getBaseUrl(),
+    baseURL: getAPIBaseUrl(),
   });
 
   _client.interceptors.request.use((config) => ({
