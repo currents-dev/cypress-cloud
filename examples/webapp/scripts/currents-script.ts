@@ -2,8 +2,8 @@ import assert from "assert";
 import { run } from "cypress-cloud";
 
 (async function runTests() {
-  const projectId = process.env.CURRENTS_PROJECT_ID || "";
-  const recordKey = process.env.CURRENTS_RECORD_KEY || "";
+  const projectId = process.env.CURRENTS_PROJECT_ID || "projectId";
+  const recordKey = process.env.CURRENTS_RECORD_KEY || "someKey";
 
   const result = await run({
     ciBuildId: `run-api-smoke-${new Date().toISOString()}`,

@@ -1,3 +1,5 @@
+import "source-map-support/register";
+
 import { run as internalRun } from "./lib/run";
 import { CurrentsRunAPI } from "./types";
 
