@@ -99,7 +99,7 @@ The configuration variables will resolve as follows:
 
 ## Batched Orchestration
 
-This package uses its own orchestration and reporting protocol that is independent of cypress native implementation. The new [orchestration protocol](https://currents.dev/readme/integration-with-cypress/cypress-cloud#batched-orchestration) allows multiple spec files to be batched together for better efficiency. You can adjust the batching configuration in `cypress.config.js` and use different values for e2e and component tests.
+This package uses its own orchestration and reporting protocol that is independent of cypress native implementation. The new [orchestration protocol](https://currents.dev/readme/integration-with-cypress/cypress-cloud#batched-orchestration) uses cypress in "offline" mode and allows batching multiple spec files for better efficiency. You can adjust the batching configuration in `cypress.config.js` and use different values for e2e and component tests.
 
 ## API
 
