@@ -4,7 +4,7 @@ on:
   push:
 
 jobs:
-  e2e-smoke:
+  e2e-exports:
     if: "!contains(toJSON(github.event.commits.*.message), '[skip ci]')"
     runs-on: ubuntu-latest
     env:
@@ -16,11 +16,15 @@ jobs:
         ports:
           - 1234:1234
 
+    strategy:
+      matrix:
+        node-version: ["18", "16"]
+
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: "16"
+          node-version: ${{ matrix.node-version }}
 
       - name: Install dependencies
         run: npm ci

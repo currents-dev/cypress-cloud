@@ -1,4 +1,4 @@
-import "source-map-support/register";
+import "source-map-support/register.js";
 
 import { run as internalRun } from "./lib/run";
 import { CurrentsRunAPI } from "./types";

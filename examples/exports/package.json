@@ -6,8 +6,10 @@
     "testexports": "concurrently \"npm:test:*\"",
     "test:run:cjs": "node ./run.cjs.js",
     "test:run:esm": "ts-node ./run.esm.ts",
+    "test:run:mjs": "ts-node ./run.mjs",
     "test:plugin:esm": "ts-node ./plugin.esm.ts",
-    "test:plugin:cjs": "node ./plugin.cjs.js"
+    "test:plugin:cjs": "node ./plugin.cjs.js",
+    "test:plugin:mjs": "node ./plugin.mjs"
   },
   "dependencies": {
     "cypress-cloud": "*"
