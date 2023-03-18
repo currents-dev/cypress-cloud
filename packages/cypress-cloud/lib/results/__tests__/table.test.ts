@@ -27,15 +27,13 @@ describe("Table", () => {
     const result = summaryTable(
       summarizeTestResults(Object.values(mixedResults), {} as ResolvedConfig)
     );
-    console.log(result);
     expect(result).toMatchSnapshot();
   });
 
-  it.only("renders common path stripped", () => {
+  it("renders common path stripped", () => {
     const result = summaryTable(
       summarizeTestResults(Object.values(commonPath), {} as ResolvedConfig)
     );
-    console.log(result);
     expect(result).toMatchSnapshot();
   });
 });
