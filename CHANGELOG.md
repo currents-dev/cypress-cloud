@@ -1,5 +1,17 @@
 
 
+## [1.4.5-beta.2](https://github.com/currents-dev/cypress-cloud/compare/v1.4.5-beta.1...v1.4.5-beta.2) (2023-03-19)
+
+
+### Bug Fixes
+
+* support and test ESM consumers ([#94](https://github.com/currents-dev/cypress-cloud/issues/94)) ([78d5709](https://github.com/currents-dev/cypress-cloud/commit/78d5709571868c0cda9663a3d752464273003d92))
+
+
+### Features
+
+* Standardize config resolution and API types ([#93](https://github.com/currents-dev/cypress-cloud/issues/93)) ([38abad1](https://github.com/currents-dev/cypress-cloud/commit/38abad1eb5ba3f36ccd53f5283d10a2487679bfc))
+
 ## [1.4.5-beta.1](https://github.com/currents-dev/cypress-cloud/compare/v1.4.4...v1.4.5-beta.1) (2023-03-16)
 
 
