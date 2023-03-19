@@ -1,5 +1,5 @@
 import Debug from "debug";
-import { isObject, omit, pickBy } from "lodash";
+import _ from "lodash";
 import {
   CurrentsRunParameters,
   StrippedCypressModuleAPIOptions,
@@ -32,8 +32,8 @@ export function parseCLIOptions(
 export function getStrippedCypressOptions(
   params: CurrentsRunParameters
 ): StrippedCypressModuleAPIOptions {
-  return pickBy(
-    omit(params, [
+  return _.pickBy(
+    _.omit(params, [
       "cloudServiceUrl",
       "batchSize",
       "projectId",
@@ -73,7 +73,7 @@ export function getCLICypressOptions(
         }
       : {};
   return {
-    ...omit(result, "testingType"),
+    ..._.omit(result, "testingType"),
     ...testingType,
   };
 }
@@ -86,7 +86,7 @@ export function serializeOptions(options: Record<string, unknown>) {
         return value === true ? `--${_key}` : "";
       }
 
-      if (isObject(value)) {
+      if (_.isObject(value)) {
         return `--${_key} ${serializeComplexParam(value)}`;
       }
 

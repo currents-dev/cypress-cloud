@@ -1,6 +1,5 @@
 import cp from "child_process";
 const orginal = cp.spawn;
-const debug = require("debug")("currents:cp");
 
 // @ts-ignore
 cp.spawn = function (command, args, options) {

@@ -1,4 +1,4 @@
-import { chain, invoke, isString, toArray, toNumber } from "lodash";
+import _ from "lodash";
 import assert from "node:assert";
 import { error } from "../log";
 
@@ -14,7 +14,7 @@ export const sanitizeAndConvertNestedArgs = <T extends Record<string, unknown>>(
   if (!str) {
     return;
   }
-  assert(isString(argName) && argName.trim() !== "");
+  assert(_.isString(argName) && argName.trim() !== "");
 
   try {
     if (typeof str === "object") {
@@ -35,7 +35,7 @@ export const sanitizeAndConvertNestedArgs = <T extends Record<string, unknown>>(
     // foo: a:b|b:c
     // bar: 1|2|3
 
-    return chain(str)
+    return _.chain(str)
       .replace(nestedObjectsInCurlyBracesRe, commasToPipes)
       .replace(nestedArraysInSquareBracketsRe, commasToPipes)
       .split(",")
@@ -92,15 +92,15 @@ const JSONOrCoerce = (str: string) => {
 };
 
 export const coerce = (value: any) => {
-  const num = toNumber(value);
+  const num = _.toNumber(value);
 
-  if (invoke(num, "toString") === value) {
+  if (_.invoke(num, "toString") === value) {
     return num;
   }
 
   const bool = toBoolean(value);
 
-  if (invoke(bool, "toString") === value) {
+  if (_.invoke(bool, "toString") === value) {
     return bool;
   }
 
@@ -110,9 +110,9 @@ export const coerce = (value: any) => {
     return obj;
   }
 
-  const arr = toArray(value);
+  const arr = _.toArray(value);
 
-  if (invoke(arr, "toString") === value) {
+  if (_.invoke(arr, "toString") === value) {
     return arr;
   }
 

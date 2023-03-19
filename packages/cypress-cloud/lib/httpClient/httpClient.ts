@@ -6,7 +6,7 @@ import axios, {
 } from "axios";
 import axiosRetry from "axios-retry";
 import Debug from "debug";
-import { omit } from "lodash";
+import _ from "lodash";
 import prettyMilliseconds from "pretty-ms";
 import { warn } from "../log";
 import { getAPIBaseUrl, getDelay, isRetriableError } from "./config";
@@ -84,7 +84,7 @@ export const makeRequest = <T = any, D = any>(
 
   return getClient()<D, AxiosResponse<T>>(config)
     .then((res) => {
-      debug("network request response: %o", omit(res, "request", "config"));
+      debug("network request response: %o", _.omit(res, "request", "config"));
       return res;
     })
     .catch((error) => {

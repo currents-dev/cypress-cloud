@@ -2,7 +2,7 @@ import { getBinPath } from "cy2";
 import Debug from "debug";
 import execa, { ExecaError } from "execa";
 import fs from "fs";
-import { chain } from "lodash";
+import _ from "lodash";
 import { customAlphabet } from "nanoid";
 import { CurrentsRunParameters } from "../types";
 import { getCLICypressOptions, serializeOptions } from "./cli/cli";
@@ -19,7 +19,7 @@ export const bootCypress = async (
 ) => {
   debug("booting cypress...");
   const tempFilePath = await createTempFile();
-  const serializedOptions = chain(getCLICypressOptions(params))
+  const serializedOptions = _.chain(getCLICypressOptions(params))
     .thru((opts) => ({
       ...opts,
       // merge the env with the currents specific env variables

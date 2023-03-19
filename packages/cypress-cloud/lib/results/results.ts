@@ -1,6 +1,6 @@
 import { CypressResult, ScreenshotArtifact } from "cypress-cloud/types";
 import Debug from "debug";
-import { first, last, pick } from "lodash";
+import _ from "lodash";
 import { nanoid } from "nanoid";
 import {
   SetInstanceTestsPayload,
@@ -162,9 +162,9 @@ export const summarizeTestResults = (
   return {
     ...overall,
     runs,
-    startedTestsAt: first(startItems) as string,
-    endedTestsAt: last(endItems) as string,
-    ...pick(
+    startedTestsAt: _.first(startItems) as string,
+    endedTestsAt: _.last(endItems) as string,
+    ..._.pick(
       firstResult,
       "browserName",
       "browserVersion",

@@ -1,32 +1,20 @@
 import debugFn from "debug";
 
-import {
-  camelCase,
-  chain,
-  defaultTo,
-  findKey,
-  isFunction,
-  isNull,
-  isString,
-  keys,
-  set,
-  some,
-  transform,
-} from "lodash";
+import _ from "lodash";
 import { ValidationError } from "./errors";
 
 const debug = debugFn("currents:ci");
 
 const join = (char: string, ...pieces: (string | undefined)[]) => {
-  return chain(pieces).compact().join(char).value();
+  return _.chain(pieces).compact().join(char).value();
 };
 
 const toCamelObject = (obj: any, key: string) => {
-  return set(obj, camelCase(key), process.env[key]);
+  return _.set(obj, _.camelCase(key), process.env[key]);
 };
 
 const extract = (envKeys: string[]) => {
-  return transform(envKeys, toCamelObject, {});
+  return _.transform(envKeys, toCamelObject, {});
 };
 
 /**
@@ -47,7 +35,7 @@ const isAzureCi = () => {
 };
 
 const isAWSCodeBuild = () => {
-  return some(process.env, (val, key) => {
+  return _.some(process.env, (val, key) => {
     return /^CODEBUILD_/.test(key);
   });
 };
@@ -73,7 +61,7 @@ const isCodeshipPro = () => {
 };
 
 const isConcourse = () => {
-  return some(process.env, (val, key) => {
+  return _.some(process.env, (val, key) => {
     return /^CONCOURSE_/.test(key);
   });
 };
@@ -151,12 +139,12 @@ function _detectProviderName(): string | undefined {
   // return the key of the first provider
   // which is truthy
 
-  return findKey(CI_PROVIDERS, (value) => {
-    if (isString(value)) {
+  return _.findKey(CI_PROVIDERS, (value) => {
+    if (_.isString(value)) {
       return env[value];
     }
 
-    if (isFunction(value)) {
+    if (_.isFunction(value)) {
       return value();
     }
   });
@@ -649,7 +637,7 @@ const _get = (fn: () => ProviderCommitParamsRes | ProviderCiParamsRes) => {
   const providerName = getCiProvider();
   if (!providerName) return {};
 
-  return chain(fn()).get(providerName).value();
+  return _.chain(fn()).get(providerName).value();
 };
 
 /**
@@ -668,13 +656,13 @@ function checkForCiBuildFromCi(ciProvider: string | null) {
 }
 
 export function list() {
-  return keys(CI_PROVIDERS);
+  return _.keys(CI_PROVIDERS);
 }
 
 // grab all detectable providers
 // that we can extract ciBuildId from
 export function detectableCiBuildIdProviders() {
-  return chain(_providerCiParams()).omitBy(isNull).keys().value();
+  return _.chain(_providerCiParams()).omitBy(_.isNull).keys().value();
 }
 
 export type CiProvider = string | null;
@@ -720,14 +708,14 @@ export function getCommitDefaults(existingInfo: CiProviderData) {
   // merge in the commitParams if null or undefined
   // defaulting back to null if all fails
   // NOTE: only properties defined in "existingInfo" will be returned
-  const combined = transform(
+  const combined = _.transform(
     existingInfo,
     (
       memo: { [memoKey: string]: string | null },
       value: string,
       key: string
     ) => {
-      return (memo[key] = defaultTo(value || commitParamsObj[key], null));
+      return (memo[key] = _.defaultTo(value || commitParamsObj[key], null));
     }
   );
 

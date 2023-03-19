@@ -1,4 +1,4 @@
-import { mapValues, sum } from "lodash";
+import _ from "lodash";
 import prettyMS from "pretty-ms";
 import { table } from "table";
 import { cyan, gray, green, red, white } from "../log";
@@ -8,7 +8,7 @@ const successIcon = green("✔");
 
 export const summaryTable = (r: CypressCommandLine.CypressRunResult) => {
   const overallSpecCount = r.runs.length;
-  const failedSpecsCount = sum(
+  const failedSpecsCount = _.sum(
     r.runs.filter((v) => v.stats.failures + v.stats.skipped > 0).map(() => 1)
   );
   const hasFailed = failedSpecsCount > 0;
@@ -85,7 +85,7 @@ export const summaryTable = (r: CypressCommandLine.CypressRunResult) => {
   );
 };
 
-const border = mapValues(
+const border = _.mapValues(
   {
     topBody: `─`,
     topJoin: `┬`,
