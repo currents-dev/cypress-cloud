@@ -20,7 +20,6 @@ Integrate Cypress with alternative cloud services like Currents or Sorry Cypress
 
 - Cypress version 10+
 - NodeJS 14.7.0+
-- Native ESM support requires Node 16+
 
 ## Setup
 
