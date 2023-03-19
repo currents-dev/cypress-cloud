@@ -1,5 +1,4 @@
 import debugFn from "debug";
-// @ts-ignore
 import isCi from "is-ci";
 import {
   camelCase,

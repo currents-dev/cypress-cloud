@@ -96,7 +96,7 @@
     "sourcemap": "inline",
     "clean": true,
     "platform": "node",
-    "target": "node14"
+    "target": "esnext"
   },
   "exports": {
     ".": {

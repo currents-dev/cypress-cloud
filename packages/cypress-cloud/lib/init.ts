@@ -1,11 +1,11 @@
 import "./stdout";
 import "./ws";
 
-import cypressPckg from "cypress/package.json";
-import { version } from "../package.json";
+import cypressPkg from "cypress/package.json" assert { type: "json" };
+import me from "../package.json" assert { type: "json" };
 import { initCapture } from "./capture";
 import { setCurrentsVersion, setCypressVersion } from "./httpClient";
 
 initCapture();
-setCypressVersion(cypressPckg.version);
-setCurrentsVersion(version);
+setCypressVersion(cypressPkg.version);
+setCurrentsVersion(me.version);
