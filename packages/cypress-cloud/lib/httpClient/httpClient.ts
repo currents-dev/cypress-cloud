@@ -6,8 +6,9 @@ import axios, {
 } from "axios";
 import axiosRetry from "axios-retry";
 import Debug from "debug";
-import { omit } from "lodash";
+import _ from "lodash";
 import prettyMilliseconds from "pretty-ms";
+import { ValidationError } from "../errors";
 import { warn } from "../log";
 import { getAPIBaseUrl, getDelay, isRetriableError } from "./config";
 import { maybePrintErrors } from "./printErrors";
@@ -26,17 +27,23 @@ export function getClient() {
     baseURL: getAPIBaseUrl(),
   });
 
-  _client.interceptors.request.use((config) => ({
-    ...config,
-    headers: {
-      ...config.headers,
-      // @ts-ignore
-      "x-cypress-request-attempt": config["axios-retry"]?.retryCount ?? 0,
-      "x-cypress-run-id": _runId,
-      "x-cypress-version": _cypressVersion,
-      "x-ccy-version": _currentsVersion ?? "0.0.0",
-    },
-  }));
+  _client.interceptors.request.use((config) => {
+    const req = {
+      ...config,
+      headers: {
+        ...config.headers,
+
+        // @ts-ignore
+        "x-cypress-request-attempt": config["axios-retry"]?.retryCount ?? 0,
+        "x-cypress-run-id": _runId,
+        "x-cypress-version": _cypressVersion,
+        "x-ccy-version": _currentsVersion ?? "0.0.0",
+        "Content-Type": "application/json",
+      },
+    };
+    debug("network request: %o", req);
+    return req;
+  });
 
   axiosRetry(_client, {
     retries: MAX_RETRIES,
@@ -80,15 +87,13 @@ function onRetry(
 export const makeRequest = <T = any, D = any>(
   config: AxiosRequestConfig<D>
 ) => {
-  debug("network request: %o", config);
-
   return getClient()<D, AxiosResponse<T>>(config)
     .then((res) => {
-      debug("network request response: %o", omit(res, "request", "config"));
+      debug("network request response: %o", _.omit(res, "request", "config"));
       return res;
     })
     .catch((error) => {
       maybePrintErrors(error);
-      throw new Error(error.message);
+      throw new ValidationError(error.message);
     });
 };

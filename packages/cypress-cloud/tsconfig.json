@@ -13,7 +13,7 @@
     "skipLibCheck": true,
     "strict": true,
     "outDir": "dist",
-    "module": "commonjs",
+    "module": "esnext",
     "types": ["jest", "node"],
     "target": "ES2019",
     "declaration": true,

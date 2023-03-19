@@ -6,6 +6,7 @@
   "author": "Currents Software Inc.",
   "license": "GPL-3.0-or-later",
   "workspaces": [
+    "e2e/*",
     "examples/*",
     "packages/*"
   ],
@@ -19,7 +20,7 @@
     "format-check": "prettier --check \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
-    "eslint-config-custom": "*",
+    "eslint-config-custom": "latest",
     "prettier": "latest",
     "turbo": "^1.8.3"
   },

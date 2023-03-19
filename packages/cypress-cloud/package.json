@@ -41,14 +41,14 @@
     "cypress": "^12.6.0",
     "esbuild": "^0.16.5",
     "eslint": "^7.32.0",
-    "eslint-config-custom": "*",
+    "eslint-config-custom": "latest",
     "jest": "^29.3.1",
     "nock": "^13.2.9",
     "release-it": "^15.5.1",
     "rimraf": "^3.0.2",
     "tsconfig": "*",
     "tsup": "^6.6.3",
-    "typescript": "^4.5.2"
+    "typescript": "^4.7.4"
   },
   "dependencies": {
     "@cypress/commit-info": "^2.2.0",
@@ -63,7 +63,6 @@
     "execa": "^5.1.1",
     "getos": "^3.2.1",
     "globby": "^11.1.0",
-    "is-ci": "^3.0.1",
     "lodash": "^4.17.21",
     "nanoid": "^3.3.4",
     "pretty-ms": "^7.0.1",
@@ -93,10 +92,11 @@
       "esm"
     ],
     "splitting": false,
-    "sourcemap": "inline",
+    "shims": true,
     "clean": true,
+    "sourcemap": "inline",
     "platform": "node",
-    "target": "node14"
+    "target": "esnext"
   },
   "exports": {
     ".": {

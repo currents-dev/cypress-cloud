@@ -4,23 +4,24 @@ on:
   push:
 
 jobs:
-  e2e-smoke:
+  e2e-exports:
     if: "!contains(toJSON(github.event.commits.*.message), '[skip ci]')"
     runs-on: ubuntu-latest
     env:
       DEBUG: currents:*
 
-    services:
-      director:
-        image: agoldis/sorry-cypress-director
-        ports:
-          - 1234:1234
+    strategy:
+      matrix:
+        node-version: ["18", "16", "14"]
 
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: "16"
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install npm (node14)
+        run: npm install -g npm@latest
 
       - name: Install dependencies
         run: npm ci
@@ -32,6 +33,6 @@ jobs:
         run: npm install
 
       - name: Test Exports
-        working-directory: ./examples/exports
+        working-directory: ./e2e/exports
         run: |
           npm run testexports

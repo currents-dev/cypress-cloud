@@ -4,10 +4,12 @@
   "private": true,
   "scripts": {
     "testexports": "concurrently \"npm:test:*\"",
-    "test:run:cjs": "node ./run.cjs.js",
-    "test:run:esm": "ts-node ./run.esm.ts",
-    "test:plugin:esm": "ts-node ./plugin.esm.ts",
-    "test:plugin:cjs": "node ./plugin.cjs.js"
+    "test:run:cjs": "node ./run.js",
+    "test:run:ts": "ts-node ./run.ts",
+    "test:run:mjs": "node ./run.mjs",
+    "test:plugin:ts": "ts-node ./plugin.ts",
+    "test:plugin:cjs": "node ./plugin.js",
+    "test:plugin:mjs": "node ./plugin.mjs"
   },
   "dependencies": {
     "cypress-cloud": "*"
@@ -15,9 +17,9 @@
   "devDependencies": {
     "@types/node": "^17.0.12",
     "concurrently": "^7.6.0",
-    "eslint-config-custom": "*",
+    "eslint-config-custom": "latest",
     "ts-node": "^10.9.1",
     "tsconfig": "*",
-    "typescript": "^4.5.3"
+    "typescript": "^4.7.4"
   }
 }
