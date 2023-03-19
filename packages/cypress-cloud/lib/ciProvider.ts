@@ -1,5 +1,5 @@
 import debugFn from "debug";
-import isCi from "is-ci";
+
 import {
   camelCase,
   chain,
@@ -669,10 +669,6 @@ function checkForCiBuildFromCi(ciProvider: string | null) {
 
 export function list() {
   return keys(CI_PROVIDERS);
-}
-
-export function getIsCi() {
-  return isCi;
 }
 
 // grab all detectable providers
