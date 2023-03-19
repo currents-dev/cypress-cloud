@@ -20,7 +20,7 @@
     "format-check": "prettier --check \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
-    "eslint-config-custom": "*",
+    "eslint-config-custom": "latest",
     "prettier": "latest",
     "turbo": "^1.8.3"
   },
