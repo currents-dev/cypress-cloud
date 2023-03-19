@@ -10,12 +10,6 @@ jobs:
     env:
       DEBUG: currents:*
 
-    services:
-      director:
-        image: agoldis/sorry-cypress-director
-        ports:
-          - 1234:1234
-
     strategy:
       matrix:
         node-version: ["18", "16", "14"]
@@ -36,6 +30,6 @@ jobs:
         run: npm install
 
       - name: Test Exports
-        working-directory: ./examples/exports
+        working-directory: ./e2e/exports
         run: |
           npm run testexports

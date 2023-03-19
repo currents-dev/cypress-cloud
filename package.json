@@ -6,6 +6,7 @@
   "author": "Currents Software Inc.",
   "license": "GPL-3.0-or-later",
   "workspaces": [
+    "e2e/*",
     "examples/*",
     "packages/*"
   ],
