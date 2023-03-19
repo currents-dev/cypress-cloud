@@ -1,11 +1,10 @@
 #!/usr/bin/env node
 import "source-map-support/register";
 
-import { parseCLIOptions } from "../lib/cli";
-import { program } from "../lib/cli/program";
 import { ValidationError } from "../lib/errors";
 import { withError } from "../lib/log";
 import { run } from "../lib/run";
+import { parseCLIOptions, program } from "./lib";
 
 async function main() {
   return run(parseCLIOptions());

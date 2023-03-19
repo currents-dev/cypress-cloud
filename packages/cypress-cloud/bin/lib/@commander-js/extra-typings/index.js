@@ -1,4 +1,4 @@
-import * as commander from "commander";
+const commander = require("commander");
 
 // @ts-check
 

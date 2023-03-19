@@ -1,6 +1,6 @@
 import _ from "lodash";
 import assert from "node:assert";
-import { error } from "../log";
+import { error } from "../../lib/log";
 
 const nestedObjectsInCurlyBracesRe = /\{(.+?)\}/g;
 const nestedArraysInSquareBracketsRe = /\[(.+?)\]/g;

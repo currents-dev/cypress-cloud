@@ -5,7 +5,7 @@ import fs from "fs";
 import _ from "lodash";
 import { customAlphabet } from "nanoid";
 import { CurrentsRunParameters } from "../types";
-import { getCLICypressOptions, serializeOptions } from "./cli/cli";
+import { getCLICypressOptions, serializeOptions } from "./config";
 import { ValidationError } from "./errors";
 import { createTempFile } from "./fs";
 import { bold, info } from "./log";
