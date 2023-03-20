@@ -1,12 +1,13 @@
-import { InstanceResponseSpecDetails, SpecResult } from "./api";
-import { uploadArtifacts, uploadStdoutSafe } from "./artifacts";
-import { bus } from "./bus";
-import { warn } from "./log";
+import { InstanceResponseSpecDetails } from "../api";
+import { uploadArtifacts, uploadStdoutSafe } from "../artifacts";
+import { bus } from "../bus";
+import { warn } from "../log";
+import { SpecResult } from "../result.types";
 import {
   getInstanceResultPayload,
   getInstanceTestsPayload,
   uploadSpecResults,
-} from "./results";
+} from "../results";
 
 const instanceIds: Map<string, string> = new Map();
 let config: Cypress.ResolvedConfigOptions | null = null;
@@ -75,7 +76,6 @@ export function getExecutionConfig() {
 }
 
 bus.on("currents:config", (_config) => {
-  console.log("Received currents:config", _config);
   // @ts-ignore
   config = _config.config;
 });

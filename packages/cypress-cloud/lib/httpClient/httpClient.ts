@@ -10,6 +10,7 @@ import _ from "lodash";
 import prettyMilliseconds from "pretty-ms";
 import { ValidationError } from "../errors";
 import { warn } from "../log";
+import { getCurrentsVersion, getCypressVersion, getRunId } from "../state";
 import { getAPIBaseUrl, getDelay, isRetriableError } from "./config";
 import { maybePrintErrors } from "./printErrors";
 
@@ -35,13 +36,16 @@ export function getClient() {
 
         // @ts-ignore
         "x-cypress-request-attempt": config["axios-retry"]?.retryCount ?? 0,
-        "x-cypress-run-id": _runId,
-        "x-cypress-version": _cypressVersion,
-        "x-ccy-version": _currentsVersion ?? "0.0.0",
+        "x-cypress-run-id": getRunId(),
+        "x-cypress-version": getCypressVersion(),
+        "x-ccy-version": getCurrentsVersion() ?? "0.0.0",
         "Content-Type": "application/json",
       },
     };
-    debug("network request: %o", req);
+    debug(
+      "network request: %o %o",
+      _.pick(req, "method", "url", "data", "headers", "baseURL")
+    );
     return req;
   });
 
@@ -54,21 +58,6 @@ export function getClient() {
   });
   return _client;
 }
-
-let _runId: string | undefined = undefined;
-export const setRunId = (runId: string) => {
-  _runId = runId;
-};
-
-let _cypressVersion: string | undefined = undefined;
-export const setCypressVersion = (cypressVersion: string) => {
-  _cypressVersion = cypressVersion;
-};
-
-let _currentsVersion: string | undefined = undefined;
-export const setCurrentsVersion = (v: string) => {
-  _currentsVersion = v;
-};
 
 function onRetry(
   retryCount: number,

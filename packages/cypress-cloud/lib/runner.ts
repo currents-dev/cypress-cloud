@@ -13,9 +13,9 @@ import {
 } from "./api/types/instance";
 import { runSpecFileSafe } from "./cypress";
 import { isCurrents } from "./env";
-import { setInstanceIds } from "./execution.state";
 import { divider, error, info, title, warn } from "./log";
 import { getUploadResultsTask } from "./results/uploadResults";
+import { setInstanceIds } from "./state/results";
 
 const debug = Debug("currents:runner");
 

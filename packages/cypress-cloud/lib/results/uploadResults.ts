@@ -7,8 +7,8 @@ import {
   UpdateInstanceResultsPayload,
 } from "../api";
 import { isCurrents } from "../env";
-import { setResults } from "../execution.state";
 import { warn } from "../log";
+import { setResults } from "../state";
 const debug = Debug("currents:results");
 
 export async function getUploadResultsTask({
@@ -44,29 +44,6 @@ export async function processCypressResults(
     throw new Error("No run found in Cypress results");
   }
   return setResults(run.spec.name, run, stdout);
-  // const instanceResults = getInstanceResultPayload(run);
-  // const instanceTests = getInstanceTestsPayload(run, results.config);
-
-  // const { videoUploadUrl, screenshotUploadUrls } = await uploadSpecResults(
-  // instanceId,
-  // instanceTests,
-  // instanceResults
-  // );
-
-  // debug("instance %s artifact upload instructions %o", instanceId, {
-  //   videoUploadUrl,
-  //   screenshotUploadUrls,
-  // });
-
-  // return Promise.all([
-  // uploadArtifacts({
-  //   videoUploadUrl,
-  //   videoPath: run.video,
-  //   screenshotUploadUrls,
-  //   screenshots: instanceResults.screenshots,
-  // }),
-  // uploadStdoutSafe(instanceId, getInitialOutput() + stdout),
-  // ]);
 }
 
 export async function uploadSpecResults(

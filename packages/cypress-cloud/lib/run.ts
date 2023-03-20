@@ -9,14 +9,15 @@ import {
 } from "./capture";
 import { getCI } from "./ciProvider";
 import { getMergedConfig, validateParams } from "./config";
-import { setResults } from "./execution.state";
 import { getGitInfo } from "./git";
-import { setAPIBaseUrl, setRunId } from "./httpClient";
+import { setAPIBaseUrl } from "./httpClient";
 import { bold, divider, info, spacer, title } from "./log";
 import { getPlatform } from "./platform";
 import { summarizeTestResults, summaryTable } from "./results";
 import { runTillDone } from "./runner";
 import { getSpecFiles } from "./specMatcher";
+import { setRunId } from "./state";
+import { setResults } from "./state/results";
 import { startWSS } from "./ws";
 
 const debug = Debug("currents:run");
@@ -78,12 +79,13 @@ export async function run(params: CurrentsRunParameters) {
     batchSize,
   });
 
-  info("🎥 Run URL:", bold(run.runUrl));
   setRunId(run.runId);
-
+  info("🎥 Run URL:", bold(run.runUrl));
   cutInitialOutput();
+
   await startWSS();
   listenToBus();
+
   const results = await runTillDone(
     {
       runId: run.runId,
@@ -95,15 +97,14 @@ export async function run(params: CurrentsRunParameters) {
     validatedParams
   );
 
-  divider();
-
   const summary = summarizeTestResults(Object.values(results), config);
 
+  divider();
   title("white", "Cloud Run Finished");
   console.log(summaryTable(summary));
   info("🏁 Recorded Run:", bold(run.runUrl));
-
   spacer();
+
   return summary;
 }
 

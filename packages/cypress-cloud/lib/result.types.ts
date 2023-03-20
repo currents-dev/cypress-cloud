@@ -1,3 +1,4 @@
+// as reported by spec:after
 export interface SpecResult {
   error: string | null;
   exception: null | string;
