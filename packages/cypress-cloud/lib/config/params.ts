@@ -1,8 +1,10 @@
 import {
   CurrentsRunParameters,
+  StrippedCypressModuleAPIOptions,
   ValidatedCurrentsParameters,
 } from "cypress-cloud/types";
 import Debug from "debug";
+import _ from "lodash";
 import { ValidationError } from "../errors";
 import { error } from "../log";
 import { getCurrentsConfig } from "./config";
@@ -107,4 +109,32 @@ export function validateParams(
   });
   debug("validated currents parametes: %o", params);
   return params as ValidatedCurrentsParameters;
+}
+
+/**
+ *
+ * @returns Cypress non-empty options without the ones that are not relevant for the runner
+ */
+export function getStrippedCypressOptions(
+  params: CurrentsRunParameters
+): StrippedCypressModuleAPIOptions {
+  return _.pickBy(
+    _.omit(params, [
+      "cloudServiceUrl",
+      "batchSize",
+      "projectId",
+      "record",
+      "key",
+      "recordKey",
+      "group",
+      "parallel",
+      "tag",
+      "ciBuildId",
+      "spec",
+      "exit",
+      "headed",
+      "headless",
+    ]),
+    Boolean
+  );
 }
