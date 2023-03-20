@@ -1,0 +1,30 @@
+{
+  "method": "POST",
+  url: "/runs",
+  data: {
+    ci: { params: {}, provider: null },
+    specs: ["cypress\\e2e\\1-getting-started\\todo.cy.js"],
+    commit: {
+      branch: "main",
+      remoteOrigin: "",
+      authorEmail: "mirobo",
+      authorName: "mirobo",
+      message: "update cypress-cloud to 1.4.5-beta.0\n",
+      sha: "0c3a4449fe09f6d6c58fa3f3e5a3630aea68d6d5",
+    },
+    platform: {
+      osName: "win32",
+      osVersion: "10.0.19044",
+      browserName: "Electron",
+      browserVersion: "106.0.5249.51",
+    },
+    parallel: true,
+    ciBuildId: "2023-03-16T12: 17: 33.582Z",
+    projectId: "test",
+    recordKey: "whatever",
+    specPattern: ["cypress/e2e /**/*.cy.{js,jsx,ts,tsx}"],
+
+    testingType: "e2e",
+    batchSize: 3,
+  },
+};

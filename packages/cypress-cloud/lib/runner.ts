@@ -3,7 +3,7 @@ import("./init");
 import { SummaryResult, ValidatedCurrentsParameters } from "../types";
 import { getCapturedOutput, resetCapture } from "./capture";
 import { MergedConfig } from "./config/config";
-import { getSummaryForSpec, normalizeRawResult } from "./results";
+import { getSummaryForSpec, normalizeRunResult } from "./results";
 
 import Debug from "debug";
 import { createBatchedInstances, createInstance } from "./api/api";
@@ -120,7 +120,7 @@ async function runBatch({
     { spec: batch.specs.map((s) => s.spec).join(",") },
     params
   );
-  const normalizedResult = normalizeRawResult(
+  const normalizedResult = normalizeRunResult(
     rawResult,
     batch.specs.map((s) => s.spec),
     config
@@ -128,7 +128,7 @@ async function runBatch({
 
   title("blue", "Reporting results and artifacts in background...");
 
-  const output = getCapturedOutput();
+  const stdout = getCapturedOutput();
   resetCapture();
 
   const batchResult = batch.specs.map((spec) => {
@@ -145,7 +145,7 @@ async function runBatch({
       uploadTasks: getUploadResultsTask({
         ...spec,
         runResult: normalizedResult,
-        output,
+        stdout,
       }).catch(error),
     };
   });

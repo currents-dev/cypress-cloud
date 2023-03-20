@@ -6,7 +6,7 @@ import _ from "lodash";
 import { nanoid } from "nanoid";
 import { SetInstanceTestsPayload, UpdateInstanceResultsPayload } from "../api";
 import { MergedConfig } from "../config/config";
-import { SpecResult, Stats, TestAttempt, TestState } from "../result.types";
+import { SpecResult, TestAttempt, TestState } from "../result.types";
 
 const debug = Debug("currents:results");
 
@@ -19,9 +19,6 @@ export const isSuccessResult = (
 export const getScreenshotsSummary = (
   tests: CypressCommandLine.TestResult[] = []
 ): ScreenshotArtifact[] => {
-  console.dir(tests, {
-    depth: 10,
-  });
   return tests.flatMap((test, i) =>
     test.attempts.flatMap((a, ai) =>
       a.screenshots?.flatMap(
@@ -37,29 +34,23 @@ export const getScreenshotsSummary = (
   );
 };
 
-export const getStats = (
-  stats: CypressCommandLine.RunResult["stats"] | SpecResult["stats"]
-): Stats =>
-  match(stats)
-    .with(
-      {
-        wallClockDuration: P.number,
-        wallClockStartedAt: P.string,
-        wallClockEndedAt: P.string,
-      },
-      (stats) => ({
-        ...stats,
-        wallClockDuration: stats.wallClockDuration,
-        wallClockStartedAt: stats.wallClockStartedAt,
-        wallClockEndedAt: stats.wallClockEndedAt,
-      })
+export const getScreenshotsSummary = (
+  tests: CypressCommandLine.TestResult[] = []
+): ScreenshotArtifact[] => {
+  return tests.flatMap((test, i) =>
+    test.attempts.flatMap((a, ai) =>
+      a.screenshots?.flatMap(
+        (s) =>
+          ({
+            ...s,
+            testId: `r${i}`,
+            testAttemptIndex: ai,
+            screenshotId: nanoid(),
+          } ?? [])
+      )
     )
-    .otherwise((stats) => ({
-      ...stats,
-      wallClockDuration: stats.duration,
-      wallClockStartedAt: stats.startedAt,
-      wallClockEndedAt: stats.endedAt,
-    }));
+  );
+};
 
 export const getTestAttempt = (
   attempt: CypressCommandLine.AttemptResult | TestAttempt
@@ -328,7 +319,7 @@ export function getFailedDummyResult({
   };
 }
 
-export function normalizeRawResult(
+export function normalizeRunResult(
   rawResult: CypressResult,
   specs: string[],
   config: MergedConfig

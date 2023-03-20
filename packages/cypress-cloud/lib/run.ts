@@ -13,11 +13,12 @@ import { getGitInfo } from "./git";
 import { setAPIBaseUrl } from "./httpClient";
 import { bold, divider, info, spacer, title } from "./log";
 import { getPlatform } from "./platform";
+import { SpecResult } from "./result.types";
 import { summarizeTestResults, summaryTable } from "./results";
 import { runTillDone } from "./runner";
 import { getSpecFiles } from "./specMatcher";
 import { setRunId } from "./state";
-import { setResults } from "./state/results";
+import { setSpecResult } from "./state/results";
 import { startWSS } from "./ws";
 
 const debug = Debug("currents:run");
@@ -111,15 +112,13 @@ export async function run(params: CurrentsRunParameters) {
 function listenToBus() {
   bus.on(
     "after:spec",
-    async ({
-      spec,
-      results,
-    }: {
-      spec: Cypress.Spec;
-      results: CypressCommandLine.RunResult;
-    }) => {
+    async ({ spec, results }: { spec: Cypress.Spec; results: SpecResult }) => {
       // TODO: what about errored specs?
-      setResults(spec.name, results, getInitialOutput() + getCapturedOutput());
+      setSpecResult(
+        spec.name,
+        results,
+        getInitialOutput() + getCapturedOutput()
+      );
     }
   );
 }

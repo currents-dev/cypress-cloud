@@ -6,10 +6,22 @@ export interface SpecResult {
   reporter: string;
   reporterStats: ReporterStats;
   screenshots: Screenshot[];
-  spec: Cypress.Spec;
+  spec: Spec;
   stats: Stats;
   tests: Test[];
   video: string | null;
+}
+
+export interface Spec {
+  absolute: string;
+  baseName: string;
+  fileExtension: string;
+  fileName: string;
+  name: string;
+  relative: string;
+  relativeToCommonRoot: string;
+  specFileExtension: string;
+  specType: string;
 }
 
 export interface Screenshot {
