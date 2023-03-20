@@ -18,7 +18,8 @@ Integrate Cypress with alternative cloud services like Currents or Sorry Cypress
 
 ## Requirements
 
-The package requires cypress version 10+ and NodeJS 14.7.0+
+- Cypress version 10+
+- NodeJS 14.7.0+
 
 ## Setup
 
@@ -36,7 +37,7 @@ module.exports = {
   projectId: "Ij0RfK",
   recordKey: "xxx",
   // Sorry Cypress users - set the director service URL
-  cloudServiceUrl: "http://cy.currents.dev",
+  cloudServiceUrl: "https://cy.currents.dev",
 };
 ```
 
@@ -76,10 +77,10 @@ module.exports = {
   recordKey: "XXXXXXX", // Record key obtained from https://app.currents.dev, any value for Sorry Cypress
   cloudServiceUrl: "https://cy.currents.dev", // Sorry Cypress users - the director service URL
   e2e: {
-    batchSize: 3, // orchestration batch size for e2e tests (Currents only)
+    batchSize: 3, // orchestration batch size for e2e tests (Currents only, read below)
   },
   component: {
-    batchSize: 5, // orchestration batch size for component tests (Currents only)
+    batchSize: 5, // orchestration batch size for component tests (Currents only, read below)
   },
 };
 ```
@@ -90,6 +91,17 @@ Override the default configuration values via environment variables:
 - `CURRENTS_PROJECT_ID` - set the `projectId`
 - `CURRENTS_RECORD_KEY` - cloud service record key
 
+The configuration variables will resolve as follows:
+
+- the corresponding CLI flag or `run` function parameter, otherwise
+- environment variable if exist, otherwise
+- `currents.config.js` value, otherwise
+- the default value, otherwise throw
+
+## Batched Orchestration
+
+This package uses its own orchestration and reporting protocol that is independent of cypress native implementation. The new [orchestration protocol](https://currents.dev/readme/integration-with-cypress/cypress-cloud#batched-orchestration) uses cypress in "offline" mode and allows batching multiple spec files for better efficiency. You can adjust the batching configuration in `cypress.config.js` and use different values for e2e and component tests.
+
 ## API
 
 ### `run`
@@ -97,12 +109,12 @@ Override the default configuration values via environment variables:
 Run Cypress tests programmatically
 
 ```ts
-run(params: CurrentsRunParameters): Promise<CypressCommandLine.CypressRunResult | CypressCommandLine.CypressFailedRunResult>
+run(params: CurrentsRunAPI): Promise<CypressCommandLine.CypressRunResult | undefined>
 ```
 
-- `params` - [CurrentsRunParameters](./packages/cypress-cloud/types.ts#L123) list of params compatible with Cypress [Module API](https://docs.cypress.io/guides/guides/module-api)
+- `params` - [`CurrentsRunAPI`](./packages/cypress-cloud/types.ts) list of params. It is an extended version of Cypress [Module API](https://docs.cypress.io/guides/guides/module-api)
 
-- returns results as a [CypressRunResult](https://github.com/cypress-io/cypress/blob/19e091d0bc2d1f4e6a6e62d2f81ea6a2f60d531a/cli/types/cypress-npm-api.d.ts#L277)
+- returns execution results as [`CypressCommandLine.CypressRunResult| undefined`](./packages/cypress-cloud/types.ts)
 
 Example:
 
@@ -110,6 +122,7 @@ Example:
 import { run } from "cypress-cloud";
 
 const results = await run({
+  recordKey: "some",
   reporter: "junit",
   browser: "chrome",
   config: {
@@ -155,9 +168,17 @@ npm run release && npm run release:npm -- -t latest
 
 ### Localhost
 
+Publishing from `packages/cypress-cloud`:
+
 ```sh
 docker run -it --rm --name verdaccio -p 4873:4873 verdaccio/verdaccio
 npm adduser --registry http://localhost:4873
 npm login --registry http://localhost:4873
-npm publish --registry http://localhost:4873 --tag beta
+npm_config_registry=http://localhost:4873  npm run release:npm -- --tag latest
+```
+
+Using:
+
+```sh
+npm install cypress-cloud --registry http://localhost:4873
 ```

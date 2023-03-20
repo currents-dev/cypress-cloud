@@ -20,7 +20,7 @@ export type CreateRunPayload = {
   tags?: string[];
   testingType: "e2e" | "component";
   timeout?: number;
-  batchSize: number;
+  batchSize?: number;
 };
 
 export type CloudWarning = {

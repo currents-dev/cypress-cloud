@@ -1,4 +1,4 @@
-import { omit } from "lodash";
+import _ from "lodash";
 import { magenta } from "../log";
 
 import { info, spacer, warn } from "../log";
@@ -9,7 +9,7 @@ export function printWarnings(warnings: CloudWarning[]) {
   warnings.map((w) => {
     spacer(1);
     info(magenta.bold(w.message));
-    Object.entries(omit(w, "message")).map(([key, value]) => {
+    Object.entries(_.omit(w, "message")).map(([key, value]) => {
       info("- %s: %s", key, value);
     });
     spacer(1);

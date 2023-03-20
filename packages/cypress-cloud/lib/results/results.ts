@@ -1,14 +1,11 @@
-import {
-  CypressResult,
-  ScreenshotArtifact,
-  TestsResult,
-} from "cypress-cloud/types";
+import { CypressResult, ScreenshotArtifact } from "cypress-cloud/types";
 import { match, P } from "ts-pattern";
 
 import Debug from "debug";
+import _ from "lodash";
 import { nanoid } from "nanoid";
 import { SetInstanceTestsPayload, UpdateInstanceResultsPayload } from "../api";
-import { ResolvedConfig } from "../config";
+import { MergedConfig } from "../config/config";
 import { SpecResult, Stats, TestAttempt, TestState } from "../result.types";
 
 const debug = Debug("currents:results");
@@ -175,27 +172,80 @@ export const getInstanceTestsPayload = (
 };
 
 export const summarizeTestResults = (
-  input: CypressCommandLine.CypressRunResult[]
-): TestsResult => {
-  return input.reduce(
+  input: CypressCommandLine.CypressRunResult[],
+  config: MergedConfig
+): CypressCommandLine.CypressRunResult => {
+  if (!input.length) {
+    return getEmptyCypressResults(config);
+  }
+
+  const overall = input.reduce(
     (
       acc,
-      { totalFailed, totalPassed, totalPending, totalSkipped, totalTests }
+      {
+        totalDuration,
+        totalFailed,
+        totalPassed,
+        totalPending,
+        totalSkipped,
+        totalTests,
+        totalSuites,
+      }
     ) => ({
-      pending: acc.pending + totalPending,
-      failures: acc.failures + totalFailed,
-      skipped: acc.skipped + totalSkipped,
-      passes: acc.passes + totalPassed,
-      tests: acc.tests + totalTests,
+      totalDuration: acc.totalDuration + totalDuration,
+      totalSuites: acc.totalSuites + totalSuites,
+      totalPending: acc.totalPending + totalPending,
+      totalFailed: acc.totalFailed + totalFailed,
+      totalSkipped: acc.totalSkipped + totalSkipped,
+      totalPassed: acc.totalPassed + totalPassed,
+      totalTests: acc.totalTests + totalTests,
     }),
-    {
-      pending: 0,
-      failures: 0,
-      skipped: 0,
-      passes: 0,
-      tests: 0,
-    }
+    emptyStats
   );
+  const firstResult = input[0];
+  const startItems = input.map((i) => i.startedTestsAt).sort();
+  const endItems = input.map((i) => i.endedTestsAt).sort();
+  const runs = input.map((i) => i.runs).flat();
+  return {
+    ...overall,
+    runs,
+    startedTestsAt: _.first(startItems) as string,
+    endedTestsAt: _.last(endItems) as string,
+    ..._.pick(
+      firstResult,
+      "browserName",
+      "browserVersion",
+      "browserPath",
+      "osName",
+      "osVersion",
+      "cypressVersion",
+      "config"
+    ),
+    status: "finished",
+  };
+};
+
+export function getEmptyCypressResults(
+  config: MergedConfig
+): CypressCommandLine.CypressRunResult {
+  return {
+    ...emptyStats,
+    status: "finished",
+    startedTestsAt: new Date().toISOString(),
+    endedTestsAt: new Date().toISOString(),
+    runs: [],
+    // @ts-ignore
+    config,
+  };
+}
+const emptyStats = {
+  totalDuration: 0,
+  totalSuites: 0,
+  totalPending: 0,
+  totalFailed: 0,
+  totalSkipped: 0,
+  totalPassed: 0,
+  totalTests: 0,
 };
 
 export function getFailedDummyResult({
@@ -281,7 +331,7 @@ export function getFailedDummyResult({
 export function normalizeRawResult(
   rawResult: CypressResult,
   specs: string[],
-  config: ResolvedConfig
+  config: MergedConfig
 ): CypressCommandLine.CypressRunResult {
   if (!isSuccessResult(rawResult)) {
     return getFailedDummyResult({

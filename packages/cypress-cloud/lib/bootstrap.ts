@@ -1,13 +1,14 @@
-import cp from "child_process";
 import { getBinPath } from "cy2";
 import Debug from "debug";
+import execa, { ExecaError } from "execa";
 import fs from "fs";
-import { chain } from "lodash";
+import _ from "lodash";
 import { customAlphabet } from "nanoid";
 import { CurrentsRunParameters } from "../types";
-import { getCLICypressOptions, serializeOptions } from "./cli/cli";
+import { getCLICypressOptions, serializeOptions } from "./config";
+import { ValidationError } from "./errors";
 import { createTempFile } from "./fs";
-import { warn } from "./log";
+import { bold, info } from "./log";
 
 const debug = Debug("currents:boot");
 const getDummySpec = customAlphabet("abcdefghijklmnopqrstuvwxyz", 10);
@@ -15,7 +16,7 @@ const getDummySpec = customAlphabet("abcdefghijklmnopqrstuvwxyz", 10);
 export const bootCypress = async (params: CurrentsRunParameters) => {
   debug("booting cypress...");
   const tempFilePath = await createTempFile();
-  const serializedOptions = chain(getCLICypressOptions(params))
+  const serializedOptions = _.chain(getCLICypressOptions(params))
     .thru((opts) => ({
       ...opts,
       // merge the env with the currents specific env variables
@@ -44,16 +45,7 @@ export const bootCypress = async (params: CurrentsRunParameters) => {
   debug("booting cypress with args: %o", args);
   const cypressBin = await getBinPath(require.resolve("cypress"));
   debug("cypress executable location: %s", cypressBin);
-
-  const child = cp.spawnSync(cypressBin, args, {
-    stdio: "pipe",
-    env: {
-      ...process.env,
-      // prevent warnings about recording mode
-      CYPRESS_RECORD_KEY: undefined,
-    },
-  });
-
+  const { stdout, stderr } = await execCypress(cypressBin, args);
   if (!fs.existsSync(tempFilePath)) {
     throw new Error(
       `Cannot resolve cypress configuration from ${tempFilePath}. Please report the issue.`
@@ -61,7 +53,6 @@ export const bootCypress = async (params: CurrentsRunParameters) => {
   }
   try {
     const f = fs.readFileSync(tempFilePath, "utf-8");
-
     if (!f) {
       throw new Error("Is cypress-cloud/plugin installed?");
     }
@@ -69,12 +60,32 @@ export const bootCypress = async (params: CurrentsRunParameters) => {
     return JSON.parse(f);
   } catch (err) {
     debug("read config temp file failed: %o", err);
-    warn("Cypress stdout:\n%s", child.stdout.toString("utf-8"));
-    warn("Cypress stderr:\n%s", child.stderr.toString("utf-8"));
-    warn(
-      "Resolving cypress configuration failed.\n   - make sure that 'cypress-cloud/plugin' is installed\n   - report the issue together with cypress stdout and stderr"
-    );
+    info(bold("Cypress stdout:\n"), stdout);
+    info(bold("Cypress stderr:\n"), stderr);
 
-    throw new Error("Unable to resolve cypress configuration");
+    throw new ValidationError(`Unable to resolve cypress configuration
+- make sure that 'cypress-cloud/plugin' is installed
+- report the issue together with cypress stdout and stderr
+`);
   }
 };
+
+async function execCypress(cypressBin: string, args: readonly string[]) {
+  let stdout = "";
+  let stderr = "";
+  try {
+    await execa(cypressBin, args, {
+      stdio: "pipe",
+      env: {
+        ...process.env,
+        // prevent warnings about recording mode
+        CYPRESS_RECORD_KEY: undefined,
+      },
+    });
+  } catch (err) {
+    debug("exec cypress failed (certain failures are expected): %o", err);
+    stdout = (err as ExecaError).stdout;
+    stderr = (err as ExecaError).stderr;
+  }
+  return { stdout, stderr };
+}

@@ -1,0 +1,38 @@
+name: e2e-exports
+
+on:
+  push:
+
+jobs:
+  e2e-exports:
+    if: "!contains(toJSON(github.event.commits.*.message), '[skip ci]')"
+    runs-on: ubuntu-latest
+    env:
+      DEBUG: currents:*
+
+    strategy:
+      matrix:
+        node-version: ["18", "16", "14"]
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install npm (node14)
+        run: npm install -g npm@latest
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Link monorepo packages
+        run: npm install
+
+      - name: Test Exports
+        working-directory: ./e2e/exports
+        run: |
+          npm run testexports

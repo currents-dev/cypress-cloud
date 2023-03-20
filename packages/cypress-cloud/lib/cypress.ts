@@ -1,8 +1,7 @@
-// @ts-ignore
 import cypress from "cypress";
 import Debug from "debug";
 import { CurrentsRunParameters, CypressResult } from "../types";
-import { getStrippedCypressOptions } from "./cli";
+import { getStrippedCypressOptions } from "./config";
 import { getWSSPort } from "./ws";
 
 const debug = Debug("currents:cypress");

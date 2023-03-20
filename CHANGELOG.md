@@ -1,19 +1,30 @@
+# [1.5.0](https://github.com/currents-dev/cypress-cloud/compare/v1.4.5-beta.2...v1.5.0) (2023-03-20)
 
+### Bug Fixes
+
+- support and test ESM consumers ([#94](https://github.com/currents-dev/cypress-cloud/issues/94)) ([78d5709](https://github.com/currents-dev/cypress-cloud/commit/78d5709571868c0cda9663a3d752464273003d92))
+- use execa to fix windows exec logic ([#86](https://github.com/currents-dev/cypress-cloud/issues/86)) ([40b99f8](https://github.com/currents-dev/cypress-cloud/commit/40b99f8a6577e9809a0dbdbbd5767720ca121e2f))
+- validate params and show verbose errors ([#91](https://github.com/currents-dev/cypress-cloud/issues/91)) ([cc8bfd8](https://github.com/currents-dev/cypress-cloud/commit/cc8bfd854c76aade0c728750ec4b1b239ecf8e76))
+- esm + cjs exports. Resovle [#80](https://github.com/currents-dev/cypress-cloud/issues/80). ([1e9ba34](https://github.com/currents-dev/cypress-cloud/commit/1e9ba34e3d66bf3ba74d81fa263710a943af8ab4))
+- prevent side effects on import... ([3c4c794](https://github.com/currents-dev/cypress-cloud/commit/3c4c794c91f591248496211327db9da605c9f29e))
+- remove bg color for pending tests in summary ([6f93815](https://github.com/currents-dev/cypress-cloud/commit/6f93815b35cdbf9bf19728f0367ade41f268bce3))
+
+### Features
+
+- Standardize config resolution and API types ([#93](https://github.com/currents-dev/cypress-cloud/issues/93)) ([38abad1](https://github.com/currents-dev/cypress-cloud/commit/38abad1eb5ba3f36ccd53f5283d10a2487679bfc))
 
 ## [1.4.4](https://github.com/currents-dev/cypress-cloud/compare/v1.4.3...v1.4.4) (2023-03-10)
 
-
 ### Bug Fixes
 
-* no multiple warning for loading config file ([#74](https://github.com/currents-dev/cypress-cloud/issues/74)) ([a87ffc7](https://github.com/currents-dev/cypress-cloud/commit/a87ffc7e057a9c202791117ae8ba663fe61d3455)), closes [#68](https://github.com/currents-dev/cypress-cloud/issues/68)
-* publish readme on npm ([e9b3f55](https://github.com/currents-dev/cypress-cloud/commit/e9b3f55fdce7dbf2c32f611965ee90322007db0f))
+- no multiple warning for loading config file ([#74](https://github.com/currents-dev/cypress-cloud/issues/74)) ([a87ffc7](https://github.com/currents-dev/cypress-cloud/commit/a87ffc7e057a9c202791117ae8ba663fe61d3455)), closes [#68](https://github.com/currents-dev/cypress-cloud/issues/68)
+- publish readme on npm ([e9b3f55](https://github.com/currents-dev/cypress-cloud/commit/e9b3f55fdce7dbf2c32f611965ee90322007db0f))
 
 ## [1.4.3](https://github.com/currents-dev/cypress-cloud/compare/v1.4.2-beta.0...v1.4.3) (2023-03-10)
 
-
 ### Bug Fixes
 
-* use local @commander-js/extra-typings ([#73](https://github.com/currents-dev/cypress-cloud/issues/73)) ([1c51d66](https://github.com/currents-dev/cypress-cloud/commit/1c51d66b568553b0c946c681784e905e7d3d0a7e)), closes [#71](https://github.com/currents-dev/cypress-cloud/issues/71)
+- use local @commander-js/extra-typings ([#73](https://github.com/currents-dev/cypress-cloud/issues/73)) ([1c51d66](https://github.com/currents-dev/cypress-cloud/commit/1c51d66b568553b0c946c681784e905e7d3d0a7e)), closes [#71](https://github.com/currents-dev/cypress-cloud/issues/71)
 
 ## [1.4.2](https://github.com/currents-dev/cypress-cloud/compare/v1.4.2-beta.0...v1.4.2) (2023-03-10)
 

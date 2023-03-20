@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 import "source-map-support/register";
 
-import { run } from "../index";
-import { parseOptions } from "../lib/cli";
-import { divider, error } from "../lib/log";
+import { ValidationError } from "../lib/errors";
+import { withError } from "../lib/log";
+import { run } from "../lib/run";
+import { parseCLIOptions, program } from "./lib";
 
 async function main() {
-  return run(await parseOptions());
+  return run(parseCLIOptions());
 }
 
 main()
@@ -15,14 +16,17 @@ main()
       process.exit(0);
     }
 
-    const overallFailed = result.failures + result.skipped;
+    const overallFailed = result.totalFailed + result.totalSkipped;
     if (overallFailed > 0) {
       process.exit(overallFailed);
     }
     process.exit(0);
   })
   .catch((err) => {
-    divider();
-    error(err.stack);
+    if (err instanceof ValidationError) {
+      program.error(withError(err.toString()));
+    } else {
+      console.error(err);
+    }
     process.exit(1);
   });

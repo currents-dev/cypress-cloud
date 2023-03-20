@@ -1,12 +1,15 @@
-// plug for future websocket server
 import http from "http";
+import { match, P } from "ts-pattern";
 import WebSocket from "ws";
 import { bus } from "./bus";
 
 let server: http.Server | null = null;
 let wss: WebSocket.Server | null = null;
 
-export const getWSSPort = () => server?.address()?.port;
+export const getWSSPort = () =>
+  match(server?.address())
+    .with({ port: P.number }, (address) => address.port)
+    .run();
 
 export const startWSS = () => {
   if (wss) {
@@ -15,6 +18,9 @@ export const startWSS = () => {
   server = http
     .createServer()
     .on("listening", () => {
+      if (!server) {
+        throw new Error("Server not initialized");
+      }
       wss = new WebSocket.Server({
         server,
       });

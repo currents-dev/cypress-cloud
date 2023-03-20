@@ -1,0 +1,33 @@
+name: e2e-smoke-windows
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    if: "!contains(toJSON(github.event.commits.*.message), '[skip ci]')"
+
+    runs-on: windows-latest
+    env:
+      DEBUG: currents:*
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Link monorepo packages
+        run: npm install
+
+      - name: Run Cypress with cypress-cloud
+        working-directory: ./examples/webapp
+        run: |
+          npx cypress-cloud run --parallel --record --key ${{ secrets.CURRENTS_RECORD_KEY }} --ci-build-id "smoke-windows-${{ github.repository }}-${{ github.run_id }}-${{ github.run_attempt}}" --spec "cypress/e2e_smoke/*.spec.js" --tag smoke,windows

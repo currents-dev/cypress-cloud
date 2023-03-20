@@ -1,5 +1,5 @@
 import { AxiosError } from "axios";
-import { isString } from "lodash";
+import _ from "lodash";
 import { spacer, warn } from "../log";
 
 export function maybePrintErrors(
@@ -29,7 +29,7 @@ export function formatGenericError(
   message?: string,
   errors?: string[]
 ): string[] {
-  if (!isString(message)) {
+  if (!_.isString(message)) {
     return ["Unexpected error from the cloud service"];
   }
 

@@ -17,7 +17,7 @@ export const success = (...args: unknown[]) =>
   log(chalk.green(util.format(...args)));
 
 export const error = (...args: unknown[]) =>
-  log(withError(util.format(...args)));
+  log(withError(util.format(...args)) + "\n");
 
 type Color = "red" | "green" | "yellow" | "blue" | "magenta" | "cyan" | "white";
 export const title = (color: Color, ...args: unknown[]) =>
@@ -30,7 +30,7 @@ export const spacer = (n: number = 0) =>
   console.log(Array(n).fill("").join("\n"));
 
 export const cyan = chalk.cyan;
-export const blue = chalk.blueBright.bgWhite;
+export const blue = chalk.blueBright;
 export const red = chalk.red;
 export const green = chalk.greenBright;
 export const gray = chalk.gray;

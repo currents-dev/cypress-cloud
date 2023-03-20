@@ -13,12 +13,12 @@ import {
   UpdateInstanceResultsResponse,
   updateInstanceStdout,
 } from "cypress-cloud/lib/api";
+import { getAPIBaseUrl } from "cypress-cloud/lib/httpClient/config";
 import _ from "lodash";
 import nock from "nock";
-import { getBaseUrl } from "../../httpClient/config";
 
 jest.mock("cypress-cloud/lib/httpClient/config", () => ({
-  getBaseUrl: jest.fn().mockReturnValue("http://localhost:1234"),
+  getAPIBaseUrl: jest.fn().mockReturnValue("http://localhost:1234"),
 }));
 
 describe("cloud/api", () => {
@@ -68,7 +68,9 @@ describe("cloud/api", () => {
         isNewRun: true,
       };
 
-      nock(getBaseUrl()).post("/runs", _.matches(payload)).reply(200, result);
+      nock(getAPIBaseUrl())
+        .post("/runs", _.matches(payload))
+        .reply(200, result);
 
       const run = await createRun(payload);
       expect(run).toStrictEqual(result);
@@ -100,7 +102,7 @@ describe("cloud/api", () => {
         totalInstances: 10,
       };
 
-      nock(getBaseUrl())
+      nock(getAPIBaseUrl())
         .post("/runs/1/instances", _.matches(payload))
         .reply(200, result);
 
@@ -126,7 +128,7 @@ describe("cloud/api", () => {
     it("POST /instances/:id/tests", async () => {
       const result = {};
 
-      nock(getBaseUrl())
+      nock(getAPIBaseUrl())
         .post("/instances/1/tests", _.matches(payload))
         .reply(200, result);
 
@@ -203,7 +205,7 @@ describe("cloud/api", () => {
         videoUploadUrl: null,
       };
 
-      nock(getBaseUrl())
+      nock(getAPIBaseUrl())
         .post("/instances/1/results", _.matches(payload))
         .reply(200, result);
 
@@ -216,7 +218,7 @@ describe("cloud/api", () => {
     const payload = "string";
 
     it("PUT /instances/:id/stdout", async () => {
-      nock(getBaseUrl())
+      nock(getAPIBaseUrl())
         .put("/instances/1/stdout", { stdout: payload })
         .reply(200);
 

@@ -4,7 +4,7 @@ const { execSync } = require("child_process");
 const fs = require("fs");
 const pkg = require("./package.json");
 
-const { Command, Option } = require("./lib/cli/@commander-js/extra-typings");
+const { Command, Option } = require("./bin/lib/@commander-js/extra-typings");
 
 const program = new Command()
   .name("publish")
@@ -22,9 +22,17 @@ if (!options.tag) {
 const newPkg = {
   ...pkg,
   main: "./index.js",
+  bin: {
+    "cypress-cloud": "./bin/cli.js",
+  },
   files: ["*"],
+  bin: "./bin/cli.js",
   exports: {
-    ".": "./",
+    ".": {
+      import: "./index.mjs",
+      require: "./index.js",
+      types: "./index.d.ts",
+    },
     "./plugin": {
       import: "./plugin/index.js",
       require: "./plugin/index.js",

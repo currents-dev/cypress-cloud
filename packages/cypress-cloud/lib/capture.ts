@@ -1,4 +1,6 @@
-const debug = require("debug")("currents:capture");
+import Debug from "debug";
+const debug = Debug("currents:capture");
+
 const _write = process.stdout.write;
 const _log = process.log;
 

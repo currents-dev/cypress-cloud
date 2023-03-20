@@ -1,39 +1,59 @@
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
+import axios, {
+  AxiosError,
+  AxiosInstance,
+  AxiosRequestConfig,
+  AxiosResponse,
+} from "axios";
 import axiosRetry from "axios-retry";
 import Debug from "debug";
-import { omit } from "lodash";
+import _ from "lodash";
 import prettyMilliseconds from "pretty-ms";
+import { ValidationError } from "../errors";
 import { warn } from "../log";
-import { getBaseUrl, getDelay, isRetriableError } from "./config";
+import { getAPIBaseUrl, getDelay, isRetriableError } from "./config";
 import { maybePrintErrors } from "./printErrors";
 
 const debug = Debug("currents:api");
 
 const MAX_RETRIES = 3;
 
-const client = axios.create({
-  baseURL: getBaseUrl(),
-});
+let _client: AxiosInstance | null = null;
 
-client.interceptors.request.use((config) => ({
-  ...config,
-  headers: {
-    ...config.headers,
+export function getClient() {
+  if (_client) {
+    return _client;
+  }
+  _client = axios.create({
+    baseURL: getAPIBaseUrl(),
+  });
+
+  _client.interceptors.request.use((config) => {
+    const req = {
+      ...config,
+      headers: {
+        ...config.headers,
+
+        // @ts-ignore
+        "x-cypress-request-attempt": config["axios-retry"]?.retryCount ?? 0,
+        "x-cypress-run-id": _runId,
+        "x-cypress-version": _cypressVersion,
+        "x-ccy-version": _currentsVersion ?? "0.0.0",
+        "Content-Type": "application/json",
+      },
+    };
+    debug("network request: %o", req);
+    return req;
+  });
+
+  axiosRetry(_client, {
+    retries: MAX_RETRIES,
+    retryCondition: isRetriableError,
+    retryDelay: getDelay,
     // @ts-ignore
-    "x-cypress-request-attempt": config["axios-retry"]?.retryCount ?? 0,
-    "x-cypress-run-id": _runId,
-    "x-cypress-version": _cypressVersion,
-    "x-ccy-version": _currentsVersion ?? "0.0.0",
-  },
-}));
-
-axiosRetry(client, {
-  retries: MAX_RETRIES,
-  retryCondition: isRetriableError,
-  retryDelay: getDelay,
-  // @ts-ignore
-  onRetry,
-});
+    onRetry,
+  });
+  return _client;
+}
 
 let _runId: string | undefined = undefined;
 export const setRunId = (runId: string) => {
@@ -67,15 +87,13 @@ function onRetry(
 export const makeRequest = <T = any, D = any>(
   config: AxiosRequestConfig<D>
 ) => {
-  debug("network request: %o", config);
-
-  return client<D, AxiosResponse<T>>(config)
+  return getClient()<D, AxiosResponse<T>>(config)
     .then((res) => {
-      debug("network request response: %o", omit(res, "request", "config"));
+      debug("network request response: %o", _.omit(res, "request", "config"));
       return res;
     })
     .catch((error) => {
       maybePrintErrors(error);
-      throw new Error(error.message);
+      throw new ValidationError(error.message);
     });
 };
