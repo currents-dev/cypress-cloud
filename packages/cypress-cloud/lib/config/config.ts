@@ -1,7 +1,7 @@
 import Debug from "debug";
 import path from "path";
-import { CurrentsRunParameters, DetectedBrowser } from "../../types";
-import { bootCypress } from "../bootstrap";
+import { DetectedBrowser, ValidatedCurrentsParameters } from "../../types";
+import { bootCypress } from "../bootstrap/bootstrap";
 import { warn } from "../log";
 import { getRandomPort } from "../utils";
 const debug = Debug("currents:config");
@@ -55,7 +55,7 @@ export function getCurrentsConfig(): CurrentsConfig {
 }
 
 export type MergedConfig = Awaited<ReturnType<typeof getMergedConfig>>;
-export async function getMergedConfig(params: CurrentsRunParameters) {
+export async function getMergedConfig(params: ValidatedCurrentsParameters) {
   debug("resolving cypress config ");
   const cypressResolvedConfig:
     | (Cypress.ResolvedConfigOptions & {
