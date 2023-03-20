@@ -1,3 +1,12 @@
+
+
+## [1.5.1](https://github.com/currents-dev/cypress-cloud/compare/v1.5.0...v1.5.1) (2023-03-20)
+
+
+### Bug Fixes
+
+* parse env variables with spaces ([633c7d8](https://github.com/currents-dev/cypress-cloud/commit/633c7d8f1e59aaf4b1db9215d7afae789d6e5fb8))
+
 # [1.5.0](https://github.com/currents-dev/cypress-cloud/compare/v1.4.5-beta.2...v1.5.0) (2023-03-20)
 
 ### Bug Fixes
