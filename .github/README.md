@@ -106,15 +106,14 @@ This package uses its own orchestration and reporting protocol that is independe
 
 ### `run`
 
-Run Cypress tests programmatically
+Run Cypress tests programmatically. See [`./examples/webapp/scripts`](https://github.com/currents-dev/cypress-cloud/blob/main/examples/webapp/scripts) for examples.
 
 ```ts
 run(params: CurrentsRunAPI): Promise<CypressCommandLine.CypressRunResult | undefined>
 ```
 
 - `params` - [`CurrentsRunAPI`](./packages/cypress-cloud/types.ts) list of params. It is an extended version of Cypress [Module API](https://docs.cypress.io/guides/guides/module-api)
-
-- returns execution results as [`CypressCommandLine.CypressRunResult| undefined`](./packages/cypress-cloud/types.ts)
+- return execution results as [`CypressCommandLine.CypressRunResult | undefined`](./packages/cypress-cloud/types.ts)
 
 Example:
 
