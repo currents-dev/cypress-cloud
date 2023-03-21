@@ -25,7 +25,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "release": "release-it",
-    "release:npm": "./publish.js",
+    "release:npm": "npm run build && ./publish.js",
     "dev": "tsup-node --watch",
     "build": "tsup-node --dts"
   },
