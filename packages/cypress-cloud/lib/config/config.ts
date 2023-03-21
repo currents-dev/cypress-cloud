@@ -3,7 +3,9 @@ import path from "path";
 import { DetectedBrowser, ValidatedCurrentsParameters } from "../../types";
 import { bootCypress } from "../bootstrap/bootstrap";
 import { warn } from "../log";
+import { require } from "../require";
 import { getRandomPort } from "../utils";
+
 const debug = Debug("currents:config");
 
 export type E2EConfig = {

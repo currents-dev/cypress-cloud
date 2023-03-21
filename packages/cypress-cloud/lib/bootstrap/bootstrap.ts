@@ -6,6 +6,7 @@ import fs from "fs";
 import { ValidationError } from "../errors";
 import { createTempFile } from "../fs";
 import { bold, info } from "../log";
+import { require } from "../require";
 import { getBootstrapArgs } from "./serializer";
 
 const debug = Debug("currents:boot");

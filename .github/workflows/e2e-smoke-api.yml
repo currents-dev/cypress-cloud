@@ -38,3 +38,11 @@ jobs:
           CURRENTS_API_URL: http://localhost:1234
         run: |
           npm run cypress:script
+
+      - name: Run Cypress with cypress-cloud ESM
+        working-directory: ./examples/webapp
+        env:
+          CURRENTS_RECORD_KEY: "any"
+          CURRENTS_API_URL: http://localhost:1234
+        run: |
+          npm run cypress:script:esm
