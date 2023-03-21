@@ -5,14 +5,14 @@ const readFile = fs.promises.readFile;
 const debug = Debug("currents:upload");
 
 export function uploadVideo(file: string, url: string) {
-  return uploadFile(file, url, "application/octet-stream");
+  return uploadFile(file, url, "video/mp4");
 }
 
 export function uploadImage(file: string, url: string) {
   return uploadFile(file, url, "image/png");
 }
 
-type UploadTypes = "application/octet-stream" | "image/png" | "plain/text";
+type UploadTypes = "video/mp4" | "image/png" | "plain/text";
 async function uploadFile(file: string, url: string, type: UploadTypes) {
   debug('uploading file "%s" to "%s"', file, url);
   const f = await readFile(file);

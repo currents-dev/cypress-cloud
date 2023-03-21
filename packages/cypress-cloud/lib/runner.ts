@@ -82,7 +82,7 @@ async function runBatch({
     totalInstances: 0,
   };
 
-  if (isCurrents() || !!process.env.CURRENTS_BATCHED_ORCHESTRATION) {
+  if (isCurrents()) {
     debug("Getting batched tasks: %d", params.batchSize);
     batch = await createBatchedInstances({
       ...runMeta,
