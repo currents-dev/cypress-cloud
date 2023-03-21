@@ -3,7 +3,7 @@ import { ScreenshotArtifact, ScreenshotUploadInstruction } from "../types";
 import { updateInstanceStdout } from "./api";
 import { safe } from "./lang";
 import { warn } from "./log";
-import { uploadFile } from "./upload";
+import { uploadImage, uploadVideo } from "./upload";
 const debug = Debug("currents:artifacts");
 interface UploadArtifacts {
   videoPath: string | null;
@@ -35,11 +35,9 @@ export async function uploadArtifacts({
   // upload video
   if (videoUploadUrl && videoPath) {
     await safe(
-      uploadFile,
-      // () => info("- Failed Uploading", red(videoPath)),
-      // () => info("- Done Uploading", cyan(videoPath))
-      () => {},
-      () => {}
+      uploadVideo,
+      (e) => debug("failed uploading video %s. Error: %o", videoPath, e),
+      () => debug("success uploading", videoPath)
     )(videoPath, videoUploadUrl);
   }
   // upload screenshots
@@ -59,11 +57,14 @@ export async function uploadArtifacts({
           return Promise.resolve();
         }
         return safe(
-          uploadFile,
-          // () => warn("- Failed Uploading", red(screenshot.path)),
-          // () => info("- Done Uploading", cyan(screenshot.path))
-          () => {},
-          () => {}
+          uploadImage,
+          (e) =>
+            debug(
+              "failed uploading screenshot %s. Error: %o",
+              screenshot.path,
+              e
+            ),
+          () => debug("success uploading", screenshot.path)
         )(screenshot.path, url);
       })
     );
