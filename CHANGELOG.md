@@ -1,5 +1,13 @@
 
 
+## [1.5.4](https://github.com/currents-dev/cypress-cloud/compare/v1.5.3...v1.5.4) (2023-03-21)
+
+
+### Bug Fixes
+
+* use proper content types for uploads ([#103](https://github.com/currents-dev/cypress-cloud/issues/103)) ([8be81df](https://github.com/currents-dev/cypress-cloud/commit/8be81df102a91586e0a67d22bc68b179f7202850))
+* use video/mp4 for video uploads ([90a8569](https://github.com/currents-dev/cypress-cloud/commit/90a856984957f66fcc4cdafaed151688bb9a12d2))
+
 ## [1.5.3](https://github.com/currents-dev/cypress-cloud/compare/v1.5.2...v1.5.3) (2023-03-21)
 
 ## [1.5.2](https://github.com/currents-dev/cypress-cloud/compare/v1.5.0...v1.5.2) (2023-03-21)
