@@ -1,3 +1,7 @@
+
+
+## [1.5.3](https://github.com/currents-dev/cypress-cloud/compare/v1.5.2...v1.5.3) (2023-03-21)
+
 ## [1.5.2](https://github.com/currents-dev/cypress-cloud/compare/v1.5.0...v1.5.2) (2023-03-21)
 
 ### Bug Fixes
