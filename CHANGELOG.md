@@ -1,11 +1,14 @@
-
-
-## [1.5.1](https://github.com/currents-dev/cypress-cloud/compare/v1.5.0...v1.5.1) (2023-03-20)
-
+## [1.5.2](https://github.com/currents-dev/cypress-cloud/compare/v1.5.0...v1.5.2) (2023-03-21)
 
 ### Bug Fixes
 
-* parse env variables with spaces ([633c7d8](https://github.com/currents-dev/cypress-cloud/commit/633c7d8f1e59aaf4b1db9215d7afae789d6e5fb8))
+- Use ESM-friendly require across the board ([#99](https://github.com/currents-dev/cypress-cloud/issues/99)) ([2b36692](https://github.com/currents-dev/cypress-cloud/commit/2b366926d99378d9b5868f8484eb08c05e182879))
+
+## [1.5.1](https://github.com/currents-dev/cypress-cloud/compare/v1.5.0...v1.5.1) (2023-03-20)
+
+### Bug Fixes
+
+- parse env variables with spaces ([633c7d8](https://github.com/currents-dev/cypress-cloud/commit/633c7d8f1e59aaf4b1db9215d7afae789d6e5fb8))
 
 # [1.5.0](https://github.com/currents-dev/cypress-cloud/compare/v1.4.5-beta.2...v1.5.0) (2023-03-20)
 
