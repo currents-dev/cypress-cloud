@@ -5,7 +5,8 @@
   "scripts": {
     "build": "next build",
     "start": "next start",
-    "cypress:script": "ts-node scripts/currents-script.ts",
+    "cypress:script": "node scripts/currents-script.js",
+    "cypress:script:ts": "ts-node scripts/currents-script.ts",
     "cypress:script:esm": "node scripts/currents-script.mjs"
   },
   "dependencies": {

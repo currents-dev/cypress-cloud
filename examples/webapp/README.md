@@ -40,7 +40,8 @@ npx cypress-cloud --parallel --record --key your_key --component  --ci-build-id 
 
 ## API Usage
 
-Take a look at [`./scripts/currents-script.ts`](./scripts/currents-script.ts) with the record key and the projectId you've obtained from a cloud orchestration service.
+Take a look at [`./scripts/`](./scripts/) directory to see the examples of using `run` API with different environments (CJS / TS / ESM);
+Replace the `recordKey` and the `projectId` you've obtained from a cloud orchestration service (use arbitrary values for Sorry Cypress)
 
 ```sh
 npm run cypress:script
