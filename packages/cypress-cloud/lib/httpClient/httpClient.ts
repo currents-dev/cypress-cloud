@@ -31,6 +31,7 @@ export function getClient() {
     const req = {
       ...config,
       headers: {
+        "Content-Type": "application/json",
         ...config.headers,
 
         // @ts-ignore
@@ -38,7 +39,6 @@ export function getClient() {
         "x-cypress-run-id": _runId,
         "x-cypress-version": _cypressVersion,
         "x-ccy-version": _currentsVersion ?? "0.0.0",
-        "Content-Type": "application/json",
       },
     };
     debug("network request: %o", req);

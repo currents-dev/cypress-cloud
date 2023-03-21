@@ -1,7 +1,7 @@
 export const safe =
   <T extends any[], R extends any>(
     fn: (...args: T) => Promise<R>,
-    ifFaled: () => any,
+    ifFaled: (e: unknown) => any,
     ifSucceed: () => any
   ) =>
   async (...args: T) => {
@@ -10,6 +10,6 @@ export const safe =
       ifSucceed();
       return r;
     } catch (e) {
-      ifFaled();
+      ifFaled(e);
     }
   };
