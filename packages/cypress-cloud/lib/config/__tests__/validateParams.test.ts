@@ -66,6 +66,36 @@ describe("validateParams", () => {
     );
   });
 
+  it("should transform string tag", () => {
+    const params: CurrentsRunParameters = {
+      batchSize: 10,
+      testingType: "e2e",
+      cloudServiceUrl: "http://localhost:3333",
+      projectId: "abc123",
+      recordKey: "def456",
+      tag: "a,b,c",
+    };
+
+    expect(validateParams(params)).toMatchObject({
+      tag: expect.arrayContaining(["a", "b", "c"]),
+    });
+  });
+
+  it("should transform string[] tag", () => {
+    const params: CurrentsRunParameters = {
+      batchSize: 10,
+      testingType: "e2e",
+      cloudServiceUrl: "http://localhost:3333",
+      projectId: "abc123",
+      recordKey: "def456",
+      tag: ["a", "b"],
+    };
+
+    expect(validateParams(params)).toMatchObject({
+      tag: expect.arrayContaining(["a", "b"]),
+    });
+  });
+
   it("should return validated params if all required parameters are provided", () => {
     const params: CurrentsRunParameters = {
       batchSize: 10,
@@ -73,6 +103,7 @@ describe("validateParams", () => {
       cloudServiceUrl: "http://localhost:3333",
       projectId: "abc123",
       recordKey: "def456",
+      tag: [],
     };
 
     expect(validateParams(params)).toEqual({

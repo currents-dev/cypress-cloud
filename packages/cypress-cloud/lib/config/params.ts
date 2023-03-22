@@ -54,22 +54,24 @@ export function resolveCurrentsParams(
 }
 
 export const projectIdError = `Cannot resolve projectId. Please use one of the following:
+- provide it as a "projectId" property for "run" API method
 - set CURRENTS_PROJECT_ID environment variable
-- set "projectId" in "currents.config.js" file
-- provide it as a "projectId" property for "run" API method`;
+- set "projectId" in "currents.config.js" file`;
 
 export const cloudServiceUrlError = `Cannot resolve cloud service URL. Please use one of the following:
+- provide it as a "cloudServiceUrl" property for "run" API method
 - set CURRENTS_API_URL environment variable
-- set "cloudServiceUrl" in "currents.config.js" file
-- provide it as a "cloudServiceUrl" property for "run" API method`;
+- set "cloudServiceUrl" in "currents.config.js" file`;
 
 export const cloudServiceInvalidUrlError = `Invalid cloud service URL provided`;
 
 export const recordKeyError = `Cannot resolve record key. Please use one of the following:
+
+- pass it as a CLI flag '-k, --key <record-key>'
+- provide it as a "recordKey" property for "run" API method
 - set CURRENTS_RECORD_KEY environment variable
-- pass it as a cli flag '-k, --key <record-key>'
 - set "recordKey" in "currents.config.js" file
-- provide it as a "recordKey" property for "run" API method`;
+`;
 
 export function validateParams(
   _params: CurrentsRunParameters
@@ -108,8 +110,22 @@ export function validateParams(
       throw new Error("Missing required parameter");
     }
   });
-  debug("validated currents parametes: %o", params);
+  params.tag = parseTags(params.tag);
+  debug("validated currents params: %o", params);
   return params as ValidatedCurrentsParameters;
+}
+
+function parseTags(tagString: CurrentsRunParameters["tag"]): string[] {
+  if (!tagString) {
+    return [];
+  }
+  if (Array.isArray(tagString)) {
+    return tagString.filter(Boolean);
+  }
+  return tagString
+    .split(",")
+    .map((tag) => tag.trim())
+    .filter(Boolean);
 }
 
 /**
