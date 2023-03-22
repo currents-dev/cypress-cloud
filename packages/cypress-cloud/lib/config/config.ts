@@ -1,7 +1,7 @@
 import Debug from "debug";
 import path from "path";
 import { DetectedBrowser, ValidatedCurrentsParameters } from "../../types";
-import { bootCypress } from "../bootstrap/bootstrap";
+import { bootCypress } from "../bootstrap";
 import { warn } from "../log";
 import { require } from "../require";
 import { getRandomPort } from "../utils";

@@ -1,13 +1,13 @@
 import {
   CurrentsRunParameters,
-  StrippedCypressModuleAPIOptions,
+  CypressRunParameters,
 } from "cypress-cloud/types";
 import Debug from "debug";
 import _ from "lodash";
 import { customAlphabet } from "nanoid";
+import { getCypressRunAPIParams } from "../config";
 const debug = Debug("currents:boot");
 
-import { getStrippedCypressOptions } from "../config";
 const getDummySpec = customAlphabet("abcdefghijklmnopqrstuvwxyz", 10);
 
 export function getBootstrapArgs({
@@ -39,7 +39,6 @@ export function getBootstrapArgs({
     .tap((opts) => {
       debug("cypress bootstrap serialized params: %o", opts);
     })
-    .filter(Boolean)
     .thru((args) => {
       return [
         ...args,
@@ -62,8 +61,8 @@ export function getBootstrapArgs({
  */
 function getCypressCLIParams(
   params: CurrentsRunParameters
-): StrippedCypressModuleAPIOptions {
-  const result = getStrippedCypressOptions(params);
+): CypressRunParameters {
+  const result = getCypressRunAPIParams(params);
   const testingType =
     result.testingType === "component"
       ? {
@@ -77,21 +76,19 @@ function getCypressCLIParams(
 }
 
 function serializeOptions(options: Record<string, unknown>): string[] {
-  return Object.entries(options)
-    .flatMap(([key, value]) => {
-      const _key = dashed(key);
-      if (typeof value === "boolean") {
-        return value === true ? [`--${_key}`] : [];
-      }
+  return Object.entries(options).flatMap(([key, value]) => {
+    const _key = dashed(key);
+    if (typeof value === "boolean") {
+      return value === true ? [`--${_key}`] : [`--${_key}`, false];
+    }
 
-      if (_.isObject(value)) {
-        return [`--${_key}`, serializeComplexParam(value)];
-      }
+    if (_.isObject(value)) {
+      return [`--${_key}`, serializeComplexParam(value)];
+    }
 
-      // @ts-ignore
-      return [`--${_key}`, value.toString()];
-    })
-    .filter(Boolean);
+    // @ts-ignore
+    return [`--${_key}`, value.toString()];
+  });
 }
 
 function serializeComplexParam(param: {}) {

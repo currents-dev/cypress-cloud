@@ -12,6 +12,15 @@ const defaultArgs = {
   tempFilePath: "tempFilePath",
 };
 describe("getBootstrapArgs", () => {
+  it('should have "--record false" param', () => {
+    const result = getBootstrapArgs({
+      ...defaultArgs,
+      params: {
+        testingType: "e2e",
+      },
+    });
+    expect(result).toEqual(expect.arrayContaining(["--record", false]));
+  });
   it("should add the default currents params", () => {
     const result = getBootstrapArgs({
       ...defaultArgs,
