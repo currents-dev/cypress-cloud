@@ -104,7 +104,7 @@ export interface TestsResult {
 
 export type SummaryResult = Record<string, CypressCommandLine.CypressRunResult>;
 
-// Explicitly filter cypress-related flags and prevent triggering recording mode and to avoid confusion
+// Explicitly filter cypress-related flags - prevent triggering recording mode  to avoid confusion
 export type StrippedCypressModuleAPIOptions = Omit<
   Partial<CypressCommandLine.CypressRunOptions>,
   | "tag"
@@ -120,6 +120,11 @@ export type StrippedCypressModuleAPIOptions = Omit<
   | "group"
   | "ciBuildId"
 >;
+
+// Used to run Cypress via module API and via CLI
+export type CypressRunParameters = StrippedCypressModuleAPIOptions & {
+  record: false;
+};
 
 export type CurrentsRunParameters = StrippedCypressModuleAPIOptions & {
   /** The CI build ID to use for the run */

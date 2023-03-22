@@ -2,19 +2,24 @@ import("./init");
 
 import { SummaryResult, ValidatedCurrentsParameters } from "../types";
 import { getCapturedOutput, resetCapture } from "./capture";
-import { MergedConfig } from "./config/config";
-import { getSummaryForSpec, normalizeRawResult } from "./results";
+import { MergedConfig } from "./config";
+import {
+  getSummaryForSpec,
+  getUploadResultsTask,
+  normalizeRawResult,
+} from "./results";
 
 import Debug from "debug";
-import { createBatchedInstances, createInstance } from "./api/api";
 import {
+  createBatchedInstances,
+  createInstance,
   CreateInstancePayload,
   InstanceResponseSpecDetails,
-} from "./api/types/instance";
+} from "./api";
+
 import { runSpecFileSafe } from "./cypress";
 import { isCurrents } from "./env";
 import { divider, error, info, title, warn } from "./log";
-import { getUploadResultsTask } from "./results/uploadResults";
 
 const debug = Debug("currents:runner");
 

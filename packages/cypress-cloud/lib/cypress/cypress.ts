@@ -1,7 +1,10 @@
 import cypress from "cypress";
+import {
+  CypressResult,
+  ValidatedCurrentsParameters,
+} from "cypress-cloud/types";
 import Debug from "debug";
-import { CypressResult, ValidatedCurrentsParameters } from "../types";
-import { getStrippedCypressOptions } from "./config";
+import { getCypressRunAPIParams } from "../config";
 
 const debug = Debug("currents:cypress");
 interface RunCypressSpecFile {
@@ -14,7 +17,7 @@ export async function runSpecFile(
   { spec }: RunCypressSpecFile,
   cypressRunOptions: ValidatedCurrentsParameters
 ) {
-  const runAPIOptions = getStrippedCypressOptions(cypressRunOptions);
+  const runAPIOptions = getCypressRunAPIParams(cypressRunOptions);
 
   const options = {
     ...runAPIOptions,

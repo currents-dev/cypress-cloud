@@ -1,5 +1,6 @@
 import {
   CurrentsRunParameters,
+  CypressRunParameters,
   StrippedCypressModuleAPIOptions,
   ValidatedCurrentsParameters,
 } from "cypress-cloud/types";
@@ -115,7 +116,7 @@ export function validateParams(
  *
  * @returns Cypress non-empty options without the ones that are not relevant for the runner
  */
-export function getStrippedCypressOptions(
+function getStrippedCypressOptions(
   params: CurrentsRunParameters
 ): StrippedCypressModuleAPIOptions {
   return _.pickBy(
@@ -137,4 +138,13 @@ export function getStrippedCypressOptions(
     ]),
     Boolean
   );
+}
+
+export function getCypressRunAPIParams(
+  params: CurrentsRunParameters
+): CypressRunParameters {
+  return {
+    ...getStrippedCypressOptions(params),
+    record: false,
+  };
 }
