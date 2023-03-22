@@ -14,7 +14,7 @@ import { getSpecFiles } from "./specMatcher";
 
 const debug = Debug("currents:run");
 
-export async function run(params: CurrentsRunParameters) {
+export async function run(params: CurrentsRunParameters = {}) {
   debug("run params %o", params);
 
   const validatedParams = validateParams(params);

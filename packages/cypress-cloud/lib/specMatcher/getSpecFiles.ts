@@ -1,11 +1,14 @@
-import { ValidatedCurrentsParameters } from "../../types";
+import {
+  CurrentsRunParameters,
+  ValidatedCurrentsParameters,
+} from "../../types";
 import { MergedConfig } from "../config/config";
 import { warn } from "../log";
 import { findSpecs } from "./specMatcher";
 
 const getSpecPattern = (
   configPattern: MergedConfig["specPattern"],
-  explicit?: string[]
+  explicit?: CurrentsRunParameters["spec"]
 ) => explicit || configPattern;
 
 export const getSpecFiles = async ({

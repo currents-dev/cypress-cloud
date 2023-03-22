@@ -134,7 +134,7 @@ export type CurrentsRunParameters = StrippedCypressModuleAPIOptions & {
   /** The URL of the currents server to use. If not specified, will use the one from currents.config.js */
   cloudServiceUrl?: string;
   /** The environment variables to use for the run */
-  env?: Record<string, unknown>;
+  env?: object;
   /** The group id to use for the run */
   group?: string;
   /**  The record key to use */
@@ -143,19 +143,17 @@ export type CurrentsRunParameters = StrippedCypressModuleAPIOptions & {
   parallel?: boolean;
   /** The project ID to use. */
   projectId?: string;
-  /** The array of spec patterns for the execution */
-  spec?: string[];
-  /** The array of tags for the execution */
-  tag?: string[];
+  /** Comma-separated string or an array of spec glob pattern for the execution */
+  spec?: string | string[];
+  /** Comma-separated string or an array of tags */
+  tag?: string | string[];
   /** "e2e" or "component", the default value is "e2e" */
   testingType?: TestingType;
 };
 
-// User-facing interface
-export interface CurrentsRunAPI extends CurrentsRunParameters {
-  readonly projectId: string;
-  readonly recordKey: string;
-}
+// User-facing interface `run` interface
+// We can resolve the projectId and recordKey from different sources, so we can't really enforce them via the type definition
+export interface CurrentsRunAPI extends CurrentsRunParameters {}
 
 // Params after validation and resolution
 export interface ValidatedCurrentsParameters extends CurrentsRunParameters {
@@ -164,4 +162,5 @@ export interface ValidatedCurrentsParameters extends CurrentsRunParameters {
   readonly batchSize: number;
   readonly testingType: TestingType;
   readonly recordKey: string;
+  readonly tag: string[];
 }
