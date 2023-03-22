@@ -1,5 +1,13 @@
 
 
+## [1.5.5](https://github.com/currents-dev/cypress-cloud/compare/v1.5.4...v1.5.5) (2023-03-22)
+
+
+### Bug Fixes
+
+* impove params handling ([#106](https://github.com/currents-dev/cypress-cloud/issues/106)) ([ff65f8a](https://github.com/currents-dev/cypress-cloud/commit/ff65f8a9cf0cfe745b11521332147a30eab485ae))
+* mute record mode warnings ([#104](https://github.com/currents-dev/cypress-cloud/issues/104)) ([5bc8c5a](https://github.com/currents-dev/cypress-cloud/commit/5bc8c5a4ab219d9f04a750de480dcc49d41980ed))
+
 ## [1.5.4](https://github.com/currents-dev/cypress-cloud/compare/v1.5.3...v1.5.4) (2023-03-21)
 
 
