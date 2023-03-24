@@ -104,17 +104,17 @@ export interface TestsResult {
 
 export type SummaryResult = Record<string, CypressCommandLine.CypressRunResult>;
 
-// Explicitly filter cypress-related flags - prevent triggering recording mode  to avoid confusion
+// Explicitly filter cypress record-related flags - prevent triggering recording mode to avoid confusion
 export type StrippedCypressModuleAPIOptions = Omit<
   Partial<CypressCommandLine.CypressRunOptions>,
   | "tag"
   | "spec"
   | "exit"
   | "headed"
+  | "record"
   | "headless"
   | "noExit"
   | "parallel"
-  | "record"
   | "key"
   | "tag"
   | "group"
@@ -131,6 +131,8 @@ export type CurrentsRunParameters = StrippedCypressModuleAPIOptions & {
   ciBuildId?: string;
   /** The batch size defines how many spec files will be served in one orchestration "batch". If not specified, will use the projectId from currents.config.js, the default value is 1 (i.e. no batching) */
   batchSize?: number;
+  /** Whether to activate record mode and connect to cloud orchestration service */
+  record?: boolean;
   /** The URL of the currents server to use. If not specified, will use the one from currents.config.js */
   cloudServiceUrl?: string;
   /** The environment variables to use for the run */

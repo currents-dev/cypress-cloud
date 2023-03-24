@@ -1,5 +1,6 @@
 import cypress from "cypress";
 import {
+  CurrentsRunParameters,
   CypressResult,
   ValidatedCurrentsParameters,
 } from "cypress-cloud/types";
@@ -9,6 +10,10 @@ import { getCypressRunAPIParams } from "../config";
 const debug = Debug("currents:cypress");
 interface RunCypressSpecFile {
   spec: string;
+}
+
+export function runBareCypress(params: CurrentsRunParameters) {
+  return cypress.run(params);
 }
 /**
  * Run Cypress tests, we need to pass down the stripped options as if we've received them from the CLI

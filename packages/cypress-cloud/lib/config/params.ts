@@ -1,7 +1,6 @@
 import {
   CurrentsRunParameters,
   CypressRunParameters,
-  StrippedCypressModuleAPIOptions,
   ValidatedCurrentsParameters,
 } from "cypress-cloud/types";
 import Debug from "debug";
@@ -77,6 +76,7 @@ export function validateParams(
   _params: CurrentsRunParameters
 ): ValidatedCurrentsParameters {
   const params = resolveCurrentsParams(_params);
+
   if (!params.cloudServiceUrl) {
     throw new ValidationError(cloudServiceUrlError);
   }
@@ -115,6 +115,9 @@ export function validateParams(
   return params as ValidatedCurrentsParameters;
 }
 
+export function isOffline(params: CurrentsRunParameters) {
+  return params.record === false;
+}
 function parseTags(tagString: CurrentsRunParameters["tag"]): string[] {
   if (!tagString) {
     return [];
@@ -130,37 +133,31 @@ function parseTags(tagString: CurrentsRunParameters["tag"]): string[] {
 
 /**
  *
- * @returns Cypress non-empty options without the ones that are not relevant for the runner
+ * @returns Cypress options without items that affect recording mode
  */
-function getStrippedCypressOptions(
-  params: CurrentsRunParameters
-): StrippedCypressModuleAPIOptions {
-  return _.pickBy(
-    _.omit(params, [
-      "cloudServiceUrl",
-      "batchSize",
-      "projectId",
-      "record",
-      "key",
-      "recordKey",
-      "group",
-      "parallel",
-      "tag",
-      "ciBuildId",
-      "spec",
-      "exit",
-      "headed",
-      "headless",
-    ]),
-    Boolean
-  );
-}
-
 export function getCypressRunAPIParams(
   params: CurrentsRunParameters
 ): CypressRunParameters {
   return {
-    ...getStrippedCypressOptions(params),
+    ..._.pickBy(
+      _.omit(params, [
+        "cloudServiceUrl",
+        "batchSize",
+        "projectId",
+        "key",
+        "recordKey",
+        "record",
+        "group",
+        "parallel",
+        "tag",
+        "ciBuildId",
+        "spec",
+        "exit",
+        "headed",
+        "headless",
+      ]),
+      Boolean
+    ),
     record: false,
   };
 }
