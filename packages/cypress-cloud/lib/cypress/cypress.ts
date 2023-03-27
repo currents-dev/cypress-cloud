@@ -5,6 +5,7 @@ import {
   ValidatedCurrentsParameters,
 } from "cypress-cloud/types";
 import Debug from "debug";
+import _ from "lodash";
 import { getCypressRunAPIParams } from "../config";
 
 const debug = Debug("currents:cypress");
@@ -12,9 +13,20 @@ interface RunCypressSpecFile {
   spec: string;
 }
 
-export function runBareCypress(params: CurrentsRunParameters) {
-  return cypress.run(params);
+export function runBareCypress(params: CurrentsRunParameters = {}) {
+  // revert currents params to cypress params
+  return cypress.run(
+    _.chain(params)
+      .thru((params) => ({
+        ...params,
+        tag: _.flatten(params.tag).join(","),
+        spec: _.flatten(params.spec).join(","),
+      }))
+      .tap((params) => debug("Running bare Cypress with params %o", params))
+      .value()
+  );
 }
+
 /**
  * Run Cypress tests, we need to pass down the stripped options as if we've received them from the CLI
  */

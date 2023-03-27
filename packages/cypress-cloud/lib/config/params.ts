@@ -118,6 +118,7 @@ export function validateParams(
 export function isOffline(params: CurrentsRunParameters) {
   return params.record === false;
 }
+
 function parseTags(tagString: CurrentsRunParameters["tag"]): string[] {
   if (!tagString) {
     return [];

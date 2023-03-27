@@ -19,7 +19,7 @@ export async function run(params: CurrentsRunParameters = {}) {
   debug("run params %o", params);
 
   if (isOffline(params)) {
-    info('Running in "offline" mode');
+    info(`Skipping cloud orchestration because --record is set to false`);
     return runBareCypress(params);
   }
   const validatedParams = validateParams(params);

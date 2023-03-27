@@ -129,31 +129,41 @@ export type CypressRunParameters = StrippedCypressModuleAPIOptions & {
 export type CurrentsRunParameters = StrippedCypressModuleAPIOptions & {
   /** The CI build ID to use for the run */
   ciBuildId?: string;
+
   /** The batch size defines how many spec files will be served in one orchestration "batch". If not specified, will use the projectId from currents.config.js, the default value is 1 (i.e. no batching) */
   batchSize?: number;
+
   /** Whether to activate record mode and connect to cloud orchestration service */
   record?: boolean;
+
   /** The URL of the currents server to use. If not specified, will use the one from currents.config.js */
   cloudServiceUrl?: string;
   /** The environment variables to use for the run */
   env?: object;
+
   /** The group id to use for the run */
   group?: string;
+
   /**  The record key to use */
   recordKey?: string;
+
   /** Whether to run the spec files in parallel */
   parallel?: boolean;
+
   /** The project ID to use. */
   projectId?: string;
+
   /** Comma-separated string or an array of spec glob pattern for the execution */
   spec?: string | string[];
+
   /** Comma-separated string or an array of tags */
   tag?: string | string[];
+
   /** "e2e" or "component", the default value is "e2e" */
   testingType?: TestingType;
 };
 
-// User-facing interface `run` interface
+// User-facing `run` interface
 // We can resolve the projectId and recordKey from different sources, so we can't really enforce them via the type definition
 export interface CurrentsRunAPI extends CurrentsRunParameters {}
 
