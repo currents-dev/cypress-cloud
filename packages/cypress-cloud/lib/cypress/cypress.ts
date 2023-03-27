@@ -15,11 +15,16 @@ interface RunCypressSpecFile {
 
 export function runBareCypress(params: CurrentsRunParameters = {}) {
   // revert currents params to cypress params
+  // exclude record mode params
   return cypress.run(
     _.chain(params)
       .thru((params) => ({
         ...params,
-        tag: _.flatten(params.tag).join(","),
+        ciBuildId: undefined,
+        tag: undefined,
+        parallel: undefined,
+        record: false,
+        group: undefined,
         spec: _.flatten(params.spec).join(","),
       }))
       .tap((params) => debug("Running bare Cypress with params %o", params))
