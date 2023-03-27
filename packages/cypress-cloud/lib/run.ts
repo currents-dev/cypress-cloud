@@ -3,7 +3,8 @@ import { CurrentsRunParameters } from "../types";
 import { createRun } from "./api";
 import { cutInitialOutput } from "./capture";
 import { getCI } from "./ciProvider";
-import { getMergedConfig, validateParams } from "./config";
+import { getMergedConfig, isOffline, validateParams } from "./config";
+import { runBareCypress } from "./cypress";
 import { getGitInfo } from "./git";
 import { setAPIBaseUrl, setRunId } from "./httpClient";
 import { bold, divider, info, spacer, title } from "./log";
@@ -17,6 +18,10 @@ const debug = Debug("currents:run");
 export async function run(params: CurrentsRunParameters = {}) {
   debug("run params %o", params);
 
+  if (isOffline(params)) {
+    info(`Skipping cloud orchestration because --record is set to false`);
+    return runBareCypress(params);
+  }
   const validatedParams = validateParams(params);
   setAPIBaseUrl(validatedParams.cloudServiceUrl);
 
