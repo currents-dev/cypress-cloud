@@ -1,5 +1,12 @@
 
 
+## [1.5.6](https://github.com/currents-dev/cypress-cloud/compare/v1.5.5...v1.5.6) (2023-03-24)
+
+
+### Bug Fixes
+
+* set x-cypress-run-id only when defined ([#109](https://github.com/currents-dev/cypress-cloud/issues/109)) ([2846dfe](https://github.com/currents-dev/cypress-cloud/commit/2846dfefee4548950485c033a07365d21a7f96b1)), closes [#107](https://github.com/currents-dev/cypress-cloud/issues/107)
+
 ## [1.5.5](https://github.com/currents-dev/cypress-cloud/compare/v1.5.4...v1.5.5) (2023-03-22)
 
 

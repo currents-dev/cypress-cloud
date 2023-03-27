@@ -3,6 +3,7 @@ import axios, {
   AxiosInstance,
   AxiosRequestConfig,
   AxiosResponse,
+  RawAxiosRequestHeaders,
 } from "axios";
 import axiosRetry from "axios-retry";
 import Debug from "debug";
@@ -28,19 +29,22 @@ export function getClient() {
   });
 
   _client.interceptors.request.use((config) => {
+    const headers: RawAxiosRequestHeaders = {
+      "Content-Type": "application/json",
+      ...config.headers,
+      // @ts-ignore
+      "x-cypress-request-attempt": config["axios-retry"]?.retryCount ?? 0,
+      "x-cypress-version": _cypressVersion ?? "0.0.0",
+      "x-ccy-version": _currentsVersion ?? "0.0.0",
+    };
+    if (_runId) {
+      headers["x-cypress-run-id"] = _runId;
+    }
     const req = {
       ...config,
-      headers: {
-        "Content-Type": "application/json",
-        ...config.headers,
-
-        // @ts-ignore
-        "x-cypress-request-attempt": config["axios-retry"]?.retryCount ?? 0,
-        "x-cypress-run-id": _runId,
-        "x-cypress-version": _cypressVersion,
-        "x-ccy-version": _currentsVersion ?? "0.0.0",
-      },
+      headers,
     };
+
     debug("network request: %o", req);
     return req;
   });
