@@ -15,16 +15,18 @@ interface RunCypressSpecFile {
 
 export function runBareCypress(params: CurrentsRunParameters = {}) {
   // revert currents params to cypress params
-  return cypress.run(
-    _.chain(params)
-      .thru((params) => ({
-        ...params,
-        tag: _.flatten(params.tag).join(","),
-        spec: _.flatten(params.spec).join(","),
-      }))
-      .tap((params) => debug("Running bare Cypress with params %o", params))
-      .value()
-  );
+  // exclude record mode params
+  const p = {
+    ...params,
+    ciBuildId: undefined,
+    tag: undefined,
+    parallel: undefined,
+    record: false,
+    group: undefined,
+    spec: _.flatten(params.spec).join(","),
+  };
+  debug("Running bare Cypress with params %o", p);
+  return cypress.run(p);
 }
 
 /**

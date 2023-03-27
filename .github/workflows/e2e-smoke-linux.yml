@@ -44,3 +44,12 @@ jobs:
           --tag smoke,linux
           --spec "./cypress/e2e_smoke/*.spec.js"
           --ci-build-id "smoke-linux-${{ github.repository }}-${{ github.run_id }}-${{ github.run_attempt}}"
+
+      - name: Run in Offline mode
+        working-directory: ./examples/webapp
+        run: >
+          npx cypress-cloud run
+          --record false
+          --browser chrome
+          --tag smoke,linux
+          --spec "./cypress/e2e_smoke/*.spec.js"
