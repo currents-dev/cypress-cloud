@@ -14,9 +14,7 @@ export function fallback(...args: string[]) {
   return args.find((arg) => arg !== undefined && arg !== null && arg !== "");
 }
 
-export function resolveCurrentsParams(
-  params: CurrentsRunParameters
-): CurrentsRunParameters {
+export function resolveCurrentsParams(params: CurrentsRunParameters) {
   const configFromFile = getCurrentsConfig();
 
   const cloudServiceUrl =
@@ -87,7 +85,6 @@ export function validateParams(
     throw new ValidationError(recordKeyError);
   }
 
-  // validate cloudServiceUrl
   try {
     new URL(params.cloudServiceUrl);
   } catch (err) {
@@ -99,20 +96,41 @@ export function validateParams(
   const requiredParameters: Array<keyof CurrentsRunParameters> = [
     "testingType",
     "batchSize",
+    "projectId",
   ];
   requiredParameters.forEach((key) => {
     if (typeof params[key] === "undefined") {
-      error(
-        'Missing required parameter "%s". Please provide at least the following parameters: %s',
-        key,
-        requiredParameters.join(", ")
-      );
-      throw new Error("Missing required parameter");
+      error('Missing required run parameter "%s"', key);
+      throw new Error("Missing required run parameter.");
     }
   });
+
   params.tag = parseTags(params.tag);
+  params.autoCancelAfterFailures = getAutoCancelValue(
+    params.autoCancelAfterFailures
+  );
+
   debug("validated currents params: %o", params);
-  return params as ValidatedCurrentsParameters;
+
+  // TODO: resolve TS error
+  return params;
+}
+
+function getAutoCancelValue(value: unknown): number | false | undefined {
+  if (typeof value === "undefined") {
+    return undefined;
+  }
+  if (typeof value === "boolean") {
+    return value ? 1 : false;
+  }
+
+  if (typeof value === "number" && value > 0) {
+    return value;
+  }
+
+  throw new ValidationError(
+    `autoCancelAfterFailures: should be a positive integer or "false". Got: "${value}"`
+  );
 }
 
 export function isOffline(params: CurrentsRunParameters) {
@@ -142,6 +160,7 @@ export function getCypressRunAPIParams(
   return {
     ..._.pickBy(
       _.omit(params, [
+        "autoCancelAfterFailures",
         "cloudServiceUrl",
         "batchSize",
         "projectId",

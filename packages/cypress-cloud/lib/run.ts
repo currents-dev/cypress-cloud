@@ -1,3 +1,5 @@
+import "./init";
+
 import Debug from "debug";
 import { CurrentsRunParameters } from "../types";
 import { createRun } from "./api";
@@ -10,7 +12,7 @@ import { setAPIBaseUrl, setRunId } from "./httpClient";
 import { bold, divider, info, spacer, title } from "./log";
 import { getPlatform } from "./platform";
 import { summarizeTestResults, summaryTable } from "./results";
-import { runTillDone } from "./runner";
+import { runTillDoneOrCancelled, summary, uploadTasks } from "./runner";
 import { getSpecFiles } from "./specMatcher";
 
 const debug = Debug("currents:run");
@@ -34,6 +36,7 @@ export async function run(params: CurrentsRunParameters = {}) {
     tag,
     testingType,
     batchSize,
+    autoCancelAfterFailures,
   } = validatedParams;
 
   const config = await getMergedConfig(validatedParams);
@@ -54,9 +57,9 @@ export async function run(params: CurrentsRunParameters = {}) {
 
   info("Discovered %d spec files", specs.length);
   info(
-    `Tags: ${tag?.join(",") ?? false}; Group: ${group ?? false}; Parallel: ${
-      parallel ?? false
-    }; Batch Size: ${batchSize}`
+    `Tags: ${tag.length > 0 ? tag.join(",") : false}; Group: ${
+      group ?? false
+    }; Parallel: ${parallel ?? false}; Batch Size: ${batchSize}`
   );
   info("Connecting to cloud orchestration service...");
 
@@ -74,6 +77,7 @@ export async function run(params: CurrentsRunParameters = {}) {
     tags: tag,
     testingType,
     batchSize,
+    autoCancelAfterFailures,
   });
 
   info("🎥 Run URL:", bold(run.runUrl));
@@ -82,7 +86,7 @@ export async function run(params: CurrentsRunParameters = {}) {
 
   cutInitialOutput();
 
-  const results = await runTillDone(
+  await runTillDoneOrCancelled(
     {
       runId: run.runId,
       groupId: run.groupId,
@@ -95,12 +99,13 @@ export async function run(params: CurrentsRunParameters = {}) {
 
   divider();
 
-  const summary = summarizeTestResults(Object.values(results), config);
+  await Promise.allSettled(uploadTasks);
+  const _summary = summarizeTestResults(Object.values(summary), config);
 
   title("white", "Cloud Run Finished");
-  console.log(summaryTable(summary));
+  console.log(summaryTable(_summary));
   info("🏁 Recorded Run:", bold(run.runUrl));
 
   spacer();
-  return summary;
+  return _summary;
 }

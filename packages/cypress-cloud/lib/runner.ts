@@ -1,8 +1,7 @@
-import("./init");
-
 import { SummaryResult, ValidatedCurrentsParameters } from "../types";
 import { getCapturedOutput, resetCapture } from "./capture";
 import { MergedConfig } from "./config";
+
 import {
   getSummaryForSpec,
   getUploadResultsTask,
@@ -19,9 +18,51 @@ import {
 
 import { runSpecFileSafe } from "./cypress";
 import { isCurrents } from "./env";
+import { BPromise } from "./lang";
 import { divider, error, info, title, warn } from "./log";
+import { Event, pubsub } from "./pubsub";
 
 const debug = Debug("currents:runner");
+
+export const summary: SummaryResult = {};
+export const uploadTasks: Promise<any>[] = [];
+
+export async function runTillDoneOrCancelled(
+  ...args: Parameters<typeof runTillDone>
+) {
+  return new Promise((_resolve, _reject) => {
+    const execTask = new BPromise((resolve, reject, onCancel) => {
+      if (!onCancel) {
+        _reject(new Error("BlueBird is misconfigured: onCancel is undefined"));
+        return;
+      }
+      onCancel(() => _reject());
+      runTillDone(...args).then(
+        () => {
+          _resolve(summary);
+          resolve();
+        },
+        () => {
+          _reject();
+          reject();
+        }
+      );
+    }).finally(() => {
+      pubsub.removeListener(Event.RUN_CANCELLED, onRunCancelled);
+    });
+
+    function onRunCancelled(reason: string) {
+      warn(
+        `Run cancelled: %s. Waiting for uploads to complete and stopping execution...`,
+        reason
+      );
+      execTask.cancel();
+    }
+    pubsub.addListener(Event.RUN_CANCELLED, onRunCancelled);
+  })
+    .catch(() => {})
+    .finally(() => {});
+}
 
 export async function runTillDone(
   {
@@ -35,8 +76,6 @@ export async function runTillDone(
   },
   params: ValidatedCurrentsParameters
 ) {
-  const summary: SummaryResult = {};
-  const uploadTasks: Promise<any>[] = [];
   let hasMore = true;
 
   while (hasMore) {
@@ -62,9 +101,6 @@ export async function runTillDone(
       uploadTasks.push(task.uploadTasks);
     });
   }
-
-  await Promise.allSettled(uploadTasks);
-  return summary;
 }
 
 async function runBatch({
@@ -93,6 +129,7 @@ async function runBatch({
       ...runMeta,
       batchSize: params.batchSize,
     });
+    debug("Got batched tasks: %o", batch);
   } else {
     const response = await createInstance(runMeta);
 

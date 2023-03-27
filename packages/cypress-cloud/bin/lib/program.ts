@@ -86,6 +86,12 @@ export const createProgram = (command: Command = new Command()) =>
       "-t, --tag <tag>",
       "comma-separated tag(s) for recorded runs in Currents",
       parseCommaSeparatedList
+    )
+    .addOption(
+      new Option(
+        "--auto-cancel-after-failures <number | false>",
+        "Automatically abort the run after the specified number of failed tests. Overrides the default project settings. If set, must be a positive integer or 'false' to disable (Currents-only)"
+      ).argParser(parseAutoCancelFailures)
     );
 
 export const program = createProgram();
@@ -95,4 +101,20 @@ function parseCommaSeparatedList(value: string, previous: string[] = []) {
     return previous.concat(value.split(",").map((t) => t.trim()));
   }
   return previous;
+}
+
+function parseAutoCancelFailures(value: string): number | false {
+  if (value === "false") {
+    return false;
+  }
+
+  const parsedValue = parseInt(value, 10);
+
+  if (isNaN(parsedValue) || parsedValue < 1) {
+    throw new Error(
+      "Invalid argument provided. Must be a positive integer or 'false'."
+    );
+  }
+
+  return parsedValue;
 }
