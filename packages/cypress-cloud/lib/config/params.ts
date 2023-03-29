@@ -112,8 +112,8 @@ export function validateParams(
 
   debug("validated currents params: %o", params);
 
-  // TODO: resolve TS error
-  return params;
+  // TODO: remove this cast after finding a way to properly resolve params type after validations
+  return params as ValidatedCurrentsParameters;
 }
 
 function getAutoCancelValue(value: unknown): number | false | undefined {
