@@ -100,8 +100,8 @@ export function validateParams(
   ];
   requiredParameters.forEach((key) => {
     if (typeof params[key] === "undefined") {
-      error('Missing required run parameter "%s"', key);
-      throw new Error("Missing required run parameter.");
+      error('Missing required parameter "%s"', key);
+      throw new Error("Missing required parameter");
     }
   });
 
