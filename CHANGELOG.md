@@ -1,5 +1,17 @@
 
 
+# [1.6.0](https://github.com/currents-dev/cypress-cloud/compare/v1.5.6...v1.6.0) (2023-03-31)
+
+
+### Bug Fixes
+
+* add ts reference cypress ([a153bd7](https://github.com/currents-dev/cypress-cloud/commit/a153bd79b1305d6ccbec9f2f58c7c2eb63eb9357))
+
+
+### Features
+
+* Offline mode ([#110](https://github.com/currents-dev/cypress-cloud/issues/110)) ([dabd843](https://github.com/currents-dev/cypress-cloud/commit/dabd843990d1862d656596308b36254cf537266a))
+
 ## [1.5.6](https://github.com/currents-dev/cypress-cloud/compare/v1.5.5...v1.5.6) (2023-03-24)
 
 
