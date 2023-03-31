@@ -1,3 +1,4 @@
+/// <reference types="cypress" />
 import "source-map-support/register.js";
 
 import { run as internalRun } from "./lib/run";
