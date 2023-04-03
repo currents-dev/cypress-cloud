@@ -17,7 +17,7 @@ export function fallback(...args: string[]) {
 export function resolveCurrentsParams(
   params: CurrentsRunParameters
 ): CurrentsRunParameters {
-  const configFromFile = getCurrentsConfig();
+  const configFromFile = getCurrentsConfig(params.project);
 
   const cloudServiceUrl =
     params.cloudServiceUrl ??

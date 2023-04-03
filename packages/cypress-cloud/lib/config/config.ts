@@ -23,12 +23,13 @@ export type CurrentsConfig = {
 };
 
 let _config: CurrentsConfig | null = null;
-export function getCurrentsConfig(): CurrentsConfig {
+
+export function getCurrentsConfig(projectRoot?: string): CurrentsConfig {
   if (_config) {
     return _config;
   }
 
-  const configFilePath = getConfigFilePath();
+  const configFilePath = getConfigFilePath(projectRoot);
   debug("loading currents config file from '%s'", configFilePath);
 
   const defaultConfig: CurrentsConfig = {
@@ -58,7 +59,7 @@ export function getCurrentsConfig(): CurrentsConfig {
 
 export type MergedConfig = Awaited<ReturnType<typeof getMergedConfig>>;
 export async function getMergedConfig(params: ValidatedCurrentsParameters) {
-  debug("resolving cypress config ");
+  debug("resolving cypress config");
   const cypressResolvedConfig:
     | (Cypress.ResolvedConfigOptions & {
         projectRoot: string;
@@ -94,6 +95,6 @@ export async function getMergedConfig(params: ValidatedCurrentsParameters) {
   // and https://github.com/cypress-io/cypress/blob/develop/packages/config/src/project/utils.ts#L412
 }
 
-function getConfigFilePath(explicitLocation = null) {
-  return path.resolve(explicitLocation ?? process.cwd(), "currents.config.js");
+function getConfigFilePath(projectRoot: string | null = null) {
+  return path.resolve(projectRoot ?? process.cwd(), "currents.config.js");
 }
