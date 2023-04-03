@@ -1,4 +1,4 @@
-import { expect } from "@jest/globals";
+import { describe, expect, it } from "@jest/globals";
 import { ValidationError } from "cypress-cloud/lib/errors";
 import { CurrentsRunParameters } from "cypress-cloud/types";
 import { getCurrentsConfig } from "../config";
@@ -110,4 +110,41 @@ describe("validateParams", () => {
       ...params,
     });
   });
+});
+
+describe("validateParams", () => {
+  const baseParams: CurrentsRunParameters = {
+    cloudServiceUrl: "https://example.com",
+    projectId: "test-project",
+    recordKey: "test-record-key",
+    testingType: "e2e",
+    batchSize: 5,
+  };
+
+  it.each([
+    ["undefined", undefined, undefined],
+    ["true", true, 1],
+    ["false", false, false],
+    ["positive number", 3, 3],
+  ])("autoCancelAfterFailures: %s", (_description, input, expected) => {
+    const params = { ...baseParams, autoCancelAfterFailures: input };
+    // @ts-ignore
+    const result = validateParams(params);
+    expect(result.autoCancelAfterFailures).toEqual(expected);
+  });
+
+  it.each([
+    ["zero", 0],
+    ["negative number", -1],
+    ["invalid type (string)", "invalid"],
+  ])(
+    "autoCancelAfterFailures: throws ValidationError for %s",
+    (_description, input) => {
+      const params = { ...baseParams, autoCancelAfterFailures: input };
+      expect(() => {
+        // @ts-ignore
+        validateParams(params);
+      }).toThrow(ValidationError);
+    }
+  );
 });
