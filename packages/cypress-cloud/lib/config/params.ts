@@ -85,13 +85,7 @@ export function validateParams(
     throw new ValidationError(recordKeyError);
   }
 
-  try {
-    new URL(params.cloudServiceUrl);
-  } catch (err) {
-    throw new ValidationError(
-      `${cloudServiceInvalidUrlError}: "${params.cloudServiceUrl}"`
-    );
-  }
+  validateURL(params.cloudServiceUrl);
 
   const requiredParameters: Array<keyof CurrentsRunParameters> = [
     "testingType",
@@ -148,6 +142,14 @@ function parseTags(tagString: CurrentsRunParameters["tag"]): string[] {
     .split(",")
     .map((tag) => tag.trim())
     .filter(Boolean);
+}
+
+function validateURL(url: string): void {
+  try {
+    new URL(url);
+  } catch (err) {
+    throw new ValidationError(`${cloudServiceInvalidUrlError}: "${url}"`);
+  }
 }
 
 /**

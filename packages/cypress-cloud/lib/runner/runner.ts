@@ -1,12 +1,12 @@
-import { SummaryResult, ValidatedCurrentsParameters } from "../types";
-import { getCapturedOutput, resetCapture } from "./capture";
-import { MergedConfig } from "./config";
+import { ValidatedCurrentsParameters } from "cypress-cloud/types";
+import { getCapturedOutput, resetCapture } from "../capture";
+import { MergedConfig } from "../config";
 
 import {
   getSummaryForSpec,
   getUploadResultsTask,
   normalizeRawResult,
-} from "./results";
+} from "../results";
 
 import Debug from "debug";
 import {
@@ -14,55 +14,14 @@ import {
   createInstance,
   CreateInstancePayload,
   InstanceResponseSpecDetails,
-} from "./api";
+} from "../api";
 
-import { runSpecFileSafe } from "./cypress";
-import { isCurrents } from "./env";
-import { BPromise } from "./lang";
-import { divider, error, info, title, warn } from "./log";
-import { Event, pubsub } from "./pubsub";
+import { runSpecFileSafe } from "../cypress";
+import { isCurrents } from "../env";
+import { divider, error, info, title, warn } from "../log";
+import { summary, uploadTasks } from "./state";
 
 const debug = Debug("currents:runner");
-
-export const summary: SummaryResult = {};
-export const uploadTasks: Promise<any>[] = [];
-
-export async function runTillDoneOrCancelled(
-  ...args: Parameters<typeof runTillDone>
-) {
-  return new Promise((_resolve, _reject) => {
-    const execTask = new BPromise((resolve, reject, onCancel) => {
-      if (!onCancel) {
-        _reject(new Error("BlueBird is misconfigured: onCancel is undefined"));
-        return;
-      }
-      onCancel(() => _reject());
-      runTillDone(...args).then(
-        () => {
-          _resolve(summary);
-          resolve();
-        },
-        () => {
-          _reject();
-          reject();
-        }
-      );
-    }).finally(() => {
-      pubsub.removeListener(Event.RUN_CANCELLED, onRunCancelled);
-    });
-
-    function onRunCancelled(reason: string) {
-      warn(
-        `Run cancelled: %s. Waiting for uploads to complete and stopping execution...`,
-        reason
-      );
-      execTask.cancel();
-    }
-    pubsub.addListener(Event.RUN_CANCELLED, onRunCancelled);
-  })
-    .catch(() => {})
-    .finally(() => {});
-}
 
 export async function runTillDone(
   {
