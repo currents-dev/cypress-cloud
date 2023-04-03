@@ -1,5 +1,5 @@
 import { CiParams, CiProvider } from "cypress-cloud/lib/ciProvider";
-import { Platform } from "cypress-cloud/types";
+import { Platform, ValidatedCurrentsParameters } from "cypress-cloud/types";
 
 export type CreateRunPayload = {
   ci: {
@@ -21,6 +21,7 @@ export type CreateRunPayload = {
   testingType: "e2e" | "component";
   timeout?: number;
   batchSize?: number;
+  autoCancelAfterFailures: ValidatedCurrentsParameters["autoCancelAfterFailures"];
 };
 
 export type CloudWarning = {

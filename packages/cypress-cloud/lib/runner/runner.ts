@@ -1,13 +1,12 @@
-import("./init");
+import { ValidatedCurrentsParameters } from "cypress-cloud/types";
+import { getCapturedOutput, resetCapture } from "../capture";
+import { MergedConfig } from "../config";
 
-import { SummaryResult, ValidatedCurrentsParameters } from "../types";
-import { getCapturedOutput, resetCapture } from "./capture";
-import { MergedConfig } from "./config";
 import {
   getSummaryForSpec,
   getUploadResultsTask,
   normalizeRawResult,
-} from "./results";
+} from "../results";
 
 import Debug from "debug";
 import {
@@ -15,11 +14,12 @@ import {
   createInstance,
   CreateInstancePayload,
   InstanceResponseSpecDetails,
-} from "./api";
+} from "../api";
 
-import { runSpecFileSafe } from "./cypress";
-import { isCurrents } from "./env";
-import { divider, error, info, title, warn } from "./log";
+import { runSpecFileSafe } from "../cypress";
+import { isCurrents } from "../env";
+import { divider, error, info, title, warn } from "../log";
+import { summary, uploadTasks } from "./state";
 
 const debug = Debug("currents:runner");
 
@@ -35,8 +35,6 @@ export async function runTillDone(
   },
   params: ValidatedCurrentsParameters
 ) {
-  const summary: SummaryResult = {};
-  const uploadTasks: Promise<any>[] = [];
   let hasMore = true;
 
   while (hasMore) {
@@ -62,9 +60,6 @@ export async function runTillDone(
       uploadTasks.push(task.uploadTasks);
     });
   }
-
-  await Promise.allSettled(uploadTasks);
-  return summary;
 }
 
 async function runBatch({
@@ -93,6 +88,7 @@ async function runBatch({
       ...runMeta,
       batchSize: params.batchSize,
     });
+    debug("Got batched tasks: %o", batch);
   } else {
     const response = await createInstance(runMeta);
 

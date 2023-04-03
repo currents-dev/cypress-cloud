@@ -27,10 +27,6 @@ export function getCurrentsConfig(): CurrentsConfig {
   if (_config) {
     return _config;
   }
-
-  const configFilePath = getConfigFilePath();
-  debug("loading currents config file from '%s'", configFilePath);
-
   const defaultConfig: CurrentsConfig = {
     e2e: {
       batchSize: 3,
@@ -41,8 +37,12 @@ export function getCurrentsConfig(): CurrentsConfig {
     cloudServiceUrl: "https://cy.currents.dev",
   };
 
+  const configFilePath = getConfigFilePath();
   try {
-    const fsConfig = require(configFilePath);
+    const resovledPath = path.resolve(configFilePath);
+    debug("loading currents config file from '%s'", resovledPath);
+
+    const fsConfig = require(resovledPath);
     _config = {
       ...defaultConfig,
       ...fsConfig,
@@ -95,5 +95,5 @@ export async function getMergedConfig(params: ValidatedCurrentsParameters) {
 }
 
 function getConfigFilePath(explicitLocation = null) {
-  return path.resolve(explicitLocation ?? process.cwd(), "currents.config.js");
+  return explicitLocation ?? process.cwd(), "currents.config.js";
 }
