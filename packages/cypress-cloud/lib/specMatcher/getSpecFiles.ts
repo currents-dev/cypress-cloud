@@ -30,6 +30,7 @@ export const getSpecFiles = async ({
   });
   if (specs.length === 0) {
     warn("No spec files found to execute. Configuration: %O", {
+      projectRoot: config.projectRoot,
       specPattern,
       configSpecPattern: config.specPattern,
       excludeSpecPattern: [

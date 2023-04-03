@@ -1,6 +1,10 @@
 import("./init");
 
-import { SummaryResult, ValidatedCurrentsParameters } from "../types";
+import {
+  SpecWithRelativeRoot,
+  SummaryResult,
+  ValidatedCurrentsParameters,
+} from "../types";
 import { getCapturedOutput, resetCapture } from "./capture";
 import { MergedConfig } from "./config";
 import {
@@ -30,8 +34,10 @@ export async function runTillDone(
     machineId,
     platform,
     config,
+    specs: allSpecs,
   }: CreateInstancePayload & {
     config: MergedConfig;
+    specs: SpecWithRelativeRoot[];
   },
   params: ValidatedCurrentsParameters
 ) {
@@ -47,6 +53,7 @@ export async function runTillDone(
         machineId,
         platform,
       },
+      allSpecs,
       params,
       config,
     });
@@ -71,6 +78,7 @@ async function runBatch({
   runMeta,
   config,
   params,
+  allSpecs,
 }: {
   runMeta: {
     runId: string;
@@ -78,6 +86,7 @@ async function runBatch({
     machineId: string;
     platform: CreateInstancePayload["platform"];
   };
+  allSpecs: SpecWithRelativeRoot[];
   config: MergedConfig;
   params: ValidatedCurrentsParameters;
 }) {
@@ -119,7 +128,13 @@ async function runBatch({
   );
 
   const rawResult = await runSpecFileSafe(
-    { spec: batch.specs.map((s) => s.spec).join(",") },
+    {
+      // use absolute paths -  user can run the program from a different directory, e.g. nx or a monorepo workspace
+      // cypress still reports the path relative to the project root
+      spec: batch.specs
+        .map((bs) => getSpecAbsolutePath(allSpecs, bs.spec))
+        .join(","),
+    },
     params
   );
   const normalizedResult = normalizeRawResult(
@@ -153,4 +168,20 @@ async function runBatch({
   });
 
   return batchResult;
+}
+
+function getSpecAbsolutePath(
+  allSpecs: SpecWithRelativeRoot[],
+  relative: string
+) {
+  const absolutePath = allSpecs.find((i) => i.relative === relative)?.absolute;
+  if (!absolutePath) {
+    warn(
+      'Cannot find absolute path for spec. Spec: "%s", candidates: %',
+      relative,
+      allSpecs
+    );
+    throw new Error(`Cannot find absolute path for spec`);
+  }
+  return absolutePath;
 }

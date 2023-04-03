@@ -41,6 +41,7 @@ export async function run(params: CurrentsRunParameters = {}) {
     config,
     params: validatedParams,
   });
+
   if (specs.length === 0) {
     return;
   }
@@ -89,6 +90,7 @@ export async function run(params: CurrentsRunParameters = {}) {
       machineId: run.machineId,
       platform,
       config,
+      specs,
     },
     validatedParams
   );

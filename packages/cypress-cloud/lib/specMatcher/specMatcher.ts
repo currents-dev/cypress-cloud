@@ -170,18 +170,16 @@ function matchedSpecs({
     commonRoot = commonPathPrefix(specAbsolutePaths);
   }
 
-  const specs = specAbsolutePaths.map((absolute) => {
-    return transformSpec({
+  return specAbsolutePaths.map((absolute) =>
+    transformSpec({
       projectRoot,
       absolute,
       testingType,
       commonRoot,
       platform: os.platform(),
       sep: path.sep,
-    });
-  });
-
-  return specs;
+    })
+  );
 }
 
 export interface TransformSpec {
