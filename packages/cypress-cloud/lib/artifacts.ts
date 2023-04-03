@@ -41,7 +41,7 @@ export async function uploadArtifacts({
     )(videoPath, videoUploadUrl);
   }
   // upload screenshots
-  if (screenshotUploadUrls.length) {
+  if (screenshotUploadUrls && screenshotUploadUrls.length) {
     await Promise.all(
       screenshots.map((screenshot) => {
         const url = screenshotUploadUrls.find(
