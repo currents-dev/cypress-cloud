@@ -123,4 +123,7 @@ export type UpdateInstanceResultsMergedPayload = {
 export interface UpdateInstanceResultsResponse {
   videoUploadUrl?: string | null;
   screenshotUploadUrls: ScreenshotUploadInstruction[];
+  cloud?: {
+    shouldCancel: false | string;
+  };
 }

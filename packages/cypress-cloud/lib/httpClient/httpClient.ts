@@ -30,7 +30,6 @@ export function getClient() {
 
   _client.interceptors.request.use((config) => {
     const headers: RawAxiosRequestHeaders = {
-      "Content-Type": "application/json",
       ...config.headers,
       // @ts-ignore
       "x-cypress-request-attempt": config["axios-retry"]?.retryCount ?? 0,
@@ -40,12 +39,18 @@ export function getClient() {
     if (_runId) {
       headers["x-cypress-run-id"] = _runId;
     }
+    if (!headers["Content-Type"]) {
+      headers["Content-Type"] = "application/json";
+    }
     const req = {
       ...config,
       headers,
     };
 
-    debug("network request: %o", req);
+    debug("network request: %o", {
+      ..._.pick(req, "method", "url", "headers"),
+      data: Buffer.isBuffer(req.data) ? "buffer" : req.data,
+    });
     return req;
   });
 
@@ -93,7 +98,7 @@ export const makeRequest = <T = any, D = any>(
 ) => {
   return getClient()<D, AxiosResponse<T>>(config)
     .then((res) => {
-      debug("network request response: %o", _.omit(res, "request", "config"));
+      debug("network response: %o", _.omit(res, "request", "config"));
       return res;
     })
     .catch((error) => {

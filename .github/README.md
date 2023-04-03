@@ -57,6 +57,37 @@ module.exports = defineConfig({
 });
 ```
 
+### Setup with existing plugins
+
+`cypress-cloud/plugin` needs access to certain environment variables that are injected into the `config` parameter of `setupNodeEvents(on, config)`.
+
+Please make sure to preserve the original `config.env` parameters in case you are using additional plugins, e.g.:
+
+```js
+const { defineConfig } = require("cypress");
+const { cloudPlugin } = require("cypress-cloud/plugin");
+
+module.exports = defineConfig({
+  e2e: {
+    // ...
+    setupNodeEvents(on, config) {
+      // alternative: activate the plugin first
+      // cloudPlugin(on, config)
+      const enhancedConfig = {
+        env: {
+          // preserve the original env
+          ...config.env,
+          customVariable: "value",
+        },
+      };
+      return cloudPlugin(on, enhancedConfig);
+    },
+  },
+});
+```
+
+As an alternative, you can activate the `cloudPlugin` first, and then implement the custom setup. Please contact our support if you have a complex plugin configuration to get assistance with the setup.
+
 ## Usage
 
 ```sh

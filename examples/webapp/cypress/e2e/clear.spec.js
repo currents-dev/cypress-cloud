@@ -15,7 +15,7 @@ context("Clear completed button", function () {
     function () {
       cy.get("@todos").eq(0).find(".toggle").check();
 
-      cy.get(".clear-completed").contains("Clear completed");
+      cy.get(".clear-completed").contains("Clear completed X");
     }
   );
 
@@ -30,7 +30,7 @@ context("Clear completed button", function () {
       cy.get(".clear-completed").click();
       cy.get("@todos").should("have.length", 2);
       cy.get(".todo-list li").eq(0).should("contain", TODO_ITEM_ONE);
-      cy.get(".todo-list li").eq(1).should("contain", TODO_ITEM_THREE);
+      cy.get(".todo-list li").eq(1).should("contain", "XXXX");
     }
   );
 

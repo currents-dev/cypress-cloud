@@ -10,10 +10,6 @@ import { error } from "../log";
 import { getCurrentsConfig } from "./config";
 const debug = Debug("currents:validateParams");
 
-export function fallback(...args: string[]) {
-  return args.find((arg) => arg !== undefined && arg !== null && arg !== "");
-}
-
 export function resolveCurrentsParams(
   params: CurrentsRunParameters
 ): CurrentsRunParameters {
@@ -87,32 +83,46 @@ export function validateParams(
     throw new ValidationError(recordKeyError);
   }
 
-  // validate cloudServiceUrl
-  try {
-    new URL(params.cloudServiceUrl);
-  } catch (err) {
-    throw new ValidationError(
-      `${cloudServiceInvalidUrlError}: "${params.cloudServiceUrl}"`
-    );
-  }
+  validateURL(params.cloudServiceUrl);
 
   const requiredParameters: Array<keyof CurrentsRunParameters> = [
     "testingType",
     "batchSize",
+    "projectId",
   ];
   requiredParameters.forEach((key) => {
     if (typeof params[key] === "undefined") {
-      error(
-        'Missing required parameter "%s". Please provide at least the following parameters: %s',
-        key,
-        requiredParameters.join(", ")
-      );
+      error('Missing required parameter "%s"', key);
       throw new Error("Missing required parameter");
     }
   });
+
   params.tag = parseTags(params.tag);
+  params.autoCancelAfterFailures = getAutoCancelValue(
+    params.autoCancelAfterFailures
+  );
+
   debug("validated currents params: %o", params);
+
+  // TODO: remove this cast after finding a way to properly resolve params type after validations
   return params as ValidatedCurrentsParameters;
+}
+
+function getAutoCancelValue(value: unknown): number | false | undefined {
+  if (typeof value === "undefined") {
+    return undefined;
+  }
+  if (typeof value === "boolean") {
+    return value ? 1 : false;
+  }
+
+  if (typeof value === "number" && value > 0) {
+    return value;
+  }
+
+  throw new ValidationError(
+    `autoCancelAfterFailures: should be a positive integer or "false". Got: "${value}"`
+  );
 }
 
 export function isOffline(params: CurrentsRunParameters) {
@@ -132,6 +142,14 @@ function parseTags(tagString: CurrentsRunParameters["tag"]): string[] {
     .filter(Boolean);
 }
 
+function validateURL(url: string): void {
+  try {
+    new URL(url);
+  } catch (err) {
+    throw new ValidationError(`${cloudServiceInvalidUrlError}: "${url}"`);
+  }
+}
+
 /**
  *
  * @returns Cypress options without items that affect recording mode
@@ -142,6 +160,7 @@ export function getCypressRunAPIParams(
   return {
     ..._.pickBy(
       _.omit(params, [
+        "autoCancelAfterFailures",
         "cloudServiceUrl",
         "batchSize",
         "projectId",
