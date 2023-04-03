@@ -1,0 +1,13 @@
+{
+  "name": "test-monorepo",
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": {
+    "cypress-cloud": "*"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.12",
+    "tsconfig": "*",
+    "typescript": "^4.7.4"
+  }
+}
