@@ -48,9 +48,7 @@ export async function runSpecFile(
       ...runAPIOptions.env,
       currents_ws: true,
     },
-    spec: runAPIOptions.project !== null && runAPIOptions.project !== ''
-            ? `${runAPIOptions.project}/${spec}`
-            : spec,
+    spec,
   };
   debug("running cypress with options %o", options);
   const result = await cypress.run(options);
