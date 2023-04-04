@@ -1,15 +1,10 @@
 import {
   CurrentsRunParameters,
   ValidatedCurrentsParameters,
-} from "../../types";
+} from "cypress-cloud/types";
 import { MergedConfig } from "../config/config";
 import { warn } from "../log";
 import { findSpecs } from "./specMatcher";
-
-const getSpecPattern = (
-  configPattern: MergedConfig["specPattern"],
-  explicit?: CurrentsRunParameters["spec"]
-) => explicit || configPattern;
 
 export const getSpecFiles = async ({
   config,
@@ -21,7 +16,8 @@ export const getSpecFiles = async ({
   const specPattern = getSpecPattern(config.specPattern, params.spec);
   // find the spec files according to the resolved configuration
   const specs = await findSpecs({
-    projectRoot: config.projectRoot,
+    // https://docs.cypress.io/guides/guides/command-line#cypress-run-spec-lt-spec-gt
+    projectRoot: params.project ?? config.projectRoot,
     testingType: params.testingType,
     specPattern,
     configSpecPattern: config.specPattern,
@@ -30,7 +26,7 @@ export const getSpecFiles = async ({
   });
   if (specs.length === 0) {
     warn(
-      "Found no spec files to run. Was looking for spec files that match both configSpecPattern and specPattern relative to projectRoot. Configuration: %O",
+      "Found no spec files. Was looking for spec files that match both configSpecPattern and specPattern relative to projectRoot. Configuration: %O",
       {
         projectRoot: config.projectRoot,
         specPattern,
@@ -42,7 +38,13 @@ export const getSpecFiles = async ({
         testingType: params.testingType,
       }
     );
-    return { specs: [], specPattern };
   }
   return { specs, specPattern };
 };
+
+function getSpecPattern(
+  configPattern: MergedConfig["specPattern"],
+  explicit?: CurrentsRunParameters["spec"]
+) {
+  return explicit || configPattern;
+}

@@ -177,7 +177,7 @@ As an alternative, you can activate the `cloudPlugin` first, and then implement 
 - if `--spec` flag is provided, use the intersection of `specPattern` and `--spec`
 - if no spec files were discovered, halt the execution and show a warning
 
-The script will use cypress project root (`-P --project`) or `cwd` for relative globs discovery.
+Enable the debug mode to troubleshoot files discovery: `DEBUG=currents:specs npx cypress-cloud ...`
 
 ## Troubleshooting
 
