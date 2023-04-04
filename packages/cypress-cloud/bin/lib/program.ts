@@ -57,7 +57,7 @@ export const createProgram = (command: Command = new Command()) =>
     )
     .option(
       "-P, --project <project-path>",
-      "path to your Cypress project root location"
+      "path to your Cypress project root location - defaults to the current working directory"
     )
     .option("-q, --quiet", "suppress verbose output from Cypress")
     .addOption(

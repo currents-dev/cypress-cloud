@@ -10,12 +10,10 @@ import { error } from "../log";
 import { getCurrentsConfig } from "./config";
 const debug = Debug("currents:validateParams");
 
-export function fallback(...args: string[]) {
-  return args.find((arg) => arg !== undefined && arg !== null && arg !== "");
-}
-
-export function resolveCurrentsParams(params: CurrentsRunParameters) {
-  const configFromFile = getCurrentsConfig();
+export function resolveCurrentsParams(
+  params: CurrentsRunParameters
+): CurrentsRunParameters {
+  const configFromFile = getCurrentsConfig(params.project);
 
   const cloudServiceUrl =
     params.cloudServiceUrl ??
