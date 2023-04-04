@@ -1,5 +1,18 @@
 
 
+# [1.7.0](https://github.com/currents-dev/cypress-cloud/compare/v1.6.0...v1.7.0) (2023-04-04)
+
+
+### Bug Fixes
+
+* prevent crashes for missing screenshotsUrl ([3cd4cbc](https://github.com/currents-dev/cypress-cloud/commit/3cd4cbc43a20fb975af7f105aaa57b8ef20ac2a0))
+* respect project root ([#115](https://github.com/currents-dev/cypress-cloud/issues/115)) ([0aadfea](https://github.com/currents-dev/cypress-cloud/commit/0aadfea62d795091960ea19be23735835c8c53cf))
+
+
+### Features
+
+* implement --auto-cancel-after-failures ([#112](https://github.com/currents-dev/cypress-cloud/issues/112)) ([cb5b758](https://github.com/currents-dev/cypress-cloud/commit/cb5b7587eb0666f66cecf3c9edd851292c9e53aa)), closes [#110](https://github.com/currents-dev/cypress-cloud/issues/110)
+
 # [1.6.0](https://github.com/currents-dev/cypress-cloud/compare/v1.5.6...v1.6.0) (2023-03-31)
 
 
