@@ -10,6 +10,7 @@ import { uploadArtifacts, uploadStdoutSafe } from "../artifacts";
 import { getInitialOutput } from "../capture";
 import { isCurrents } from "../env";
 import { warn } from "../log";
+import { setCancellationReason } from "../state";
 import { getInstanceResultPayload, getInstanceTestsPayload } from "./results";
 const debug = Debug("currents:results");
 
@@ -52,12 +53,16 @@ export async function processCypressResults(
   const instanceResults = getInstanceResultPayload(run);
   const instanceTests = getInstanceTestsPayload(run, results.config);
 
-  const { videoUploadUrl, screenshotUploadUrls } = await reportResults(
+  const { videoUploadUrl, screenshotUploadUrls, cloud } = await reportResults(
     instanceId,
     instanceTests,
     instanceResults
   );
 
+  if (cloud?.shouldCancel) {
+    debug("instance %s should cancel", instanceId);
+    setCancellationReason(cloud.shouldCancel);
+  }
   debug("instance %s artifact upload instructions %o", instanceId, {
     videoUploadUrl,
     screenshotUploadUrls,

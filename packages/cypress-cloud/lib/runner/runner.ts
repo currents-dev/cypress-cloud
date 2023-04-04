@@ -1,13 +1,15 @@
-import("./init");
+import {
+  SpecWithRelativeRoot,
+  ValidatedCurrentsParameters,
+} from "cypress-cloud/types";
+import { getCapturedOutput, resetCapture } from "../capture";
+import { MergedConfig } from "../config";
 
-import { SummaryResult, ValidatedCurrentsParameters } from "../types";
-import { getCapturedOutput, resetCapture } from "./capture";
-import { MergedConfig } from "./config";
 import {
   getSummaryForSpec,
   getUploadResultsTask,
   normalizeRawResult,
-} from "./results";
+} from "../results";
 
 import Debug from "debug";
 import {
@@ -15,11 +17,12 @@ import {
   createInstance,
   CreateInstancePayload,
   InstanceResponseSpecDetails,
-} from "./api";
+} from "../api";
 
-import { runSpecFileSafe } from "./cypress";
-import { isCurrents } from "./env";
-import { divider, error, info, title, warn } from "./log";
+import { runSpecFileSafe } from "../cypress";
+import { isCurrents } from "../env";
+import { divider, error, info, title, warn } from "../log";
+import { summary, uploadTasks } from "./state";
 
 const debug = Debug("currents:runner");
 
@@ -30,13 +33,13 @@ export async function runTillDone(
     machineId,
     platform,
     config,
+    specs: allSpecs,
   }: CreateInstancePayload & {
     config: MergedConfig;
+    specs: SpecWithRelativeRoot[];
   },
   params: ValidatedCurrentsParameters
 ) {
-  const summary: SummaryResult = {};
-  const uploadTasks: Promise<any>[] = [];
   let hasMore = true;
 
   while (hasMore) {
@@ -47,6 +50,7 @@ export async function runTillDone(
         machineId,
         platform,
       },
+      allSpecs,
       params,
       config,
     });
@@ -62,15 +66,13 @@ export async function runTillDone(
       uploadTasks.push(task.uploadTasks);
     });
   }
-
-  await Promise.allSettled(uploadTasks);
-  return summary;
 }
 
 async function runBatch({
   runMeta,
   config,
   params,
+  allSpecs,
 }: {
   runMeta: {
     runId: string;
@@ -78,6 +80,7 @@ async function runBatch({
     machineId: string;
     platform: CreateInstancePayload["platform"];
   };
+  allSpecs: SpecWithRelativeRoot[];
   config: MergedConfig;
   params: ValidatedCurrentsParameters;
 }) {
@@ -93,6 +96,7 @@ async function runBatch({
       ...runMeta,
       batchSize: params.batchSize,
     });
+    debug("Got batched tasks: %o", batch);
   } else {
     const response = await createInstance(runMeta);
 
@@ -119,7 +123,13 @@ async function runBatch({
   );
 
   const rawResult = await runSpecFileSafe(
-    { spec: batch.specs.map((s) => s.spec).join(",") },
+    {
+      // use absolute paths -  user can run the program from a different directory, e.g. nx or a monorepo workspace
+      // cypress still reports the path relative to the project root
+      spec: batch.specs
+        .map((bs) => getSpecAbsolutePath(allSpecs, bs.spec))
+        .join(","),
+    },
     params
   );
   const normalizedResult = normalizeRawResult(
@@ -153,4 +163,20 @@ async function runBatch({
   });
 
   return batchResult;
+}
+
+function getSpecAbsolutePath(
+  allSpecs: SpecWithRelativeRoot[],
+  relative: string
+) {
+  const absolutePath = allSpecs.find((i) => i.relative === relative)?.absolute;
+  if (!absolutePath) {
+    warn(
+      'Cannot find absolute path for spec. Spec: "%s", candidates: %',
+      relative,
+      allSpecs
+    );
+    throw new Error(`Cannot find absolute path for spec`);
+  }
+  return absolutePath;
 }

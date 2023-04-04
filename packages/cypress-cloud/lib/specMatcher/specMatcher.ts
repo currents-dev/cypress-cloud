@@ -91,25 +91,27 @@ export async function findSpecs({
 }
 
 async function getFilesByGlob(
-  cwd: string,
+  projectRoot: string,
   glob: GlobPattern,
   globOptions: GlobbyOptions
 ) {
-  const globs = ([] as string[]).concat(glob).map((globPattern) => {
-    const workingDirectoryPrefix = path.join(cwd, path.sep);
+  const workingDirectoryPrefix = path.join(projectRoot, path.sep);
+  const globs = ([] as string[])
+    .concat(glob)
+    .map((globPattern) =>
+      globPattern.startsWith("./") ? globPattern.replace("./", "") : globPattern
+    )
+    .map((globPattern) => {
+      // If the pattern includes the working directory, we strip it from the pattern.
+      // The working directory path may include characters that conflict with glob
+      // syntax (brackets, parentheses, etc.) and cause our searches to inadvertently fail.
+      // We scope our search to the working directory using the `cwd` globby option.
+      if (globPattern.startsWith(workingDirectoryPrefix)) {
+        return globPattern.replace(workingDirectoryPrefix, "");
+      }
 
-    // If the pattern includes the working directory, we strip it from the pattern.
-    // The working directory path may include characters that conflict with glob
-    // syntax (brackets, parentheses, etc.) and cause our searches to inadvertently fail.
-    // We scope our search to the working directory using the `cwd` globby option.
-    if (globPattern.startsWith(workingDirectoryPrefix)) {
-      return globPattern.replace(workingDirectoryPrefix, "");
-    }
-
-    return globPattern;
-  });
-
-  const ignoreGlob = (globOptions?.ignore ?? []).concat("**/node_modules/**");
+      return globPattern;
+    });
 
   if (os.platform() === "win32") {
     // globby can't work with backwards slashes
@@ -126,20 +128,17 @@ async function getFilesByGlob(
 
   try {
     debug("globbing pattern(s): %o", globs);
-    debug("within directory: %s", cwd);
+    debug("within directory: %s", projectRoot);
 
-    const files = await matchGlobs(globs, {
+    return matchGlobs(globs, {
       onlyFiles: true,
       absolute: true,
-      cwd,
+      cwd: projectRoot,
       ...globOptions,
-      ignore: ignoreGlob,
+      ignore: (globOptions?.ignore ?? []).concat("**/node_modules/**"),
     });
-
-    return files;
   } catch (e) {
     debug("error in getFilesByGlob %o", e);
-
     return [];
   }
 }
@@ -170,18 +169,16 @@ function matchedSpecs({
     commonRoot = commonPathPrefix(specAbsolutePaths);
   }
 
-  const specs = specAbsolutePaths.map((absolute) => {
-    return transformSpec({
+  return specAbsolutePaths.map((absolute) =>
+    transformSpec({
       projectRoot,
       absolute,
       testingType,
       commonRoot,
       platform: os.platform(),
       sep: path.sep,
-    });
-  });
-
-  return specs;
+    })
+  );
 }
 
 export interface TransformSpec {

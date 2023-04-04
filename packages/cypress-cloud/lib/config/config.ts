@@ -23,14 +23,11 @@ export type CurrentsConfig = {
 };
 
 let _config: CurrentsConfig | null = null;
-export function getCurrentsConfig(): CurrentsConfig {
+
+export function getCurrentsConfig(projectRoot?: string): CurrentsConfig {
   if (_config) {
     return _config;
   }
-
-  const configFilePath = getConfigFilePath();
-  debug("loading currents config file from '%s'", configFilePath);
-
   const defaultConfig: CurrentsConfig = {
     e2e: {
       batchSize: 3,
@@ -41,8 +38,12 @@ export function getCurrentsConfig(): CurrentsConfig {
     cloudServiceUrl: "https://cy.currents.dev",
   };
 
+  const configFilePath = getConfigFilePath(projectRoot);
   try {
-    const fsConfig = require(configFilePath);
+    const resolvedPath = path.resolve(...configFilePath);
+    debug("loading currents config file from '%s'", resolvedPath);
+
+    const fsConfig = require(resolvedPath);
     _config = {
       ...defaultConfig,
       ...fsConfig,
@@ -58,7 +59,7 @@ export function getCurrentsConfig(): CurrentsConfig {
 
 export type MergedConfig = Awaited<ReturnType<typeof getMergedConfig>>;
 export async function getMergedConfig(params: ValidatedCurrentsParameters) {
-  debug("resolving cypress config ");
+  debug("resolving cypress config");
   const cypressResolvedConfig:
     | (Cypress.ResolvedConfigOptions & {
         projectRoot: string;
@@ -77,6 +78,8 @@ export async function getMergedConfig(params: ValidatedCurrentsParameters) {
     additionalIgnorePattern = rawE2EPattern;
   }
 
+  // see https://github.com/cypress-io/cypress/blob/ed0668e24c2ee6753bbd25ae467ce94ae5857741/packages/config/src/options.ts#L457
+  // and https://github.com/cypress-io/cypress/blob/develop/packages/config/src/project/utils.ts#L412
   const result = {
     projectRoot: cypressResolvedConfig?.projectRoot || process.cwd(),
     projectId: params.projectId,
@@ -89,11 +92,8 @@ export async function getMergedConfig(params: ValidatedCurrentsParameters) {
   };
   debug("merged config: %O", result);
   return result;
-
-  // see https://github.com/cypress-io/cypress/blob/ed0668e24c2ee6753bbd25ae467ce94ae5857741/packages/config/src/options.ts#L457
-  // and https://github.com/cypress-io/cypress/blob/develop/packages/config/src/project/utils.ts#L412
 }
 
-function getConfigFilePath(explicitLocation = null) {
-  return path.resolve(explicitLocation ?? process.cwd(), "currents.config.js");
+function getConfigFilePath(projectRoot: string | null = null) {
+  return [projectRoot ?? process.cwd(), "currents.config.js"];
 }

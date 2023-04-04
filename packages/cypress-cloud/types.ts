@@ -107,6 +107,7 @@ export type SummaryResult = Record<string, CypressCommandLine.CypressRunResult>;
 // Explicitly filter cypress record-related flags - prevent triggering recording mode to avoid confusion
 export type StrippedCypressModuleAPIOptions = Omit<
   Partial<CypressCommandLine.CypressRunOptions>,
+  | "autoCancelAfterFailures"
   | "tag"
   | "spec"
   | "exit"
@@ -161,6 +162,9 @@ export type CurrentsRunParameters = StrippedCypressModuleAPIOptions & {
 
   /** "e2e" or "component", the default value is "e2e" */
   testingType?: TestingType;
+
+  /** Automatically abort the run after the specified number of failed tests. Overrides the default project settings. If set, must be a positive integer or "false" to disable (Currents-only) */
+  autoCancelAfterFailures?: number | false;
 };
 
 // User-facing `run` interface
@@ -175,4 +179,5 @@ export interface ValidatedCurrentsParameters extends CurrentsRunParameters {
   readonly testingType: TestingType;
   readonly recordKey: string;
   readonly tag: string[];
+  readonly autoCancelAfterFailures: number | false | undefined;
 }

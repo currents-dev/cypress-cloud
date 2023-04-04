@@ -29,7 +29,8 @@ Install the package:
 npm install cypress-cloud
 ```
 
-Create a new configuration file: `currents.config.js` in the project’s root, set the `projectId` and the record key obtained from [Currents](https://app.currents.dev) or your self-hosted instance of Sorry Cypress:
+- Create a new configuration file: `currents.config.js` in the Cypress project’s root
+- Set the `projectId` and the record key obtained from [Currents](https://app.currents.dev) or your self-hosted instance of Sorry Cypress:
 
 ```js
 // currents.config.js
@@ -62,7 +63,9 @@ module.exports = defineConfig({
 npx cypress-cloud --parallel --record --key <your_key> --ci-build-id hello-cypress-cloud
 ```
 
-See all the available options `npx cypress-cloud --help`. Learn more about [CI Build ID](https://currents.dev/readme/guides/cypress-ci-build-id).
+`cypress-cloud` is designed for use in a headless mode in a CI environment, it provides the same flags and options as `cypress` command, but certain flags are preset and hidden. See all the available options `npx cypress-cloud --help`.
+
+Learn more about [CI Build ID](https://currents.dev/readme/guides/cypress-ci-build-id) and [Parallelization](https://currents.dev/readme/guides/parallelization).
 
 ## Example
 
@@ -73,7 +76,7 @@ See an example in [examples/webapp](https://github.com/currents-dev/cypress-clou
 ```js
 // currents.config.js
 module.exports = {
-  projectId: "Ij0RfK", // ProjectID obtained from https://app.currents.dev or Sorry Cypress
+  projectId: "Ij0RfK", // Project Id obtained from https://app.currents.dev or Sorry Cypress
   recordKey: "XXXXXXX", // Record key obtained from https://app.currents.dev, any value for Sorry Cypress
   cloudServiceUrl: "https://cy.currents.dev", // Sorry Cypress users - the director service URL
   e2e: {
@@ -84,6 +87,8 @@ module.exports = {
   },
 };
 ```
+
+`cypress-cloud` will search for `currents.config.js` at the project's root location (defined with `-P --project` CLI option).
 
 Override the default configuration values via environment variables:
 
@@ -100,7 +105,7 @@ The configuration variables will resolve as follows:
 
 ## Batched Orchestration
 
-This package uses its own orchestration and reporting protocol that is independent of cypress native implementation. The new [orchestration protocol](https://currents.dev/readme/integration-with-cypress/cypress-cloud#batched-orchestration) uses cypress in "offline" mode and allows batching multiple spec files for better efficiency. You can adjust the batching configuration in `cypress.config.js` and use different values for e2e and component tests.
+This package uses its own orchestration and reporting protocol that is independent of cypress native implementation. The new [orchestration protocol](https://currents.dev/readme/integration-with-cypress/cypress-cloud#batched-orchestration) uses cypress in "offline" mode and allows batching multiple spec files for better efficiency. You can adjust the batching configuration in `currents.config.js` and use different values for e2e and component tests.
 
 ## API
 
@@ -130,6 +135,49 @@ const results = await run({
   },
 });
 ```
+
+## Guides
+
+### Setup with existing plugins
+
+`cypress-cloud/plugin` needs access to certain environment variables that are injected into the `config` parameter of `setupNodeEvents(on, config)`.
+
+Please make sure to preserve the original `config.env` parameters in case you are using additional plugins, e.g.:
+
+```js
+const { defineConfig } = require("cypress");
+const { cloudPlugin } = require("cypress-cloud/plugin");
+
+module.exports = defineConfig({
+  e2e: {
+    // ...
+    setupNodeEvents(on, config) {
+      // alternative: activate the plugin first
+      // cloudPlugin(on, config)
+      const enhancedConfig = {
+        env: {
+          // preserve the original env
+          ...config.env,
+          customVariable: "value",
+        },
+      };
+      return cloudPlugin(on, enhancedConfig);
+    },
+  },
+});
+```
+
+As an alternative, you can activate the `cloudPlugin` first, and then implement the custom setup. Please contact our support if you have a complex plugin configuration to get assistance with the setup.
+
+### Spec files discovery
+
+`cypress-cloud` discovers the spec files using [`globby`](https://www.npmjs.com/package/globby) patterns according to the following logic:
+
+- if no `--spec` is provided, use the `specPattern` defined in `cypress.config.{jt}s`
+- if `--spec` flag is provided, use the intersection of `specPattern` and `--spec`
+- if no spec files were discovered, halt the execution and show a warning
+
+Enable the debug mode to troubleshoot files discovery: `DEBUG=currents:specs npx cypress-cloud ...`
 
 ## Troubleshooting
 
