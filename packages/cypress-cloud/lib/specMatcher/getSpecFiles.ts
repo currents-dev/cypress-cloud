@@ -29,16 +29,19 @@ export const getSpecFiles = async ({
     additionalIgnorePattern: config.additionalIgnorePattern,
   });
   if (specs.length === 0) {
-    warn("No spec files found to execute. Configuration: %O", {
-      projectRoot: config.projectRoot,
-      specPattern,
-      configSpecPattern: config.specPattern,
-      excludeSpecPattern: [
-        config.excludeSpecPattern,
-        config.additionalIgnorePattern,
-      ].flat(2),
-      testingType: params.testingType,
-    });
+    warn(
+      "Found no spec files to run. Was looking for spec files that match both configSpecPattern and specPattern relative to projectRoot. Configuration: %O",
+      {
+        projectRoot: config.projectRoot,
+        specPattern,
+        configSpecPattern: config.specPattern,
+        excludeSpecPattern: [
+          config.excludeSpecPattern,
+          config.additionalIgnorePattern,
+        ].flat(2),
+        testingType: params.testingType,
+      }
+    );
     return { specs: [], specPattern };
   }
   return { specs, specPattern };
