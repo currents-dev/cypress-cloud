@@ -172,7 +172,7 @@ function getSpecAbsolutePath(
   const absolutePath = allSpecs.find((i) => i.relative === relative)?.absolute;
   if (!absolutePath) {
     warn(
-      'Cannot find absolute path for spec. Spec: "%s", candidates: %',
+      'Cannot find absolute path for spec. Spec: "%s", candidates: %o',
       relative,
       allSpecs
     );
