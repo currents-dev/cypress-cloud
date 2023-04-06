@@ -12,6 +12,10 @@ import { run } from "cypress-cloud";
     recordKey,
   });
 
+  if (result?.status === "failed") {
+    process.exit(1);
+  }
+
   assert(result?.totalPassed === 1);
   assert(result?.totalTests === 1);
 })();

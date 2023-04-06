@@ -181,3 +181,26 @@ export function getCypressRunAPIParams(
     record: false,
   };
 }
+
+export function preprocessParams(
+  params: CurrentsRunParameters
+): CurrentsRunParameters {
+  return {
+    ...params,
+    spec: processSpecParam(params.spec),
+  };
+}
+
+function processSpecParam(
+  spec: CurrentsRunParameters["spec"]
+): string[] | undefined {
+  if (!spec) {
+    return undefined;
+  }
+
+  if (Array.isArray(spec)) {
+    return _.flatten(spec.map((i) => i.split(",")));
+  }
+
+  return spec.split(",");
+}

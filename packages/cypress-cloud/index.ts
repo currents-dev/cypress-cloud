@@ -8,7 +8,7 @@ export type { CurrentsRunAPI } from "./types";
  * Run Cypress tests with a cloud service of your choice and return the results
  *
  * @augments CurrentsRunAPI
- * @returns {CypressCommandLine.CypressRunResult | undefined} The test results, or undefined if no tests were run
+ * @returns {CypressCommandLine.CypressRunResult | CypressCommandLine.CypressFailedRunResult | undefined} The test results, or undefined if no tests were run
  */
 export function run(params?: CurrentsRunAPI) {
   return internalRun(params);
