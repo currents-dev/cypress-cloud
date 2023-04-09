@@ -72,6 +72,9 @@
     "tmp-promise": "^3.0.3",
     "ws": "^8.12.1"
   },
+  "peerDependencies": {
+    "cypress": ">=10.0.0"
+  },
   "bin": {
     "cypress-cloud": "./dist/bin/cli.js"
   },

@@ -24,9 +24,6 @@
     "prettier": "latest",
     "turbo": "^1.8.3"
   },
-  "peerDependencies": {
-    "cypress": "*"
-  },
   "engines": {
     "node": ">=14.0.0"
   },
