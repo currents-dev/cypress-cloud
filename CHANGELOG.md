@@ -1,5 +1,12 @@
 
 
+## [1.7.1](https://github.com/currents-dev/cypress-cloud/compare/v1.7.0...v1.7.1) (2023-04-06)
+
+
+### Bug Fixes
+
+* accept various spec formats in API call ([#119](https://github.com/currents-dev/cypress-cloud/issues/119)) ([fc3818e](https://github.com/currents-dev/cypress-cloud/commit/fc3818e53dd0ba6b012f567a8097e5d71ee9aaf7)), closes [#118](https://github.com/currents-dev/cypress-cloud/issues/118)
+
 # [1.7.0](https://github.com/currents-dev/cypress-cloud/compare/v1.6.0...v1.7.0) (2023-04-04)
 
 
