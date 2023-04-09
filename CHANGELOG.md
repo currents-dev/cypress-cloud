@@ -1,5 +1,12 @@
 
 
+## [1.7.2](https://github.com/currents-dev/cypress-cloud/compare/v1.7.1...v1.7.2) (2023-04-09)
+
+
+### Bug Fixes
+
+* Add cypress as a peerDependency for yarn/pnpm ([#116](https://github.com/currents-dev/cypress-cloud/issues/116)) ([97f9465](https://github.com/currents-dev/cypress-cloud/commit/97f94655ca150ee5959f4c38d8a34839490e0884)), closes [#117](https://github.com/currents-dev/cypress-cloud/issues/117)
+
 ## [1.7.1](https://github.com/currents-dev/cypress-cloud/compare/v1.7.0...v1.7.1) (2023-04-06)
 
 
