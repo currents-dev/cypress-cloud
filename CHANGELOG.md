@@ -1,68 +1,61 @@
-
-
 ## [1.7.3](https://github.com/currents-dev/cypress-cloud/compare/v1.7.2...v1.7.3) (2023-04-12)
+
+### Dependencies
+
+- chore(deps): bump vm2 from 3.9.15 to 3.9.16 (#122)
 
 ## [1.7.2](https://github.com/currents-dev/cypress-cloud/compare/v1.7.1...v1.7.2) (2023-04-09)
 
-
 ### Bug Fixes
 
-* Add cypress as a peerDependency for yarn/pnpm ([#116](https://github.com/currents-dev/cypress-cloud/issues/116)) ([97f9465](https://github.com/currents-dev/cypress-cloud/commit/97f94655ca150ee5959f4c38d8a34839490e0884)), closes [#117](https://github.com/currents-dev/cypress-cloud/issues/117)
+- Add cypress as a peerDependency for yarn/pnpm ([#116](https://github.com/currents-dev/cypress-cloud/issues/116)) ([97f9465](https://github.com/currents-dev/cypress-cloud/commit/97f94655ca150ee5959f4c38d8a34839490e0884)), closes [#117](https://github.com/currents-dev/cypress-cloud/issues/117)
 
 ## [1.7.1](https://github.com/currents-dev/cypress-cloud/compare/v1.7.0...v1.7.1) (2023-04-06)
 
-
 ### Bug Fixes
 
-* accept various spec formats in API call ([#119](https://github.com/currents-dev/cypress-cloud/issues/119)) ([fc3818e](https://github.com/currents-dev/cypress-cloud/commit/fc3818e53dd0ba6b012f567a8097e5d71ee9aaf7)), closes [#118](https://github.com/currents-dev/cypress-cloud/issues/118)
+- accept various spec formats in API call ([#119](https://github.com/currents-dev/cypress-cloud/issues/119)) ([fc3818e](https://github.com/currents-dev/cypress-cloud/commit/fc3818e53dd0ba6b012f567a8097e5d71ee9aaf7)), closes [#118](https://github.com/currents-dev/cypress-cloud/issues/118)
 
 # [1.7.0](https://github.com/currents-dev/cypress-cloud/compare/v1.6.0...v1.7.0) (2023-04-04)
 
-
 ### Bug Fixes
 
-* prevent crashes for missing screenshotsUrl ([3cd4cbc](https://github.com/currents-dev/cypress-cloud/commit/3cd4cbc43a20fb975af7f105aaa57b8ef20ac2a0))
-* respect project root ([#115](https://github.com/currents-dev/cypress-cloud/issues/115)) ([0aadfea](https://github.com/currents-dev/cypress-cloud/commit/0aadfea62d795091960ea19be23735835c8c53cf))
-
+- prevent crashes for missing screenshotsUrl ([3cd4cbc](https://github.com/currents-dev/cypress-cloud/commit/3cd4cbc43a20fb975af7f105aaa57b8ef20ac2a0))
+- respect project root ([#115](https://github.com/currents-dev/cypress-cloud/issues/115)) ([0aadfea](https://github.com/currents-dev/cypress-cloud/commit/0aadfea62d795091960ea19be23735835c8c53cf))
 
 ### Features
 
-* implement --auto-cancel-after-failures ([#112](https://github.com/currents-dev/cypress-cloud/issues/112)) ([cb5b758](https://github.com/currents-dev/cypress-cloud/commit/cb5b7587eb0666f66cecf3c9edd851292c9e53aa)), closes [#110](https://github.com/currents-dev/cypress-cloud/issues/110)
+- implement --auto-cancel-after-failures ([#112](https://github.com/currents-dev/cypress-cloud/issues/112)) ([cb5b758](https://github.com/currents-dev/cypress-cloud/commit/cb5b7587eb0666f66cecf3c9edd851292c9e53aa)), closes [#110](https://github.com/currents-dev/cypress-cloud/issues/110)
 
 # [1.6.0](https://github.com/currents-dev/cypress-cloud/compare/v1.5.6...v1.6.0) (2023-03-31)
 
-
 ### Bug Fixes
 
-* add ts reference cypress ([a153bd7](https://github.com/currents-dev/cypress-cloud/commit/a153bd79b1305d6ccbec9f2f58c7c2eb63eb9357))
-
+- add ts reference cypress ([a153bd7](https://github.com/currents-dev/cypress-cloud/commit/a153bd79b1305d6ccbec9f2f58c7c2eb63eb9357))
 
 ### Features
 
-* Offline mode ([#110](https://github.com/currents-dev/cypress-cloud/issues/110)) ([dabd843](https://github.com/currents-dev/cypress-cloud/commit/dabd843990d1862d656596308b36254cf537266a))
+- Offline mode ([#110](https://github.com/currents-dev/cypress-cloud/issues/110)) ([dabd843](https://github.com/currents-dev/cypress-cloud/commit/dabd843990d1862d656596308b36254cf537266a))
 
 ## [1.5.6](https://github.com/currents-dev/cypress-cloud/compare/v1.5.5...v1.5.6) (2023-03-24)
 
-
 ### Bug Fixes
 
-* set x-cypress-run-id only when defined ([#109](https://github.com/currents-dev/cypress-cloud/issues/109)) ([2846dfe](https://github.com/currents-dev/cypress-cloud/commit/2846dfefee4548950485c033a07365d21a7f96b1)), closes [#107](https://github.com/currents-dev/cypress-cloud/issues/107)
+- set x-cypress-run-id only when defined ([#109](https://github.com/currents-dev/cypress-cloud/issues/109)) ([2846dfe](https://github.com/currents-dev/cypress-cloud/commit/2846dfefee4548950485c033a07365d21a7f96b1)), closes [#107](https://github.com/currents-dev/cypress-cloud/issues/107)
 
 ## [1.5.5](https://github.com/currents-dev/cypress-cloud/compare/v1.5.4...v1.5.5) (2023-03-22)
 
-
 ### Bug Fixes
 
-* impove params handling ([#106](https://github.com/currents-dev/cypress-cloud/issues/106)) ([ff65f8a](https://github.com/currents-dev/cypress-cloud/commit/ff65f8a9cf0cfe745b11521332147a30eab485ae))
-* mute record mode warnings ([#104](https://github.com/currents-dev/cypress-cloud/issues/104)) ([5bc8c5a](https://github.com/currents-dev/cypress-cloud/commit/5bc8c5a4ab219d9f04a750de480dcc49d41980ed))
+- impove params handling ([#106](https://github.com/currents-dev/cypress-cloud/issues/106)) ([ff65f8a](https://github.com/currents-dev/cypress-cloud/commit/ff65f8a9cf0cfe745b11521332147a30eab485ae))
+- mute record mode warnings ([#104](https://github.com/currents-dev/cypress-cloud/issues/104)) ([5bc8c5a](https://github.com/currents-dev/cypress-cloud/commit/5bc8c5a4ab219d9f04a750de480dcc49d41980ed))
 
 ## [1.5.4](https://github.com/currents-dev/cypress-cloud/compare/v1.5.3...v1.5.4) (2023-03-21)
 
-
 ### Bug Fixes
 
-* use proper content types for uploads ([#103](https://github.com/currents-dev/cypress-cloud/issues/103)) ([8be81df](https://github.com/currents-dev/cypress-cloud/commit/8be81df102a91586e0a67d22bc68b179f7202850))
-* use video/mp4 for video uploads ([90a8569](https://github.com/currents-dev/cypress-cloud/commit/90a856984957f66fcc4cdafaed151688bb9a12d2))
+- use proper content types for uploads ([#103](https://github.com/currents-dev/cypress-cloud/issues/103)) ([8be81df](https://github.com/currents-dev/cypress-cloud/commit/8be81df102a91586e0a67d22bc68b179f7202850))
+- use video/mp4 for video uploads ([90a8569](https://github.com/currents-dev/cypress-cloud/commit/90a856984957f66fcc4cdafaed151688bb9a12d2))
 
 ## [1.5.3](https://github.com/currents-dev/cypress-cloud/compare/v1.5.2...v1.5.3) (2023-03-21)
 
