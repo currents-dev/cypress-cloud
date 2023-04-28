@@ -116,5 +116,11 @@ export async function run(params: CurrentsRunParameters = {}) {
   info("🏁 Recorded Run:", bold(run.runUrl));
 
   spacer();
+  if (_summary.status === "finished") {
+    return {
+      ..._summary,
+      runUrl: run.runUrl,
+    };
+  }
   return _summary;
 }

@@ -15,7 +15,7 @@ import { run } from "cypress-cloud";
   if (result?.status === "failed") {
     process.exit(1);
   }
-
+  assert(result?.runUrl?.match(/(\S+)/));
   assert(result?.totalPassed === 1);
   assert(result?.totalTests === 1);
 })();
