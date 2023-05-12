@@ -5,6 +5,7 @@ import { bootCypress } from "../bootstrap";
 import { warn } from "../log";
 import { require } from "../require";
 import { getRandomPort } from "../utils";
+import fs from "fs";
 
 const debug = Debug("currents:config");
 
@@ -62,10 +63,10 @@ export async function getMergedConfig(params: ValidatedCurrentsParameters) {
   debug("resolving cypress config");
   const cypressResolvedConfig:
     | (Cypress.ResolvedConfigOptions & {
-        projectRoot: string;
-        rawJson: Record<string, unknown>;
-        browsers: DetectedBrowser[];
-      })
+      projectRoot: string;
+      rawJson: Record<string, unknown>;
+      browsers: DetectedBrowser[];
+    })
     | undefined = await bootCypress(getRandomPort(), params);
 
   debug("cypress resolvedConfig: %O", cypressResolvedConfig);
@@ -95,5 +96,18 @@ export async function getMergedConfig(params: ValidatedCurrentsParameters) {
 }
 
 function getConfigFilePath(projectRoot: string | null = null) {
-  return [projectRoot ?? process.cwd(), "currents.config.js"];
+  const filename = "currents.config";
+  const extensions = ["js", "cjs", "ejs", "ts"];
+  const filepaths: string[] = [];
+
+  for (let i = 0; i < extensions.length; i++) {
+    const filepath = filename + "." + extensions[i];
+    if (fs.existsSync(projectRoot ?? process.cwd() + filepath)) {
+      filepaths.push(projectRoot ?? process.cwd(), filepath);
+    } else {
+      console.log(filepath, "does not exist.");
+    }
+  }
+
+  return filepaths;
 }
