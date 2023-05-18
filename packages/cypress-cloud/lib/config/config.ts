@@ -100,12 +100,12 @@ function getConfigFilePath(projectRoot: string | null = null) {
   const extensions = ["js", "cjs", "ejs", "ts"];
   const filepaths: string[] = [];
 
-  for (let i = 0; i < extensions.length; i++) {
-    const filepath = filename + "." + extensions[i];
-    if (fs.existsSync(projectRoot ?? process.cwd() + filepath)) {
-      filepaths.push(projectRoot ?? process.cwd(), filepath);
+  for (const extension of extensions) {
+    const filepath = path.join(projectRoot ?? process.cwd(), `${filename}.${extension}`);
+    if (fs.existsSync(filepath)) {
+      filepaths.push(filepath);
     } else {
-      console.log(filepath, "does not exist.");
+      console.warn(`${filepath} does not exist.`);
     }
   }
 
