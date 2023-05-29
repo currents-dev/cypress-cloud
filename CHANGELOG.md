@@ -1,3 +1,12 @@
+
+
+## [1.7.4](https://github.com/currents-dev/cypress-cloud/compare/v1.7.3...v1.7.4) (2023-04-28)
+
+
+### Bug Fixes
+
+* return runUrl in run result ([#126](https://github.com/currents-dev/cypress-cloud/issues/126)) ([2dbb8ab](https://github.com/currents-dev/cypress-cloud/commit/2dbb8ab969e3ffd46d99a64e7ebcf5b35a6344c3))
+
 ## [1.7.3](https://github.com/currents-dev/cypress-cloud/compare/v1.7.2...v1.7.3) (2023-04-12)
 
 ### Dependencies
