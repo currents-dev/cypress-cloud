@@ -16,9 +16,11 @@ import { getGitInfo } from "./git";
 import { setAPIBaseUrl, setRunId } from "./httpClient";
 import { bold, divider, info, spacer, title } from "./log";
 import { getPlatform } from "./platform";
+import { pubsub } from "./pubsub";
 import { summarizeTestResults, summaryTable } from "./results";
 import { runTillDoneOrCancelled, summary, uploadTasks } from "./runner";
 import { getSpecFiles } from "./specMatcher";
+import { startWSS } from "./ws";
 
 const debug = Debug("currents:run");
 
@@ -88,11 +90,12 @@ export async function run(params: CurrentsRunParameters = {}) {
     autoCancelAfterFailures,
   });
 
-  info("🎥 Run URL:", bold(run.runUrl));
-
   setRunId(run.runId);
-
+  info("🎥 Run URL:", bold(run.runUrl));
   cutInitialOutput();
+
+  await startWSS();
+  listenToSpecEnd();
 
   await runTillDoneOrCancelled(
     {
@@ -123,4 +126,19 @@ export async function run(params: CurrentsRunParameters = {}) {
     };
   }
   return _summary;
+}
+
+function listenToSpecEnd() {
+  pubsub.on(
+    "after:spec",
+    async ({ spec, results }: { spec: Cypress.Spec; results: any }) => {
+      console.log(spec, results);
+      // // TODO: what about errored specs?
+      // setSpecResult(
+      //   spec.name,
+      //   results,
+      //   getInitialOutput() + getCapturedOutput()
+      // );
+    }
+  );
 }

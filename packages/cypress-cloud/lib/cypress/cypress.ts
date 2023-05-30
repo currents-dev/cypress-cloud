@@ -7,6 +7,7 @@ import {
 import Debug from "debug";
 import _ from "lodash";
 import { getCypressRunAPIParams } from "../config";
+import { getWSSPort } from "../ws";
 
 const debug = Debug("currents:cypress");
 interface RunCypressSpecFile {
@@ -46,7 +47,7 @@ export async function runSpecFile(
     },
     env: {
       ...runAPIOptions.env,
-      currents_ws: true,
+      currents_ws: getWSSPort(),
     },
     spec,
   };
