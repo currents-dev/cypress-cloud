@@ -18,7 +18,14 @@ import { bold, divider, info, spacer, title } from "./log";
 import { getPlatform } from "./platform";
 import { pubsub } from "./pubsub";
 import { summarizeTestResults, summaryTable } from "./results";
-import { runTillDoneOrCancelled, summary, uploadTasks } from "./runner";
+import {
+  executionState,
+  runTillDoneOrCancelled,
+  setSpecAfter,
+  setSpecBefore,
+  summary,
+  uploadTasks,
+} from "./runner";
 import { getSpecFiles } from "./specMatcher";
 import { startWSS } from "./ws";
 
@@ -95,7 +102,7 @@ export async function run(params: CurrentsRunParameters = {}) {
   cutInitialOutput();
 
   await startWSS();
-  listenToSpecEnd();
+  listenToSpecEvents();
 
   await runTillDoneOrCancelled(
     {
@@ -128,17 +135,18 @@ export async function run(params: CurrentsRunParameters = {}) {
   return _summary;
 }
 
-function listenToSpecEnd() {
+function listenToSpecEvents() {
+  pubsub.on("before:spec", async ({ spec }: { spec: Cypress.Spec }) => {
+    console.log("before:spec", spec.relative);
+    setSpecBefore(spec.relative);
+    console.log(executionState);
+  });
+
   pubsub.on(
     "after:spec",
     async ({ spec, results }: { spec: Cypress.Spec; results: any }) => {
-      console.log(spec, results);
-      // // TODO: what about errored specs?
-      // setSpecResult(
-      //   spec.name,
-      //   results,
-      //   getInitialOutput() + getCapturedOutput()
-      // );
+      console.log("after:spec", spec.relative);
+      setSpecAfter(spec.relative, results);
     }
   );
 }

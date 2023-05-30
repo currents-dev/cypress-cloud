@@ -22,7 +22,13 @@ import {
 import { runSpecFileSafe } from "../cypress";
 import { isCurrents } from "../env";
 import { divider, error, info, title, warn } from "../log";
-import { summary, uploadTasks } from "./state";
+import {
+  executionState,
+  setInstanceOutput,
+  setInstanceResults,
+  summary,
+  uploadTasks,
+} from "./state";
 
 const debug = Debug("currents:runner");
 
@@ -114,6 +120,31 @@ async function runBatch({
     return [];
   }
 
+  /**
+   * Batch can have multiple specs. While running the specs,
+   * cypress can hard-crash without reporting any result.
+   *
+   * When crashed, we need to:
+   * - determine which spec crashed
+   * - associate the crash with the spec
+   * - run the rest of unreported specs in the batch
+   *
+   * But detecting the crashed spec is error-prone and inaccurate,
+   * so we fall back to reporting hard crash to all subsequent
+   * specs in the batch.
+   *
+   * Worst-case scenario: we report hard crash to all specs in the batch.
+   */
+
+  // %state
+  batch.specs.forEach((bs) => {
+    executionState[bs.instanceId] = {
+      spec: bs.spec,
+      instanceId: bs.instanceId,
+      createdAt: new Date(),
+    };
+  });
+
   divider();
   info(
     "Running: %s (%d/%d)",
@@ -124,14 +155,15 @@ async function runBatch({
 
   const rawResult = await runSpecFileSafe(
     {
-      // use absolute paths -  user can run the program from a different directory, e.g. nx or a monorepo workspace
-      // cypress still reports the path relative to the project root
+      // use absolute paths - user can run the program from a different directory, e.g. nx or a monorepo workspace
+      // cypress still report the path relative to the project root
       spec: batch.specs
         .map((bs) => getSpecAbsolutePath(allSpecs, bs.spec))
         .join(","),
     },
     params
   );
+
   const normalizedResult = normalizeRawResult(
     rawResult,
     batch.specs.map((s) => s.spec),
@@ -141,12 +173,18 @@ async function runBatch({
   title("blue", "Reporting results and artifacts in background...");
 
   const output = getCapturedOutput();
+
+  // %state
+  batch.specs.forEach((bs) => {
+    setInstanceOutput(bs.instanceId, output);
+  });
+
   resetCapture();
 
   const batchResult = batch.specs.map((spec) => {
     const specSummary = getSummaryForSpec(spec.spec, normalizedResult);
-    if (!specSummary) {
-      warn('Cannot find run result for spec "%s"', spec.spec);
+    if (specSummary) {
+      setInstanceResults(spec.instanceId, specSummary);
     }
 
     return {
