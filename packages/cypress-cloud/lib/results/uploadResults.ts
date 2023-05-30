@@ -7,10 +7,10 @@ import {
   UpdateInstanceResultsPayload,
 } from "../api";
 import { uploadArtifacts, uploadStdoutSafe } from "../artifacts";
+import { setCancellationReason } from "../cancellation";
 import { getInitialOutput } from "../capture";
 import { isCurrents } from "../env";
 import { warn } from "../log";
-import { setCancellationReason } from "../state";
 import { getInstanceResultPayload, getInstanceTestsPayload } from "./results";
 const debug = Debug("currents:results");
 
