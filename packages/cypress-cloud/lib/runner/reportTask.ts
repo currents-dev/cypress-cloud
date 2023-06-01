@@ -23,6 +23,8 @@ export const createReportTask = (instanceId: InstanceId) => {
     return;
   }
 
+  executionState.reportStartedAt = new Date();
+
   reportTasks.push(
     getReportResultsTask(
       instanceId,
