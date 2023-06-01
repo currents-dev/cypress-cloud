@@ -12,7 +12,7 @@ let wss: WebSocket.Server | null = null;
 export const getWSSPort = () =>
   match(server?.address())
     .with({ port: P.number }, (address) => address.port)
-    .run();
+    .otherwise(() => 0);
 
 export const startWSS = () => {
   if (wss) {

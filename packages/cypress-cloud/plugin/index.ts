@@ -27,12 +27,6 @@ export async function cloudPlugin(
       ws = new WebSocket(`ws://localhost:${config.env.currents_ws}`);
       ws.on("open", () => {
         resolve(null);
-        sendToWS({
-          type: "currents:config",
-          payload: {
-            config,
-          },
-        });
       });
     });
   }
