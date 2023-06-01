@@ -44,10 +44,6 @@ function getTest(
 export function specResultsToCypressResults(
   specAfterResult: SpecAfter.SpecResult
 ): CypressCommandLine.CypressRunResult {
-  const tests: CypressTest[] = specAfterResult.tests.map((t) =>
-    getTest(t, specAfterResult.screenshots)
-  );
-
   return {
     status: "finished",
     totalDuration: specAfterResult.stats.wallClockDuration,
@@ -78,7 +74,9 @@ export function specResultsToCypressResults(
         // wrong typedef for CypressCommandLine.CypressRunResult
         // actual HookName is "before all" | "before each" | "after all" | "after each"
         hooks: specAfterResult.hooks,
-        tests,
+        tests: specAfterResult.tests.map((t) =>
+          getTest(t, specAfterResult.screenshots)
+        ),
       },
     ],
   };

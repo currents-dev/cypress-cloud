@@ -109,7 +109,6 @@ export async function run(params: CurrentsRunParameters = {}) {
       groupId: run.groupId,
       machineId: run.machineId,
       platform,
-      config,
       specs,
     },
     validatedParams

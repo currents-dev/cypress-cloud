@@ -3,7 +3,6 @@ import {
   ValidatedCurrentsParameters,
 } from "cypress-cloud/types";
 import { getCapturedOutput, resetCapture } from "../capture";
-import { MergedConfig } from "../config";
 
 import { getCypressRunResultForSpec, getReportResultsTask } from "../results";
 
@@ -35,10 +34,8 @@ export async function runTillDone(
     groupId,
     machineId,
     platform,
-    config,
     specs: allSpecs,
   }: CreateInstancePayload & {
-    config: MergedConfig;
     specs: SpecWithRelativeRoot[];
   },
   params: ValidatedCurrentsParameters
@@ -55,7 +52,6 @@ export async function runTillDone(
       },
       allSpecs,
       params,
-      config,
     });
     if (!newTasks.length) {
       debug("No more tasks to run. Uploads queue: %d", reportTasks.length);
@@ -81,7 +77,6 @@ export async function runTillDone(
 
 async function runBatch({
   runMeta,
-  config,
   params,
   allSpecs,
 }: {
@@ -92,7 +87,6 @@ async function runBatch({
     platform: CreateInstancePayload["platform"];
   };
   allSpecs: SpecWithRelativeRoot[];
-  config: MergedConfig;
   params: ValidatedCurrentsParameters;
 }) {
   let batch = {
