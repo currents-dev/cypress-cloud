@@ -131,6 +131,8 @@ export async function run(params: CurrentsRunParameters = {}) {
   console.log(summaryTable(_summary));
   info("🏁 Recorded Run:", bold(run.runUrl));
 
+  await shutdown();
+
   spacer();
   if (_summary.status === "finished") {
     return {
@@ -139,18 +141,19 @@ export async function run(params: CurrentsRunParameters = {}) {
     };
   }
 
-  await shutdown();
   return _summary;
 }
 
 function listenToSpecEvents() {
-  pubsub.on("before:spec", async ({ spec }: { spec: Cypress.Spec }) =>
-    setSpecBefore(spec.relative)
-  );
+  pubsub.on("before:spec", async ({ spec }: { spec: Cypress.Spec }) => {
+    debug("before:spec %o", spec);
+    setSpecBefore(spec.relative);
+  });
 
   pubsub.on(
     "after:spec",
     async ({ spec, results }: { spec: Cypress.Spec; results: any }) => {
+      debug("after:spec %o %o", spec, results);
       setSpecAfter(spec.relative, results);
       createReportTaskSpec(spec.relative);
     }

@@ -17,11 +17,13 @@ export const getWSSPort = () =>
     .otherwise(() => 0);
 
 export const stopWSS = async () => {
+  debug("terminating wss server: %d", getWSSPort());
   if (!httpTerminator) {
+    debug("no wss server");
     return;
   }
-  debug("terminating wss server: %d", getWSSPort());
   await httpTerminator.terminate();
+  debug("terminated wss server: %d", getWSSPort());
 };
 export const startWSS = () => {
   if (wss) {

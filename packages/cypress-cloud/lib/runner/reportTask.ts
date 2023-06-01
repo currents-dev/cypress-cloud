@@ -25,6 +25,7 @@ export const createReportTask = (instanceId: InstanceId) => {
 
   executionState.reportStartedAt = new Date();
 
+  debug("Creating report task for instanceId %s", instanceId);
   reportTasks.push(
     getReportResultsTask(
       instanceId,
@@ -40,5 +41,6 @@ export const createReportTaskSpec = (spec: string) => {
     error("Cannot find execution state for spec %s", spec);
     return;
   }
+  debug("Creating report task for spec %s", spec);
   return createReportTask(i.instanceId);
 };
