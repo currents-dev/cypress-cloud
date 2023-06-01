@@ -19,12 +19,11 @@ import { getPlatform } from "./platform";
 import { pubsub } from "./pubsub";
 import { summarizeTestResults, summaryTable } from "./results";
 import {
-  executionState,
+  getExecutionStateResults,
+  reportTasks,
   runTillDoneOrCancelled,
   setSpecAfter,
   setSpecBefore,
-  summary,
-  uploadTasks,
 } from "./runner";
 import { getSpecFiles } from "./specMatcher";
 import { startWSS } from "./ws";
@@ -118,8 +117,8 @@ export async function run(params: CurrentsRunParameters = {}) {
 
   divider();
 
-  await Promise.allSettled(uploadTasks);
-  const _summary = summarizeTestResults(Object.values(summary), config);
+  await Promise.allSettled(reportTasks);
+  const _summary = summarizeTestResults(getExecutionStateResults(), config);
 
   title("white", "Cloud Run Finished");
   console.log(summaryTable(_summary));
@@ -136,17 +135,13 @@ export async function run(params: CurrentsRunParameters = {}) {
 }
 
 function listenToSpecEvents() {
-  pubsub.on("before:spec", async ({ spec }: { spec: Cypress.Spec }) => {
-    console.log("before:spec", spec.relative);
-    setSpecBefore(spec.relative);
-    console.log(executionState);
-  });
+  pubsub.on("before:spec", async ({ spec }: { spec: Cypress.Spec }) =>
+    setSpecBefore(spec.relative)
+  );
 
   pubsub.on(
     "after:spec",
-    async ({ spec, results }: { spec: Cypress.Spec; results: any }) => {
-      console.log("after:spec", spec.relative);
-      setSpecAfter(spec.relative, results);
-    }
+    async ({ spec, results }: { spec: Cypress.Spec; results: any }) =>
+      setSpecAfter(spec.relative, results)
   );
 }

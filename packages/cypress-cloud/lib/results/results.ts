@@ -7,7 +7,7 @@ import {
   TestState,
   UpdateInstanceResultsPayload,
 } from "../api";
-import { MergedConfig } from "../config/config";
+import { MergedConfig } from "../config";
 
 const debug = Debug("currents:results");
 
@@ -249,9 +249,9 @@ export function getFailedDummyResult({
       video: null,
       spec: {
         name: s,
-        relative: "",
-        absolute: "",
-        relativeToCommonRoot: "",
+        relative: s,
+        absolute: s,
+        relativeToCommonRoot: s,
       },
       tests: [
         {
@@ -281,33 +281,22 @@ export function getFailedDummyResult({
   };
 }
 
-export function normalizeRawResult(
-  rawResult: CypressResult,
-  specs: string[],
-  config: MergedConfig
-): CypressCommandLine.CypressRunResult {
-  if (!isSuccessResult(rawResult)) {
-    return getFailedDummyResult({
-      specs,
-      error: rawResult.message,
-      config,
-    });
-  }
-  return rawResult;
-}
-
-export function getSummaryForSpec(
+export function getCypressRunResultForSpec(
   spec: string,
-  runResult: CypressCommandLine.CypressRunResult
-) {
-  const run = runResult.runs.find((r) => r.spec.relative === spec);
+  cypressResult: CypressResult
+): CypressCommandLine.CypressRunResult | undefined {
+  if (!isSuccessResult(cypressResult)) {
+    return;
+  }
+
+  const run = cypressResult.runs.find((r) => r.spec.relative === spec);
   if (!run) {
     return;
   }
   const stats = getStats(run.stats);
   // adjust the result for singe spec
   return {
-    ...runResult,
+    ...cypressResult,
     runs: [run],
     totalSuites: 1,
     totalDuration: stats.wallClockDuration,

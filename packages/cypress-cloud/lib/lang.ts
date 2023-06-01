@@ -6,9 +6,9 @@ bluebird.Promise.config({
 export const BPromise = bluebird.Promise;
 
 export const safe =
-  <T extends any[], R extends any>(
+  <T extends any[], R extends any, F extends any>(
     fn: (...args: T) => Promise<R>,
-    ifFaled: (e: unknown) => any,
+    ifFaled: (e: unknown) => F,
     ifSucceed: () => any
   ) =>
   async (...args: T) => {
@@ -17,6 +17,6 @@ export const safe =
       ifSucceed();
       return r;
     } catch (e) {
-      ifFaled(e);
+      return ifFaled(e);
     }
   };

@@ -7,6 +7,7 @@ import {
 import Debug from "debug";
 import _ from "lodash";
 import { getCypressRunAPIParams } from "../config";
+import { safe } from "../lang";
 import { getWSSPort } from "../ws";
 
 const debug = Debug("currents:cypress");
@@ -58,20 +59,20 @@ export async function runSpecFile(
   return result;
 }
 
-export const runSpecFileSafe = async (
-  { spec }: RunCypressSpecFile,
-  cypressRunOptions: ValidatedCurrentsParameters
-): Promise<CypressResult> => {
-  try {
-    return await runSpecFile({ spec }, cypressRunOptions);
-  } catch (error) {
-    debug("cypress run exception %o", error);
-    return {
-      status: "failed",
-      failures: 1,
-      message: `Cypress process crashed with an error:\n${
-        (error as Error).message
-      }\n${(error as Error).stack}}`,
-    };
-  }
-};
+export const runSpecFileSafe = (
+  ...args: Parameters<typeof runSpecFile>
+): Promise<CypressResult> =>
+  safe(
+    runSpecFile,
+    (error) => {
+      debug("cypress run exception %o", error);
+      return {
+        status: "failed" as const,
+        failures: 1,
+        message: `Cypress process crashed with an error:\n${
+          (error as Error).message
+        }\n${(error as Error).stack}}`,
+      };
+    },
+    () => {}
+  )(...args);

@@ -5,11 +5,7 @@ import {
 import { getCapturedOutput, resetCapture } from "../capture";
 import { MergedConfig } from "../config";
 
-import {
-  getSummaryForSpec,
-  getUploadResultsTask,
-  normalizeRawResult,
-} from "../results";
+import { getCypressRunResultForSpec, getReportResultsTask } from "../results";
 
 import Debug from "debug";
 import {
@@ -23,11 +19,12 @@ import { runSpecFileSafe } from "../cypress";
 import { isCurrents } from "../env";
 import { divider, error, info, title, warn } from "../log";
 import {
-  executionState,
+  getExecutionStateInstance,
+  getInstanceResults,
+  initExecutionState,
+  reportTasks,
   setInstanceOutput,
-  setInstanceResults,
-  summary,
-  uploadTasks,
+  setInstanceResult,
 } from "./state";
 
 const debug = Debug("currents:runner");
@@ -61,15 +58,23 @@ export async function runTillDone(
       config,
     });
     if (!newTasks.length) {
-      debug("No more tasks to run. Uploads queue: %d", uploadTasks.length);
+      debug("No more tasks to run. Uploads queue: %d", reportTasks.length);
       hasMore = false;
       break;
     }
-    newTasks.forEach((task) => {
-      if (task.summary.specSummary) {
-        summary[task.summary.spec] = task.summary.specSummary;
+    newTasks.forEach((t) => {
+      const executionState = getExecutionStateInstance(t.instanceId);
+      if (!executionState) {
+        error("Cannot find execution state for instance %s", t.instanceId);
+        return;
       }
-      uploadTasks.push(task.uploadTasks);
+      reportTasks.push(
+        getReportResultsTask(
+          t.instanceId,
+          getInstanceResults(t.instanceId),
+          executionState.output ?? "no output captured"
+        ).catch(error)
+      );
     });
   }
 }
@@ -124,7 +129,7 @@ async function runBatch({
    * Batch can have multiple specs. While running the specs,
    * cypress can hard-crash without reporting any result.
    *
-   * When crashed, we need to:
+   * When crashed, ideally, we need to:
    * - determine which spec crashed
    * - associate the crash with the spec
    * - run the rest of unreported specs in the batch
@@ -137,13 +142,7 @@ async function runBatch({
    */
 
   // %state
-  batch.specs.forEach((bs) => {
-    executionState[bs.instanceId] = {
-      spec: bs.spec,
-      instanceId: bs.instanceId,
-      createdAt: new Date(),
-    };
-  });
+  batch.specs.forEach(initExecutionState);
 
   divider();
   info(
@@ -164,43 +163,24 @@ async function runBatch({
     params
   );
 
-  const normalizedResult = normalizeRawResult(
-    rawResult,
-    batch.specs.map((s) => s.spec),
-    config
-  );
-
   title("blue", "Reporting results and artifacts in background...");
 
   const output = getCapturedOutput();
 
   // %state
-  batch.specs.forEach((bs) => {
-    setInstanceOutput(bs.instanceId, output);
+  batch.specs.forEach((spec) => {
+    setInstanceOutput(spec.instanceId, output);
+    const specRunResult = getCypressRunResultForSpec(spec.spec, rawResult);
+
+    if (!specRunResult) {
+      return;
+    }
+    setInstanceResult(spec.instanceId, specRunResult);
   });
 
   resetCapture();
 
-  const batchResult = batch.specs.map((spec) => {
-    const specSummary = getSummaryForSpec(spec.spec, normalizedResult);
-    if (specSummary) {
-      setInstanceResults(spec.instanceId, specSummary);
-    }
-
-    return {
-      summary: {
-        spec: spec.spec,
-        specSummary,
-      },
-      uploadTasks: getUploadResultsTask({
-        ...spec,
-        runResult: normalizedResult,
-        output,
-      }).catch(error),
-    };
-  });
-
-  return batchResult;
+  return batch.specs;
 }
 
 function getSpecAbsolutePath(

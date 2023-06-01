@@ -1,0 +1,85 @@
+import {
+  CypressScreenshot,
+  CypressTest,
+  CypressTestAttempt,
+} from "cypress-cloud/types";
+
+import * as SpecAfter from "./spec.type";
+
+function getScreenshot(s: SpecAfter.Screenshot): CypressScreenshot {
+  return {
+    ...s,
+    name: s.name ?? "screenshot",
+  };
+}
+
+function getTestAttempt(
+  attempt: SpecAfter.TestAttempt,
+  screenshots: SpecAfter.Screenshot[]
+): CypressTestAttempt {
+  return {
+    ...attempt,
+    startedAt: attempt.wallClockStartedAt,
+    duration: attempt.wallClockDuration,
+    screenshots: screenshots.map(getScreenshot),
+  };
+}
+
+function getTest(
+  t: SpecAfter.Test,
+  screenshots: SpecAfter.Screenshot[]
+): CypressTest {
+  const _screenshots = screenshots.filter((s) => s.testId === t.testId);
+  return {
+    ...t,
+    attempts: t.attempts.map((a, i) =>
+      getTestAttempt(
+        a,
+        _screenshots.filter((s) => s.testAttemptIndex === i)
+      )
+    ),
+  };
+}
+
+export function specResultsToCypressResults(
+  specAfterResult: SpecAfter.SpecResult
+): CypressCommandLine.CypressRunResult {
+  const tests: CypressTest[] = specAfterResult.tests.map((t) =>
+    getTest(t, specAfterResult.screenshots)
+  );
+
+  return {
+    status: "finished",
+    totalDuration: specAfterResult.stats.wallClockDuration,
+    totalSuites: specAfterResult.stats.suites,
+    totalTests: specAfterResult.stats.tests,
+    totalFailed: specAfterResult.stats.failures,
+    totalPassed: specAfterResult.stats.passes,
+    totalPending: specAfterResult.stats.pending,
+    totalSkipped: specAfterResult.stats.skipped,
+    startedTestsAt: specAfterResult.stats.wallClockStartedAt,
+    endedTestsAt: specAfterResult.stats.wallClockEndedAt,
+    runs: [
+      {
+        stats: {
+          ...specAfterResult.stats,
+          startedAt: specAfterResult.stats.wallClockStartedAt,
+          endedAt: specAfterResult.stats.wallClockEndedAt,
+          duration: specAfterResult.stats.wallClockDuration,
+        },
+        reporter: specAfterResult.reporter,
+        reporterStats: specAfterResult.reporterStats,
+        spec: specAfterResult.spec,
+        error: specAfterResult.error,
+        video: specAfterResult.video,
+        // TODO: really?
+        shouldUploadVideo: true,
+        // @ts-ignore
+        // wrong typedef for CypressCommandLine.CypressRunResult
+        // actual HookName is "before all" | "before each" | "after all" | "after each"
+        hooks: specAfterResult.hooks,
+        tests,
+      },
+    ],
+  };
+}

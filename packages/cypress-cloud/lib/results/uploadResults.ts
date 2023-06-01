@@ -10,38 +10,10 @@ import { uploadArtifacts, uploadStdoutSafe } from "../artifacts";
 import { setCancellationReason } from "../cancellation";
 import { getInitialOutput } from "../capture";
 import { isCurrents } from "../env";
-import { warn } from "../log";
 import { getInstanceResultPayload, getInstanceTestsPayload } from "./results";
 const debug = Debug("currents:results");
 
-export async function getUploadResultsTask({
-  instanceId,
-  spec,
-  runResult,
-  output,
-}: {
-  instanceId: string;
-  spec: string;
-  runResult: CypressCommandLine.CypressRunResult;
-  output: string;
-}) {
-  const run = runResult.runs.find((r) => r.spec.relative === spec);
-  if (!run) {
-    warn('Cannot determine run result for spec "%s"', spec);
-    return;
-  }
-  return processCypressResults(
-    instanceId,
-    {
-      // replace the runs with the run for the specified spec
-      ...runResult,
-      runs: [run],
-    },
-    output
-  );
-}
-
-export async function processCypressResults(
+export async function getReportResultsTask(
   instanceId: string,
   results: CypressCommandLine.CypressRunResult,
   stdout: string

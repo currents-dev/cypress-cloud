@@ -6,6 +6,11 @@ export type NonEmptyArray<T> = [T, ...T[]];
 export type CypressRun = ArrayItemType<
   CypressCommandLine.CypressRunResult["runs"]
 >;
+export type CypressTest = ArrayItemType<CypressRun["tests"]>;
+export type CypressTestAttempt = ArrayItemType<CypressTest["attempts"]>;
+export type CypressScreenshot = ArrayItemType<
+  CypressTestAttempt["screenshots"]
+>;
 
 export type CypressResult =
   | CypressCommandLine.CypressRunResult
@@ -17,15 +22,6 @@ export type Platform = {
   browserName: string;
   browserVersion: string;
 };
-
-export interface CommitData {
-  sha: string;
-  branch?: string;
-  authorName?: string;
-  authorEmail?: string;
-  message?: string;
-  remoteOrigin?: string;
-}
 
 export type DetectedBrowser = {
   name: string; // or enum? not sure
@@ -93,16 +89,6 @@ export type ScreenshotArtifact = CypressCommandLine.ScreenshotInformation & {
   testAttemptIndex: number;
   screenshotId: string;
 };
-
-export interface TestsResult {
-  pending: number;
-  failures: number;
-  skipped: number;
-  passes: number;
-  tests: number;
-}
-
-export type SummaryResult = Record<string, CypressCommandLine.CypressRunResult>;
 
 // Explicitly filter cypress record-related flags - prevent triggering recording mode to avoid confusion
 export type StrippedCypressModuleAPIOptions = Omit<
