@@ -27,6 +27,7 @@ import {
   setSpecAfter,
   setSpecBefore,
 } from "./runner";
+import { shutdown } from "./shutdown";
 import { getSpecFiles } from "./specMatcher";
 import { startWSS } from "./ws";
 
@@ -137,6 +138,8 @@ export async function run(params: CurrentsRunParameters = {}) {
       runUrl: run.runUrl,
     };
   }
+
+  await shutdown();
   return _summary;
 }
 

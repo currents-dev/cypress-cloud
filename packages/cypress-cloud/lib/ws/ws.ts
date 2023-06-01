@@ -1,5 +1,6 @@
 import Debug from "debug";
 import http from "http";
+import { createHttpTerminator, HttpTerminator } from "http-terminator";
 import { match, P } from "ts-pattern";
 import WebSocket from "ws";
 import { pubsub } from "../pubsub";
@@ -8,12 +9,20 @@ const debug = Debug("currents:ws");
 
 let server: http.Server | null = null;
 let wss: WebSocket.Server | null = null;
+let httpTerminator: HttpTerminator | null = null;
 
 export const getWSSPort = () =>
   match(server?.address())
     .with({ port: P.number }, (address) => address.port)
     .otherwise(() => 0);
 
+export const stopWSS = async () => {
+  if (!httpTerminator) {
+    return;
+  }
+  debug("terminating wss server: %d", getWSSPort());
+  await httpTerminator.terminate();
+};
 export const startWSS = () => {
   if (wss) {
     return;
@@ -36,4 +45,8 @@ export const startWSS = () => {
       });
     })
     .listen();
+
+  httpTerminator = createHttpTerminator({
+    server,
+  });
 };
