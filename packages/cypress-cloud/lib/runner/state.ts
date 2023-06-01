@@ -4,6 +4,7 @@ import { getFailedDummyResult } from "../results";
 import { specResultsToCypressResults } from "./mapResult";
 import { SpecResult } from "./spec.type";
 
+// Careful here - it is a global mutable state 🐲
 type InstanceExecutionState = {
   instanceId: InstanceId;
   spec: string;
@@ -105,9 +106,11 @@ export const getInstanceResults = (
     });
   }
 
+  // use spec:after results - it can become available before run results
   if (i.specAfterResults) {
     return specResultsToCypressResults(i.specAfterResults);
   }
+
   if (i.runResults) {
     return i.runResults;
   }
@@ -118,3 +121,7 @@ export const getInstanceResults = (
     config: {},
   });
 };
+
+let _config: Cypress.ResolvedConfigOptions | undefined = undefined;
+export const setConfig = (c: typeof _config) => (_config = c);
+export const getConfig = () => _config;

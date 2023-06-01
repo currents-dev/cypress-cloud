@@ -3,12 +3,10 @@ import { getBootstrapArgs } from "../serializer";
 
 const defaultEnv = {
   currents_temp_file: "tempFilePath",
-  currents_port: 1234,
   currents_debug_enabled: false,
 };
 
 const defaultArgs = {
-  port: 1234,
   tempFilePath: "tempFilePath",
 };
 describe("getBootstrapArgs", () => {

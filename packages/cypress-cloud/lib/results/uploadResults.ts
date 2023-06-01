@@ -35,6 +35,7 @@ export async function getReportResultsTask(
     debug("instance %s should cancel", instanceId);
     setCancellationReason(cloud.shouldCancel);
   }
+
   debug("instance %s artifact upload instructions %o", instanceId, {
     videoUploadUrl,
     screenshotUploadUrls,

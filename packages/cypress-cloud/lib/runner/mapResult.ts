@@ -5,6 +5,7 @@ import {
 } from "cypress-cloud/types";
 
 import * as SpecAfter from "./spec.type";
+import { getConfig } from "./state";
 
 function getScreenshot(s: SpecAfter.Screenshot): CypressScreenshot {
   return {
@@ -46,6 +47,8 @@ export function specResultsToCypressResults(
 ): CypressCommandLine.CypressRunResult {
   return {
     status: "finished",
+    // @ts-ignore
+    config: getConfig(),
     totalDuration: specAfterResult.stats.wallClockDuration,
     totalSuites: specAfterResult.stats.suites,
     totalTests: specAfterResult.stats.tests,
@@ -68,8 +71,7 @@ export function specResultsToCypressResults(
         spec: specAfterResult.spec,
         error: specAfterResult.error,
         video: specAfterResult.video,
-        // TODO: really?
-        shouldUploadVideo: true,
+        shouldUploadVideo: true, // not really used
         // @ts-ignore
         // wrong typedef for CypressCommandLine.CypressRunResult
         // actual HookName is "before all" | "before each" | "after all" | "after each"

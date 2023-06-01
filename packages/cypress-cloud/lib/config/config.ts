@@ -4,7 +4,6 @@ import { DetectedBrowser, ValidatedCurrentsParameters } from "../../types";
 import { bootCypress } from "../bootstrap";
 import { warn } from "../log";
 import { require } from "../require";
-import { getRandomPort } from "../utils";
 
 const debug = Debug("currents:config");
 
@@ -66,7 +65,7 @@ export async function getMergedConfig(params: ValidatedCurrentsParameters) {
         rawJson: Record<string, unknown>;
         browsers: DetectedBrowser[];
       })
-    | undefined = await bootCypress(getRandomPort(), params);
+    | undefined = await bootCypress(params);
 
   debug("cypress resolvedConfig: %O", cypressResolvedConfig);
 

@@ -23,6 +23,7 @@ import {
   getExecutionStateResults,
   reportTasks,
   runTillDoneOrCancelled,
+  setConfig,
   setSpecAfter,
   setSpecBefore,
 } from "./runner";
@@ -40,6 +41,7 @@ export async function run(params: CurrentsRunParameters = {}) {
     info(`Skipping cloud orchestration because --record is set to false`);
     return runBareCypress(params);
   }
+
   const validatedParams = validateParams(params);
   setAPIBaseUrl(validatedParams.cloudServiceUrl);
 
@@ -56,6 +58,10 @@ export async function run(params: CurrentsRunParameters = {}) {
   } = validatedParams;
 
   const config = await getMergedConfig(validatedParams);
+
+  // %state
+  setConfig(config?.resolved);
+
   const { specs, specPattern } = await getSpecFiles({
     config,
     params: validatedParams,
