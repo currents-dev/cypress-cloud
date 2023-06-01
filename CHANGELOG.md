@@ -1,5 +1,18 @@
 
 
+# [1.8.0-beta.0](https://github.com/currents-dev/cypress-cloud/compare/v1.7.4...v1.8.0-beta.0) (2023-06-01)
+
+
+### Bug Fixes
+
+* report results for cypress crashes ([eac06a4](https://github.com/currents-dev/cypress-cloud/commit/eac06a44a2669cf499e799171383040e500c88a4))
+
+
+### Features
+
+* report specs early via spec:before ([4a3da39](https://github.com/currents-dev/cypress-cloud/commit/4a3da396940ae4e32ce09c5cb5cca1782ed443e7))
+* use ws to send spec results asap ([e521048](https://github.com/currents-dev/cypress-cloud/commit/e5210483e0893fd361901fa5d1364f9b12b98b68))
+
 ## [1.7.4](https://github.com/currents-dev/cypress-cloud/compare/v1.7.3...v1.7.4) (2023-04-28)
 
 
