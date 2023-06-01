@@ -4,7 +4,7 @@ import {
 } from "cypress-cloud/types";
 import { getCapturedOutput, resetCapture } from "../capture";
 
-import { getCypressRunResultForSpec, getReportResultsTask } from "../results";
+import { getCypressRunResultForSpec } from "../results";
 
 import Debug from "debug";
 import {
@@ -16,12 +16,10 @@ import {
 
 import { runSpecFileSafe } from "../cypress";
 import { isCurrents } from "../env";
-import { divider, error, info, title, warn } from "../log";
+import { divider, info, title, warn } from "../log";
+import { createReportTask, reportTasks } from "./reportTask";
 import {
-  getExecutionStateInstance,
-  getInstanceResults,
   initExecutionState,
-  reportTasks,
   setInstanceOutput,
   setInstanceResult,
 } from "./state";
@@ -58,20 +56,7 @@ export async function runTillDone(
       hasMore = false;
       break;
     }
-    newTasks.forEach((t) => {
-      const executionState = getExecutionStateInstance(t.instanceId);
-      if (!executionState) {
-        error("Cannot find execution state for instance %s", t.instanceId);
-        return;
-      }
-      reportTasks.push(
-        getReportResultsTask(
-          t.instanceId,
-          getInstanceResults(t.instanceId),
-          executionState.output ?? "no output captured"
-        ).catch(error)
-      );
-    });
+    newTasks.forEach((t) => createReportTask(t.instanceId));
   }
 }
 

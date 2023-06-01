@@ -1,3 +1,4 @@
+export type InstanceId = string;
 export type TestingType = Cypress.TestingType;
 export type SpecType = "component" | "integration";
 export type ArrayItemType<T> = T extends (infer U)[] ? U : T;

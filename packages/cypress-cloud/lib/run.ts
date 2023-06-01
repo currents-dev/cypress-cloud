@@ -19,6 +19,7 @@ import { getPlatform } from "./platform";
 import { pubsub } from "./pubsub";
 import { summarizeTestResults, summaryTable } from "./results";
 import {
+  createReportTaskSpec,
   getExecutionStateResults,
   reportTasks,
   runTillDoneOrCancelled,
@@ -140,7 +141,9 @@ function listenToSpecEvents() {
 
   pubsub.on(
     "after:spec",
-    async ({ spec, results }: { spec: Cypress.Spec; results: any }) =>
-      setSpecAfter(spec.relative, results)
+    async ({ spec, results }: { spec: Cypress.Spec; results: any }) => {
+      setSpecAfter(spec.relative, results);
+      createReportTaskSpec(spec.relative);
+    }
   );
 }

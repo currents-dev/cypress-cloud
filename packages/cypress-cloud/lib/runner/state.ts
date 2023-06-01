@@ -1,13 +1,11 @@
+import { InstanceId } from "cypress-cloud/types";
 import { error, warn } from "../log";
 import { getFailedDummyResult } from "../results";
 import { specResultsToCypressResults } from "./mapResult";
 import { SpecResult } from "./spec.type";
 
-export const reportTasks: Promise<any>[] = [];
-
-type InstanceId = string;
 type InstanceExecutionState = {
-  instanceId: string;
+  instanceId: InstanceId;
   spec: string;
   output?: string;
   specBefore?: Date;
@@ -16,6 +14,7 @@ type InstanceExecutionState = {
   runResultsReportedAt?: Date;
   specAfter?: Date;
   specAfterResults?: SpecResult;
+  reportStartedAt?: Date;
 };
 
 const executionState: Record<InstanceId, InstanceExecutionState> = {};
