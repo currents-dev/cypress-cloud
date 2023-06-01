@@ -2,7 +2,7 @@ import Debug from "debug";
 import http from "http";
 import { createHttpTerminator, HttpTerminator } from "http-terminator";
 import { match, P } from "ts-pattern";
-import WebSocket from "ws";
+import * as WebSocket from "ws";
 import { pubsub } from "../pubsub";
 
 const debug = Debug("currents:ws");
@@ -35,7 +35,8 @@ export const startWSS = () => {
       if (!server) {
         throw new Error("Server not initialized");
       }
-      wss = new WebSocket.Server({
+      console.log(WebSocket);
+      wss = new WebSocket.WebSocketServer({
         server,
       });
       debug("starting wss on port %d", getWSSPort());
