@@ -1,6 +1,7 @@
 import Debug from "debug";
 import http from "http";
-import { createHttpTerminator, HttpTerminator } from "http-terminator";
+// @ts-ignore
+import HttpTerminator from "lil-http-terminator";
 import { match, P } from "ts-pattern";
 import * as WebSocket from "ws";
 import { pubsub } from "../pubsub";
@@ -22,7 +23,12 @@ export const stopWSS = async () => {
     debug("no wss server");
     return;
   }
-  await httpTerminator.terminate();
+  const { success, code, message, error } = await httpTerminator.terminate();
+  if (!success) {
+    if (code === "TIMED_OUT") error(message);
+    if (code === "SERVER_ERROR") error(message, error);
+    if (code === "INTERNAL_ERROR") error(message, error);
+  }
   debug("terminated wss server: %d", getWSSPort());
 };
 export const startWSS = () => {
@@ -35,7 +41,6 @@ export const startWSS = () => {
       if (!server) {
         throw new Error("Server not initialized");
       }
-      console.log(WebSocket);
       wss = new WebSocket.WebSocketServer({
         server,
       });
@@ -49,7 +54,7 @@ export const startWSS = () => {
     })
     .listen();
 
-  httpTerminator = createHttpTerminator({
+  httpTerminator = HttpTerminator({
     server,
   });
 };
