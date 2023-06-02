@@ -8,6 +8,7 @@ import Debug from "debug";
 import _ from "lodash";
 import { getCypressRunAPIParams } from "../config";
 import { safe } from "../lang";
+import { warn } from "../log";
 import { getWSSPort } from "../ws";
 
 const debug = Debug("currents:cypress");
@@ -55,24 +56,44 @@ export async function runSpecFile(
   debug("running cypress with options %o", options);
   const result = await cypress.run(options);
 
+  if (result.status === "failed") {
+    warn('Cypress runner failed with message: "%s"', result.message);
+    warn(
+      "The following spec files will be marked as failed: %s",
+      spec
+        .split(",")
+        .map((i) => `\n - ${i}`)
+        .join("")
+    );
+  }
   debug("cypress run result %o", result);
   return result;
 }
 
 export const runSpecFileSafe = (
-  ...args: Parameters<typeof runSpecFile>
+  spec: RunCypressSpecFile,
+  cypressRunOptions: ValidatedCurrentsParameters
 ): Promise<CypressResult> =>
   safe(
     runSpecFile,
     (error) => {
+      const message = `Cypress runnner crashed with an error:\n${
+        (error as Error).message
+      }\n${(error as Error).stack}}`;
       debug("cypress run exception %o", error);
+      warn('Cypress runner crashed: "%s"', message);
+      warn(
+        "The following spec files will be marked as failed: %s",
+        spec.spec
+          .split(",")
+          .map((i) => `\n - ${i}`)
+          .join("")
+      );
       return {
         status: "failed" as const,
         failures: 1,
-        message: `Cypress process crashed with an error:\n${
-          (error as Error).message
-        }\n${(error as Error).stack}}`,
+        message,
       };
     },
     () => {}
-  )(...args);
+  )(spec, cypressRunOptions);

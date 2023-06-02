@@ -2,13 +2,13 @@
 export interface SpecResult {
   error: string | null;
   exception: null | string;
-  hooks: TestHook[];
+  hooks: TestHook[] | null;
   reporter: string;
-  reporterStats: ReporterStats;
+  reporterStats: ReporterStats | null;
   screenshots: Screenshot[];
   spec: Spec;
   stats: Stats;
-  tests: Test[];
+  tests: Test[] | null;
   video: string | null;
 }
 

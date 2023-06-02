@@ -8,6 +8,7 @@ import {
   UpdateInstanceResultsPayload,
 } from "../api";
 import { MergedConfig } from "../config";
+import { getConfig } from "../runner";
 
 const debug = Debug("currents:results");
 
@@ -53,10 +54,6 @@ export const getTestAttempt = (attempt: CypressCommandLine.AttemptResult) => {
 export const getInstanceResultPayload = (
   runResult: CypressCommandLine.RunResult
 ): UpdateInstanceResultsPayload => {
-  const altTests = [];
-  if (runResult.error && !runResult.tests?.length) {
-    altTests.push(getFakeTestFromException(runResult.error, runResult.stats));
-  }
   return {
     stats: getStats(runResult.stats),
     reporterStats: runResult.reporterStats,
@@ -70,11 +67,11 @@ export const getInstanceResultPayload = (
         hooks: runResult.hooks,
         attempts: test.attempts?.map(getTestAttempt) ?? [],
         clientId: `r${i}`,
-      })) ?? altTests,
+      })) ?? [],
   };
 };
 
-function getFakeTestFromException(
+export function getFakeTestFromException(
   error: string,
   stats: CypressCommandLine.RunResult["stats"]
 ) {
@@ -106,10 +103,6 @@ export const getInstanceTestsPayload = (
   runResult: CypressCommandLine.RunResult,
   config: Cypress.ResolvedConfigOptions
 ): SetInstanceTestsPayload => {
-  const altTests = [];
-  if (runResult.error && !runResult.tests?.length) {
-    altTests.push(getFakeTestFromException(runResult.error, runResult.stats));
-  }
   return {
     config,
     tests:
@@ -119,7 +112,7 @@ export const getInstanceTestsPayload = (
         body: test.body,
         clientId: `r${i}`,
         hookIds: [],
-      })) ?? altTests,
+      })) ?? [],
     hooks: runResult.hooks,
   };
 };
@@ -201,19 +194,39 @@ const emptyStats = {
   totalTests: 0,
 };
 
+const getDummyFailedTest = (start: string, error: string) => ({
+  title: ["Unknown"],
+  state: "failed",
+  body: "// This test is automatically generated due to execution failure",
+  displayError: error,
+  attempts: [
+    {
+      state: "failed",
+      startedAt: start,
+      duration: 0,
+      videoTimestamp: 0,
+      screenshots: [],
+      error: {
+        name: "CypressExecutionError",
+        message: error,
+        stack: "",
+      },
+    },
+  ],
+});
+
 export function getFailedDummyResult({
   specs,
   error,
-  config,
 }: {
   specs: string[];
   error: string;
-  config: any; // TODO tighten this up
 }): CypressCommandLine.CypressRunResult {
   const start = new Date().toISOString();
   const end = new Date().toISOString();
   return {
-    config,
+    // @ts-ignore
+    config: getConfig() ?? {},
     status: "finished",
     startedTestsAt: new Date().toISOString(),
     endedTestsAt: new Date().toISOString(),
@@ -253,28 +266,7 @@ export function getFailedDummyResult({
         absolute: s,
         relativeToCommonRoot: s,
       },
-      tests: [
-        {
-          title: ["Unknown"],
-          state: "failed",
-          body: "// This test is automatically generated due to execution failure",
-          displayError: error,
-          attempts: [
-            {
-              state: "failed",
-              startedAt: start,
-              duration: 0,
-              videoTimestamp: 0,
-              screenshots: [],
-              error: {
-                name: "CloudExecutionError",
-                message: error,
-                stack: "",
-              },
-            },
-          ],
-        },
-      ],
+      tests: [getDummyFailedTest(start, error)],
       shouldUploadVideo: false,
       skippedSpec: false,
     })),

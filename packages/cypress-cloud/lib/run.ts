@@ -3,7 +3,7 @@ import "./init";
 import Debug from "debug";
 import { CurrentsRunParameters } from "../types";
 import { createRun } from "./api";
-import { cutInitialOutput } from "./capture";
+import { cutInitialOutput, getCapturedOutput } from "./capture";
 import { getCI } from "./ciProvider";
 import {
   getMergedConfig,
@@ -26,6 +26,7 @@ import {
   setConfig,
   setSpecAfter,
   setSpecBefore,
+  setSpecOutput,
 } from "./runner";
 import { shutdown } from "./shutdown";
 import { getSpecFiles } from "./specMatcher";
@@ -155,6 +156,7 @@ function listenToSpecEvents() {
     async ({ spec, results }: { spec: Cypress.Spec; results: any }) => {
       debug("after:spec %o %o", spec, results);
       setSpecAfter(spec.relative, results);
+      setSpecOutput(spec.relative, getCapturedOutput());
       createReportTaskSpec(spec.relative);
     }
   );

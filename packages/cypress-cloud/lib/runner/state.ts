@@ -1,8 +1,11 @@
-import { InstanceId } from "cypress-cloud/types";
+import { CypressRun, InstanceId } from "cypress-cloud/types";
+import Debug from "debug";
 import { error, warn } from "../log";
-import { getFailedDummyResult } from "../results";
+import { getFailedDummyResult, getFakeTestFromException } from "../results";
 import { specResultsToCypressResults } from "./mapResult";
 import { SpecResult } from "./spec.type";
+
+const debug = Debug("currents:state");
 
 // Careful here - it is a global mutable state 🐲
 type InstanceExecutionState = {
@@ -76,10 +79,23 @@ export const setInstanceResult = (
   i.runResultsReportedAt = new Date();
 };
 
+export const setSpecOutput = (spec: string, output: string) => {
+  const i = getExecutionStateSpec(spec);
+  if (!i) {
+    warn('Cannot find execution state for spec "%s"', spec);
+    return;
+  }
+  setInstanceOutput(i.instanceId, output);
+};
+
 export const setInstanceOutput = (instanceId: string, output: string) => {
   const i = executionState[instanceId];
   if (!i) {
     warn('Cannot find execution state for instance "%s"', instanceId);
+    return;
+  }
+  if (i.output) {
+    debug('Instance "%s" already has output', instanceId);
     return;
   }
   i.output = output;
@@ -101,25 +117,42 @@ export const getInstanceResults = (
 
     return getFailedDummyResult({
       specs: ["unknown"],
-      error: "cypress-cloud: Cannot find execution state for instance",
-      config: {},
+      error: "Cannot find execution state for instance",
     });
   }
 
   // use spec:after results - it can become available before run results
   if (i.specAfterResults) {
-    return specResultsToCypressResults(i.specAfterResults);
+    return backfillException(specResultsToCypressResults(i.specAfterResults));
   }
 
   if (i.runResults) {
-    return i.runResults;
+    return backfillException(i.runResults);
   }
 
+  debug('No results detected for "%s"', i.spec);
   return getFailedDummyResult({
     specs: [i.spec],
-    error: "cypress-cloud: Cannot find execution state for instance",
-    config: {},
+    error: `No results detected for the spec file. That usually happens because of cypress crash. See the console output for details.`,
   });
+};
+
+const backfillException = (result: CypressCommandLine.CypressRunResult) => {
+  return {
+    ...result,
+    runs: result.runs.map(backfillExceptionRun),
+  };
+};
+
+const backfillExceptionRun = (run: CypressRun) => {
+  if (!run.error) {
+    return run;
+  }
+
+  return {
+    ...run,
+    tests: [getFakeTestFromException(run.error, run.stats)],
+  };
 };
 
 let _config: Cypress.ResolvedConfigOptions | undefined = undefined;

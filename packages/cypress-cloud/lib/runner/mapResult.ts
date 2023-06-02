@@ -67,7 +67,7 @@ export function specResultsToCypressResults(
           duration: specAfterResult.stats.wallClockDuration,
         },
         reporter: specAfterResult.reporter,
-        reporterStats: specAfterResult.reporterStats,
+        reporterStats: specAfterResult.reporterStats ?? {},
         spec: specAfterResult.spec,
         error: specAfterResult.error,
         video: specAfterResult.video,
@@ -76,7 +76,7 @@ export function specResultsToCypressResults(
         // wrong typedef for CypressCommandLine.CypressRunResult
         // actual HookName is "before all" | "before each" | "after all" | "after each"
         hooks: specAfterResult.hooks,
-        tests: specAfterResult.tests.map((t) =>
+        tests: (specAfterResult.tests ?? []).map((t) =>
           getTest(t, specAfterResult.screenshots)
         ),
       },
