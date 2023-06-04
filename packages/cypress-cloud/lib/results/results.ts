@@ -8,7 +8,7 @@ import {
   UpdateInstanceResultsPayload,
 } from "../api";
 import { MergedConfig } from "../config";
-import { getConfig } from "../runner";
+import { getConfig } from "../runner/state";
 
 const debug = Debug("currents:results");
 

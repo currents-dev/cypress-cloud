@@ -150,7 +150,6 @@ async function runBatch({
   batch.specs.forEach((spec) => {
     setInstanceOutput(spec.instanceId, output);
     const specRunResult = getCypressRunResultForSpec(spec.spec, rawResult);
-
     if (!specRunResult) {
       return;
     }

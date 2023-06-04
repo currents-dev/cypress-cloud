@@ -1,8 +1,11 @@
-import { CypressRun, InstanceId } from "cypress-cloud/types";
+import { InstanceId } from "cypress-cloud/types";
 import Debug from "debug";
 import { error, warn } from "../log";
-import { getFailedDummyResult, getFakeTestFromException } from "../results";
-import { specResultsToCypressResults } from "./mapResult";
+import { getFailedDummyResult } from "../results";
+import {
+  backfillException,
+  specResultsToCypressResults,
+} from "../results/mapResult";
 import { SpecResult } from "./spec.type";
 
 const debug = Debug("currents:state");
@@ -135,24 +138,6 @@ export const getInstanceResults = (
     specs: [i.spec],
     error: `No results detected for the spec file. That usually happens because of cypress crash. See the console output for details.`,
   });
-};
-
-const backfillException = (result: CypressCommandLine.CypressRunResult) => {
-  return {
-    ...result,
-    runs: result.runs.map(backfillExceptionRun),
-  };
-};
-
-const backfillExceptionRun = (run: CypressRun) => {
-  if (!run.error) {
-    return run;
-  }
-
-  return {
-    ...run,
-    tests: [getFakeTestFromException(run.error, run.stats)],
-  };
 };
 
 let _config: Cypress.ResolvedConfigOptions | undefined = undefined;

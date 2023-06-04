@@ -1,11 +1,13 @@
 import {
+  CypressRun,
   CypressScreenshot,
   CypressTest,
   CypressTestAttempt,
 } from "cypress-cloud/types";
 
-import * as SpecAfter from "./spec.type";
-import { getConfig } from "./state";
+import * as SpecAfter from "../runner/spec.type";
+import { getConfig } from "../runner/state";
+import { getFakeTestFromException } from "./results";
 
 function getScreenshot(s: SpecAfter.Screenshot): CypressScreenshot {
   return {
@@ -83,3 +85,23 @@ export function specResultsToCypressResults(
     ],
   };
 }
+
+export const backfillException = (
+  result: CypressCommandLine.CypressRunResult
+) => {
+  return {
+    ...result,
+    runs: result.runs.map(backfillExceptionRun),
+  };
+};
+
+const backfillExceptionRun = (run: CypressRun) => {
+  if (!run.error) {
+    return run;
+  }
+
+  return {
+    ...run,
+    tests: [getFakeTestFromException(run.error, run.stats)],
+  };
+};
