@@ -1,5 +1,7 @@
 
 
+# [1.8.0-beta.2](https://github.com/currents-dev/cypress-cloud/compare/v1.8.0-beta.1...v1.8.0-beta.2) (2023-06-05)
+
 # [1.8.0-beta.1](https://github.com/currents-dev/cypress-cloud/compare/v1.8.0-beta.0...v1.8.0-beta.1) (2023-06-02)
 
 # [1.8.0-beta.0](https://github.com/currents-dev/cypress-cloud/compare/v1.7.4...v1.8.0-beta.0) (2023-06-01)
