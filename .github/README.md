@@ -229,3 +229,9 @@ Using:
 ```sh
 npm install cypress-cloud --registry http://localhost:4873
 ```
+
+
+
+## Disclaimer
+
+This software is not affilicated with Cypress.io Inc. All third party trademarks and materials (including logos, icons and labels) referenced herein are the property of their respective owners. The third party products or services that this software connects to are subject to their respective owners, please refer to their intellectual property and terms of service agreements.
