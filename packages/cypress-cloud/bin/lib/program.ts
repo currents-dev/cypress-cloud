@@ -92,6 +92,11 @@ export const createProgram = (command: Command = new Command()) =>
         "--auto-cancel-after-failures <number | false>",
         "Automatically abort the run after the specified number of failed tests. Overrides the default project settings. If set, must be a positive integer or 'false' to disable (Currents-only)"
       ).argParser(parseAutoCancelFailures)
+    )
+    .addOption(
+      new Option("--headed [bool]", "Run cypress in headed mode")
+        .default(false)
+        .argParser((i) => (i === "false" ? false : true))
     );
 
 export const program = createProgram();
