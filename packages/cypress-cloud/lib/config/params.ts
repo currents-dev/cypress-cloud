@@ -173,7 +173,6 @@ export function getCypressRunAPIParams(
         "ciBuildId",
         "spec",
         "exit",
-        "headed",
         "headless",
       ]),
       Boolean

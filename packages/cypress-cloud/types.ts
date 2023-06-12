@@ -152,6 +152,11 @@ export type CurrentsRunParameters = StrippedCypressModuleAPIOptions & {
 
   /** Automatically abort the run after the specified number of failed tests. Overrides the default project settings. If set, must be a positive integer or "false" to disable (Currents-only) */
   autoCancelAfterFailures?: number | false;
+
+  /**
+   * Whether to launch cypress in headed mode. If set, must be a boolean, defaults to false.
+   */
+  headed?: boolean;
 };
 
 // User-facing `run` interface
