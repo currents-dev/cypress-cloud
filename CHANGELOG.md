@@ -1,5 +1,12 @@
 
 
+# [1.8.0-beta.3](https://github.com/currents-dev/cypress-cloud/compare/v1.8.0-beta.2...v1.8.0-beta.3) (2023-06-12)
+
+
+### Bug Fixes
+
+* support --headed mode ([2e8c6e2](https://github.com/currents-dev/cypress-cloud/commit/2e8c6e27675321e30273df4bf9a50d2af686ba59))
+
 # [1.8.0-beta.2](https://github.com/currents-dev/cypress-cloud/compare/v1.8.0-beta.1...v1.8.0-beta.2) (2023-06-05)
 
 # [1.8.0-beta.1](https://github.com/currents-dev/cypress-cloud/compare/v1.8.0-beta.0...v1.8.0-beta.1) (2023-06-02)
