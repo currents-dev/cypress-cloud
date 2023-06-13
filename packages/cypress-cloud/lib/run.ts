@@ -44,7 +44,7 @@ export async function run(params: CurrentsRunParameters = {}) {
     return runBareCypress(params);
   }
 
-  const validatedParams = validateParams(params);
+  const validatedParams = await validateParams(params);
   setAPIBaseUrl(validatedParams.cloudServiceUrl);
 
   const {

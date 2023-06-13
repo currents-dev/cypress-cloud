@@ -29,7 +29,7 @@ Install the package:
 npm install cypress-cloud
 ```
 
-- Create a new configuration file: `currents.config.js` in the Cypress project’s root
+- Create a new configuration file: `currents.config.js|mjs|cjs` in the Cypress project’s root (Using ESM project? See the guide below).
 - Set the `projectId` and the record key obtained from [Currents](https://app.currents.dev) or your self-hosted instance of Sorry Cypress:
 
 ```js
@@ -179,6 +179,16 @@ As an alternative, you can activate the `cloudPlugin` first, and then implement 
 
 Enable the debug mode to troubleshoot files discovery: `DEBUG=currents:specs npx cypress-cloud ...`
 
+### Usage with ESM project
+
+For ESM projects (`"type": "module"` in `package.json`) you can use one of the following formats:
+
+- `currents.config.cjs` - CommonJS formatted file
+- `currents.config.js` - ESM formatted file (i.e. no `require` statements)
+- `currents.config.mjs` - ESM formatted file (i.e. no `require` statements)
+
+Also, make sure that your `cypress.config.js|mjs|cjs|ts` is formatted accordingly. See examples is [`./e2e`](./e2e) directory.
+
 ## Troubleshooting
 
 Enable the debug mode and run the command:
@@ -229,8 +239,6 @@ Using:
 ```sh
 npm install cypress-cloud --registry http://localhost:4873
 ```
-
-
 
 ## Disclaimer
 
