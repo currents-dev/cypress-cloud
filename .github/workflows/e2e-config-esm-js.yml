@@ -4,7 +4,7 @@ on:
   push:
 
 jobs:
-  e2e-monorepo:
+  e2e-config-esm-js:
     if: "!contains(toJSON(github.event.commits.*.message), '[skip ci]')"
     runs-on: ubuntu-latest
     env:

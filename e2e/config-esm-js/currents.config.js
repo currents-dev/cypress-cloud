@@ -7,6 +7,6 @@ export default {
   },
   projectId: !!(process.env.GITHUB_ACTION || process.env.CIRCLE_BRANCH)
     ? "Ij0RfK"
-    : "l4zuz8",
+    : "1OPP8c",
   // cloudServiceUrl: "http://localhost:1234",
 };

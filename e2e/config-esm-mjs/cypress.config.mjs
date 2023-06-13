@@ -7,7 +7,8 @@ export default defineConfig({
   e2e: {
     baseUrl: "https://todomvc.com/examples/vanillajs",
     videoUploadOnPasses: false,
-    supportFile: "cypress/support/e2e.ts",
+
+    supportFile: "cypress/support/e2e.mjs",
     specPattern: "cypress/*/**/*.spec.js",
     setupNodeEvents(on, config) {
       grepPlugin(config);
