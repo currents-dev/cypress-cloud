@@ -88,9 +88,15 @@ module.exports = {
 };
 ```
 
-`cypress-cloud` will search for `currents.config.js` at the project's root location (defined with `-P --project` CLI option).
+`cypress-cloud` will search for a configuration file at the project's root location (defined with `-P --project` CLI option) in the following order:
 
-Override the default configuration values via environment variables:
+- `currents.config.js`
+- `currents.config.cjs`
+- `currents.config.mjs`
+
+The configuration file will be read using [`import()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import) expression. Please make sure to use the correct syntax if you're using ESM modules (see the guide below).
+
+You can override the configuration values via environment variables:
 
 - `CURRENTS_API_URL` - sorry-cypress users - set the URL of your director service
 - `CURRENTS_PROJECT_ID` - set the `projectId`
@@ -100,7 +106,7 @@ The configuration variables will resolve as follows:
 
 - the corresponding CLI flag or `run` function parameter, otherwise
 - environment variable if exist, otherwise
-- `currents.config.js` value, otherwise
+- `currents.config.js|cjs|mjs` value, otherwise
 - the default value, otherwise throw
 
 ## Batched Orchestration
@@ -187,7 +193,7 @@ For ESM projects (`"type": "module"` in `package.json`) you can use one of the f
 - `currents.config.js` - ESM formatted file (i.e. no `require` statements)
 - `currents.config.mjs` - ESM formatted file (i.e. no `require` statements)
 
-Also, make sure that your `cypress.config.js|mjs|cjs|ts` is formatted accordingly. See examples is [`./e2e`](./e2e) directory.
+Also, make sure that your `cypress.config.js|mjs|cjs|ts` is formatted accordingly. See examples at [`./e2e`](./e2e) directory.
 
 ## Troubleshooting
 
