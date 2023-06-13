@@ -1,5 +1,19 @@
 
 
+# [1.8.0-beta.5](https://github.com/currents-dev/cypress-cloud/compare/v1.8.0-beta.3...v1.8.0-beta.5) (2023-06-13)
+
+
+### Bug Fixes
+
+* support ESM packages ([#144](https://github.com/currents-dev/cypress-cloud/issues/144)) ([1d17d13](https://github.com/currents-dev/cypress-cloud/commit/1d17d13c9df2d7a63b23b9cb9ce8c9667efabcd4))
+
+# [1.8.0-beta.4](https://github.com/currents-dev/cypress-cloud/compare/v1.8.0-beta.3...v1.8.0-beta.4) (2023-06-13)
+
+
+### Bug Fixes
+
+* support ESM packages ([#144](https://github.com/currents-dev/cypress-cloud/issues/144)) ([1d17d13](https://github.com/currents-dev/cypress-cloud/commit/1d17d13c9df2d7a63b23b9cb9ce8c9667efabcd4))
+
 # [1.8.0-beta.3](https://github.com/currents-dev/cypress-cloud/compare/v1.8.0-beta.2...v1.8.0-beta.3) (2023-06-12)
 
 
