@@ -1,0 +1,9 @@
+{
+  "name": "test-config-noesm-js",
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": {
+    "cypress-cloud": "*"
+  },
+  "devDependencies": {}
+}

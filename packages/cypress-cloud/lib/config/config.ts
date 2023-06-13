@@ -1,9 +1,9 @@
 import Debug from "debug";
 import path from "path";
+import { P, match } from "ts-pattern";
 import { DetectedBrowser, ValidatedCurrentsParameters } from "../../types";
 import { bootCypress } from "../bootstrap";
 import { warn } from "../log";
-import { require } from "../require";
 
 const debug = Debug("currents:config");
 
@@ -23,36 +23,62 @@ export type CurrentsConfig = {
 
 let _config: CurrentsConfig | null = null;
 
-export function getCurrentsConfig(projectRoot?: string): CurrentsConfig {
+const defaultConfig: CurrentsConfig = {
+  e2e: {
+    batchSize: 3,
+  },
+  component: {
+    batchSize: 5,
+  },
+  cloudServiceUrl: "https://cy.currents.dev",
+};
+
+export async function getCurrentsConfig(
+  projectRoot?: string
+): Promise<CurrentsConfig> {
   if (_config) {
     return _config;
   }
-  const defaultConfig: CurrentsConfig = {
-    e2e: {
-      batchSize: 3,
-    },
-    component: {
-      batchSize: 5,
-    },
-    cloudServiceUrl: "https://cy.currents.dev",
-  };
 
   const configFilePath = getConfigFilePath(projectRoot);
-  try {
-    const resolvedPath = path.resolve(...configFilePath);
-    debug("loading currents config file from '%s'", resolvedPath);
+  // try loading possible config files
+  for (const filepath of configFilePath) {
+    const config = match(await loadConfigFile(filepath))
+      .with({ default: P.not(P.nullish) }, (c) => c.default)
+      .with(P.not(P.nullish), (c) => c)
+      .otherwise(() => null);
 
-    const fsConfig = require(resolvedPath);
-    _config = {
+    if (config) {
+      debug("loaded currents config from '%s'\n%O", filepath, config);
+      _config = config;
+      return _config;
+    }
+  }
+
+  warn(
+    "Failed to load config file, falling back to the default config. Attempted locations: %s",
+    configFilePath
+  );
+  _config = defaultConfig;
+  return _config;
+}
+
+async function loadConfigFile(filepath: string) {
+  try {
+    debug("loading currents config file from '%s'", filepath);
+    const fsConfig = await import(filepath);
+
+    return {
       ...defaultConfig,
       ...fsConfig,
-    } as CurrentsConfig;
-    return _config;
+    } as
+      | CurrentsConfig
+      | {
+          default: CurrentsConfig;
+        };
   } catch (e) {
-    warn("failed to load config file: %s", configFilePath);
-    debug("failure details: %s", e);
-    _config = defaultConfig;
-    return _config;
+    debug("failed loading config file from: %s", e);
+    return null;
   }
 }
 
@@ -94,5 +120,10 @@ export async function getMergedConfig(params: ValidatedCurrentsParameters) {
 }
 
 function getConfigFilePath(projectRoot: string | null = null) {
-  return [projectRoot ?? process.cwd(), "currents.config.js"];
+  const prefix = projectRoot ?? process.cwd();
+  return [
+    "currents.config.js",
+    "currents.config.cjs",
+    "currents.config.mjs",
+  ].map((p) => path.resolve(prefix, p));
 }

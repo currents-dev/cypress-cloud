@@ -1,6 +1,6 @@
-module.exports = {
+const config = {
   e2e: {
-    batchSize: 2, // how many specs to send in one batch
+    batchSize: 3, // how many specs to send in one batch
   },
   component: {
     batchSize: 5, // how many specs to send in one batch
@@ -10,3 +10,5 @@ module.exports = {
     : "1OPP8c",
   // cloudServiceUrl: "http://localhost:1234",
 };
+
+export default config;
