@@ -1,6 +1,6 @@
 {
   "name": "@deploysentinel/cypress-cloud",
-  "version": "1.7.6",
+  "version": "1.7.7",
   "main": "./dist/index.js",
   "homepage": "https://github.com/deploysentinel/cypress-cloud",
   "license": "GPL-3.0-or-later",

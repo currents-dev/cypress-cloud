@@ -6,7 +6,7 @@ import { formatGenericError } from "../printErrors";
 
 jest.mock("@deploysentinel/cypress-cloud/lib/log");
 
-const apiMock = nock("https://api.deploysentinel.com");
+const apiMock = nock("https://cy.currents.dev");
 
 /**
  * 422 is "GenericError" in the director package

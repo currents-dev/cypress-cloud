@@ -16,7 +16,7 @@ export const isRetriableError = (err: AxiosError): boolean => {
 
 export const getDelay = (i: number) => [15 * 1000, 30 * 1000, 60 * 1000][i - 1];
 
-let baseURL = "https://api.deploysentinel.com";
-export const getAPIBaseUrl = () => baseURL ?? "https://api.deploysentinel.com";
+let baseURL = "https://cy.currents.dev";
+export const getAPIBaseUrl = () => baseURL ?? "https://cy.currents.dev";
 export const setAPIBaseUrl = (url?: string) =>
-  (baseURL = url ?? "https://api.deploysentinel.com");
+  (baseURL = url ?? "https://cy.currents.dev");
