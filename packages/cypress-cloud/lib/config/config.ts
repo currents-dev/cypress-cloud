@@ -52,7 +52,7 @@ export function getCurrentsConfig(projectRoot?: string): CurrentsConfig {
     } as CurrentsConfig;
     return _config;
   } catch (e) {
-    warn("failed to load config file: %s", configFilePath);
+    debug("failed to load config file: %s", configFilePath);
     debug("failure details: %s", e);
     _config = defaultConfig;
     return _config;
