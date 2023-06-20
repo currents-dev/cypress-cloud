@@ -2,7 +2,7 @@ import {
   CurrentsRunParameters,
   CypressRunParameters,
   ValidatedCurrentsParameters,
-} from "cypress-cloud/types";
+} from "@deploysentinel/cypress-cloud/types";
 import Debug from "debug";
 import _ from "lodash";
 import { ValidationError } from "../errors";
@@ -22,11 +22,13 @@ export function resolveCurrentsParams(
 
   const recordKey =
     params.recordKey ??
+    process.env.CYPRESS_DEPLOYSENTINEL_KEY ??
     process.env.CURRENTS_RECORD_KEY ??
     configFromFile.recordKey;
 
   const projectId =
     params.projectId ??
+    process.env.CYPRESS_PROJECT_ID ??
     process.env.CURRENTS_PROJECT_ID ??
     configFromFile.projectId;
 

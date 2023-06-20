@@ -1,6 +1,6 @@
 import { describe, expect, it } from "@jest/globals";
-import { warn } from "cypress-cloud/lib/log";
-import { Event, pubsub } from "cypress-cloud/lib/pubsub";
+import { warn } from "@deploysentinel/cypress-cloud/lib/log";
+import { Event, pubsub } from "@deploysentinel/cypress-cloud/lib/pubsub";
 import { random } from "lodash";
 import { runTillDoneOrCancelled } from "../cancellable";
 import { runTillDone } from "../runner";
@@ -8,7 +8,7 @@ import { runTillDone } from "../runner";
 jest.mock("../runner", () => ({
   runTillDone: jest.fn().mockResolvedValue({}),
 }));
-jest.mock("cypress-cloud/lib/log", () => ({
+jest.mock("@deploysentinel/cypress-cloud/lib/log", () => ({
   warn: jest.fn(),
 }));
 

@@ -1,6 +1,6 @@
 import { expect } from "@jest/globals";
 import { run } from "cypress";
-import { ValidatedCurrentsParameters } from "cypress-cloud/types";
+import { ValidatedCurrentsParameters } from "@deploysentinel/cypress-cloud/types";
 import { runSpecFile } from "../cypress";
 jest.mock("cypress", () => ({
   run: jest.fn(),

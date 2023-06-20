@@ -53,7 +53,7 @@ fs.writeFileSync(
   JSON.stringify(newPkg, null, 2),
   "utf-8"
 );
-execSync(`npm pack --dry-run && npm publish --tag ${options.tag}`, {
+execSync(`npm pack --dry-run && npm publish --tag ${options.tag} --access public`, {
   cwd: "./dist",
   stdio: "inherit",
 });

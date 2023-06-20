@@ -1,4 +1,4 @@
-import { CurrentsRunParameters, TestingType } from "cypress-cloud/types";
+import { CurrentsRunParameters, TestingType } from "@deploysentinel/cypress-cloud/types";
 import Debug from "debug";
 import { sanitizeAndConvertNestedArgs } from "./parser";
 import { program } from "./program";

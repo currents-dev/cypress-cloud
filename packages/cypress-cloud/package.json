@@ -1,23 +1,16 @@
 {
-  "name": "cypress-cloud",
-  "version": "1.7.4",
+  "name": "@deploysentinel/cypress-cloud",
+  "version": "1.7.6",
   "main": "./dist/index.js",
-  "author": "Currents Software Inc",
-  "homepage": "https://github.com/currents-dev/cypress-cloud",
-  "bugs": {
-    "url": "https://github.com/currents-dev/cypress-cloud/issues",
-    "email": "support@currents.dev"
-  },
+  "homepage": "https://github.com/deploysentinel/cypress-cloud",
   "license": "GPL-3.0-or-later",
   "engines": {
     "node": ">=14.7.0"
   },
   "keywords": [
     "cypress",
-    "sorry-cypress",
     "ci",
-    "e2e",
-    "cypress-cloud"
+    "e2e"
   ],
   "scripts": {
     "rm": "rimraf out",

@@ -1,5 +1,5 @@
-import { CiParams, CiProvider } from "cypress-cloud/lib/ciProvider";
-import { Platform, ValidatedCurrentsParameters } from "cypress-cloud/types";
+import { CiParams, CiProvider } from "@deploysentinel/cypress-cloud/lib/ciProvider";
+import { Platform, ValidatedCurrentsParameters } from "@deploysentinel/cypress-cloud/types";
 
 export type CreateRunPayload = {
   ci: {

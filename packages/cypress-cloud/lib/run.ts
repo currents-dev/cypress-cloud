@@ -1,5 +1,6 @@
 import "./init";
 
+import crypto from "crypto";
 import Debug from "debug";
 import { CurrentsRunParameters } from "../types";
 import { createRun } from "./api";
@@ -21,6 +22,18 @@ import { runTillDoneOrCancelled, summary, uploadTasks } from "./runner";
 import { getSpecFiles } from "./specMatcher";
 
 const debug = Debug("currents:run");
+
+// DeploySentinel helpers
+export const setDSMachineId = (machineId?: string) => {
+  process.env.CYPRESS_DEPLOYSENTINEL_MACHINE_ID =
+    process.env.CYPRESS_DEPLOYSENTINEL_MACHINE_ID ??
+    machineId ??
+    crypto.randomUUID();
+  debug(
+    "setting DS machine id to %s",
+    process.env.CYPRESS_DEPLOYSENTINEL_MACHINE_ID
+  );
+};
 
 export async function run(params: CurrentsRunParameters = {}) {
   debug("run params %o", params);
@@ -91,6 +104,8 @@ export async function run(params: CurrentsRunParameters = {}) {
   info("🎥 Run URL:", bold(run.runUrl));
 
   setRunId(run.runId);
+
+  setDSMachineId(run.machineId);
 
   cutInitialOutput();
 

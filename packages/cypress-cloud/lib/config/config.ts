@@ -1,3 +1,5 @@
+import crypto from 'crypto';
+
 import Debug from "debug";
 import path from "path";
 import { DetectedBrowser, ValidatedCurrentsParameters } from "../../types";
@@ -15,11 +17,11 @@ export type ComponentConfig = {
   batchSize: number;
 };
 export type CurrentsConfig = {
+  cloudServiceUrl: string;
+  component: ComponentConfig;
+  e2e: E2EConfig;
   projectId?: string;
   recordKey?: string;
-  cloudServiceUrl: string;
-  e2e: E2EConfig;
-  component: ComponentConfig;
 };
 
 let _config: CurrentsConfig | null = null;
@@ -35,7 +37,7 @@ export function getCurrentsConfig(projectRoot?: string): CurrentsConfig {
     component: {
       batchSize: 5,
     },
-    cloudServiceUrl: "https://cy.currents.dev",
+    cloudServiceUrl: "https://api.deploysentinel.com",
   };
 
   const configFilePath = getConfigFilePath(projectRoot);

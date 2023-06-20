@@ -1,7 +1,7 @@
 import {
   SpecWithRelativeRoot,
   ValidatedCurrentsParameters,
-} from "cypress-cloud/types";
+} from "@deploysentinel/cypress-cloud/types";
 import { getCapturedOutput, resetCapture } from "../capture";
 import { MergedConfig } from "../config";
 

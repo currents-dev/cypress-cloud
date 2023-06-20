@@ -1,5 +1,5 @@
 import { defineConfig } from "cypress";
-import currents from "cypress-cloud/plugin";
+import currents from "@deploysentinel/cypress-cloud/plugin";
 
 module.exports = defineConfig({
   e2e: {

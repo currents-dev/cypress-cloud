@@ -1,12 +1,12 @@
 import { expect } from "@jest/globals";
-import * as log from "cypress-cloud/lib/log";
+import * as log from "@deploysentinel/cypress-cloud/lib/log";
 import nock from "nock";
 import { makeRequest } from "../httpClient";
 import { formatGenericError } from "../printErrors";
 
-jest.mock("cypress-cloud/lib/log");
+jest.mock("@deploysentinel/cypress-cloud/lib/log");
 
-const apiMock = nock("https://cy.currents.dev");
+const apiMock = nock("https://api.deploysentinel.com");
 
 /**
  * 422 is "GenericError" in the director package

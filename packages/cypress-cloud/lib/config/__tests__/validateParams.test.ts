@@ -1,6 +1,6 @@
 import { describe, expect, it } from "@jest/globals";
-import { ValidationError } from "cypress-cloud/lib/errors";
-import { CurrentsRunParameters } from "cypress-cloud/types";
+import { ValidationError } from "@deploysentinel/cypress-cloud/lib/errors";
+import { CurrentsRunParameters } from "@deploysentinel/cypress-cloud/types";
 import { getCurrentsConfig } from "../config";
 import {
   cloudServiceInvalidUrlError,
@@ -10,7 +10,7 @@ import {
   validateParams,
 } from "../params";
 
-jest.mock("cypress-cloud/lib/log");
+jest.mock("@deploysentinel/cypress-cloud/lib/log");
 jest.mock("../config", () => ({
   getCurrentsConfig: jest.fn(() => ({
     e2e: {

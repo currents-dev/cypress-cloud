@@ -1,9 +1,8 @@
 {
-  "name": "@currents/cypress-monorepo",
+  "name": "@deploysentinel/cypress-monorepo",
   "version": "1.0.0",
   "description": "",
   "private": true,
-  "author": "Currents Software Inc.",
   "license": "GPL-3.0-or-later",
   "workspaces": [
     "e2e/*",
