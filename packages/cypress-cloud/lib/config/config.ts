@@ -1,5 +1,6 @@
 import Debug from "debug";
 import path from "path";
+import os from 'os'
 import { P, match } from "ts-pattern";
 import { DetectedBrowser, ValidatedCurrentsParameters } from "../../types";
 import { bootCypress } from "../bootstrap";
@@ -113,11 +114,11 @@ export async function getMergedConfig(params: ValidatedCurrentsParameters) {
   return result;
 }
 
-function getConfigFilePath(projectRoot: string | null = null) {
+function getConfigFilePath(projectRoot: string | null = null): string[] {
   const prefix = projectRoot ?? process.cwd();
   return [
     "currents.config.js",
     "currents.config.cjs",
     "currents.config.mjs",
-  ].map((p) => path.resolve(prefix, p));
+  ].map((p) => `file://${path.resolve(prefix, p)}`);
 }
