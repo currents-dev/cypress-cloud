@@ -34,6 +34,22 @@ export const setDSMachineId = (machineId?: string) => {
     process.env.CYPRESS_DEPLOYSENTINEL_MACHINE_ID
   );
 };
+const setDSCustomEnvs = () => {
+  // Set up ELECTRON_EXTRA_LAUNCH_ARGS if not present
+  if (!process.env.ELECTRON_EXTRA_LAUNCH_ARGS) {
+    console.log(
+      'Setting ELECTRON_EXTRA_LAUNCH_ARGS = "--remote-debugging-port=40500"'
+    );
+    process.env.ELECTRON_EXTRA_LAUNCH_ARGS = "--remote-debugging-port=40500";
+  } else if (
+    !process.env.ELECTRON_EXTRA_LAUNCH_ARGS.includes("--remote-debugging-port")
+  ) {
+    console.log(
+      'Adding "--remote-debugging-port=40500" to ELECTRON_EXTRA_LAUNCH_ARGS'
+    );
+    process.env.ELECTRON_EXTRA_LAUNCH_ARGS += " --remote-debugging-port=40500";
+  }
+};
 
 export async function run(params: CurrentsRunParameters = {}) {
   debug("run params %o", params);
@@ -46,6 +62,8 @@ export async function run(params: CurrentsRunParameters = {}) {
   }
   const validatedParams = validateParams(params);
   setAPIBaseUrl(validatedParams.cloudServiceUrl);
+
+  setDSCustomEnvs();
 
   const {
     recordKey,
