@@ -3,7 +3,7 @@ import {
   CurrentsRunParameters,
   CypressResult,
   ValidatedCurrentsParameters,
-} from "@deploysentinel/cypress-cloud/types";
+} from "@deploysentinel/cypress-parallel/types";
 import Debug from "debug";
 import _ from "lodash";
 import { getCypressRunAPIParams } from "../config";

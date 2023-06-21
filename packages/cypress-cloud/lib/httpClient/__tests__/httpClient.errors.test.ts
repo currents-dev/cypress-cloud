@@ -1,10 +1,10 @@
 import { expect } from "@jest/globals";
-import * as log from "@deploysentinel/cypress-cloud/lib/log";
+import * as log from "@deploysentinel/cypress-parallel/lib/log";
 import nock from "nock";
 import { makeRequest } from "../httpClient";
 import { formatGenericError } from "../printErrors";
 
-jest.mock("@deploysentinel/cypress-cloud/lib/log");
+jest.mock("@deploysentinel/cypress-parallel/lib/log");
 
 const apiMock = nock("https://cy.currents.dev");
 

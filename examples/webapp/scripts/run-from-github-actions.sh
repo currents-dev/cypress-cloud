@@ -13,4 +13,4 @@ export GITHUB_REPOSITORY=
 export CURRENTS_PROJECT_ID=
 export CURRENTS_RECORD_KEY=
 
-npx cypress-cloud --parallel --record --key ${CURRENTS_RECORD_KEY} --ci-build-id $(date +%s)
+npx cypress-parallel --parallel --record --key ${CURRENTS_RECORD_KEY} --ci-build-id $(date +%s)

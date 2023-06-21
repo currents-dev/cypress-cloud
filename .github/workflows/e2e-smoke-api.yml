@@ -31,7 +31,7 @@ jobs:
       - name: Link monorepo packages
         run: npm install
 
-      - name: Run Cypress with cypress-cloud CJS
+      - name: Run Cypress with cypress-parallel CJS
         working-directory: ./examples/webapp
         env:
           CURRENTS_RECORD_KEY: "any"
@@ -39,7 +39,7 @@ jobs:
         run: |
           npm run cypress:script
 
-      - name: Run Cypress with cypress-cloud TS
+      - name: Run Cypress with cypress-parallel TS
         working-directory: ./examples/webapp
         env:
           CURRENTS_RECORD_KEY: "any"
@@ -47,7 +47,7 @@ jobs:
         run: |
           npm run cypress:script:ts
 
-      - name: Run Cypress with cypress-cloud ESM
+      - name: Run Cypress with cypress-parallel ESM
         working-directory: ./examples/webapp
         env:
           CURRENTS_RECORD_KEY: "any"

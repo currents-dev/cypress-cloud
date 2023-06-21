@@ -3,7 +3,7 @@
 import fs from "fs";
 import { format } from "util";
 
-export async function cloudPlugin(
+export function cloudPlugin(
   _on: Cypress.PluginEvents,
   config: Cypress.PluginConfigOptions
 ) {

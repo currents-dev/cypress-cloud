@@ -27,7 +27,7 @@ Use the following commands to run cypress tests
 
 ```sh
 npm install
-npx cypress-cloud --parallel --record --key your_key  --ci-build-id hello-cypress-cloud
+npx cypress-parallel --parallel --record --key your_key  --ci-build-id hello-cypress-cloud
 ```
 
 ### Component tests
@@ -35,7 +35,7 @@ npx cypress-cloud --parallel --record --key your_key  --ci-build-id hello-cypres
 ```sh
 npm install
 npm run build && npm run start
-npx cypress-cloud --parallel --record --key your_key --component  --ci-build-id hello-cypress-cloud
+npx cypress-parallel --parallel --record --key your_key --component  --ci-build-id hello-cypress-cloud
 ```
 
 ## API Usage

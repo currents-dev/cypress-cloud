@@ -1,7 +1,7 @@
 import {
   CurrentsRunParameters,
   ValidatedCurrentsParameters,
-} from "@deploysentinel/cypress-cloud/types";
+} from "@deploysentinel/cypress-parallel/types";
 import { MergedConfig } from "../config/config";
 import { warn } from "../log";
 import { findSpecs } from "./specMatcher";

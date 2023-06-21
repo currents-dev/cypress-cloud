@@ -1,5 +1,5 @@
 const assert = require("assert");
-const { run } = require("@deploysentinel/cypress-cloud");
+const { run } = require("@deploysentinel/cypress-parallel");
 
 (async function runTests() {
   const projectId = process.env.CURRENTS_PROJECT_ID || "projectId";

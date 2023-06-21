@@ -1,5 +1,5 @@
 import { getBinPath } from "cy2";
-import { ValidatedCurrentsParameters } from "@deploysentinel/cypress-cloud/types";
+import { ValidatedCurrentsParameters } from "@deploysentinel/cypress-parallel/types";
 import Debug from "debug";
 import execa, { ExecaError } from "execa";
 import fs from "fs";
@@ -34,7 +34,7 @@ export const bootCypress = async (
   try {
     const f = fs.readFileSync(tempFilePath, "utf-8");
     if (!f) {
-      throw new Error("Is @deploysentinel/cypress-cloud/plugin installed?");
+      throw new Error("Is @deploysentinel/cypress-parallel/plugin installed?");
     }
     debug("cypress config '%s': '%s'", tempFilePath, f);
     return JSON.parse(f);
@@ -44,7 +44,7 @@ export const bootCypress = async (
     info(bold("Cypress stderr:\n"), stderr);
 
     throw new ValidationError(`Unable to resolve cypress configuration
-- make sure that '@deploysentinel/cypress-cloud/plugin' is installed
+- make sure that '@deploysentinel/cypress-parallel/plugin' is installed
 - report the issue together with cypress stdout and stderr
 `);
   }

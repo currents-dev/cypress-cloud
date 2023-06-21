@@ -34,12 +34,12 @@ jobs:
       - name: Run server for components tests
         run: npm run start &
 
-      - name: Run Cypress with cypress-cloud
+      - name: Run Cypress with cypress-parallel
         working-directory: ./examples/webapp
         env:
           CURRENTS_API_URL: http://localhost:1234
         run: >
-          npx cypress-cloud run 
+          npx cypress-parallel run 
           --record
           --parallel
           --component

@@ -1,4 +1,4 @@
-import { Platform, ScreenshotArtifact } from "@deploysentinel/cypress-cloud/types";
+import { Platform, ScreenshotArtifact } from "@deploysentinel/cypress-parallel/types";
 import { SetTestsPayload, Test } from "./test";
 
 export interface Screenshot {

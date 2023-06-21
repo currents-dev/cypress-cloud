@@ -1,4 +1,4 @@
-import { CypressResult, ScreenshotArtifact } from "@deploysentinel/cypress-cloud/types";
+import { CypressResult, ScreenshotArtifact } from "@deploysentinel/cypress-parallel/types";
 import Debug from "debug";
 import _ from "lodash";
 import { nanoid } from "nanoid";

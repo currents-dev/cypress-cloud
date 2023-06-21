@@ -1,5 +1,5 @@
 import assert from "assert";
-import { run } from "@deploysentinel/cypress-cloud";
+import { run } from "@deploysentinel/cypress-parallel";
 
 (async function runTests() {
   const projectId = process.env.CURRENTS_PROJECT_ID || "projectId";

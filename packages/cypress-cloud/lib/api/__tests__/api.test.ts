@@ -12,12 +12,12 @@ import {
   UpdateInstanceResultsPayload,
   UpdateInstanceResultsResponse,
   updateInstanceStdout,
-} from "@deploysentinel/cypress-cloud/lib/api";
-import { getAPIBaseUrl } from "@deploysentinel/cypress-cloud/lib/httpClient/config";
+} from "@deploysentinel/cypress-parallel/lib/api";
+import { getAPIBaseUrl } from "@deploysentinel/cypress-parallel/lib/httpClient/config";
 import _ from "lodash";
 import nock from "nock";
 
-jest.mock("@deploysentinel/cypress-cloud/lib/httpClient/config", () => ({
+jest.mock("@deploysentinel/cypress-parallel/lib/httpClient/config", () => ({
   getAPIBaseUrl: jest.fn().mockReturnValue("http://localhost:1234"),
 }));
 

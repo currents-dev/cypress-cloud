@@ -12,7 +12,7 @@
     "test:plugin:mjs": "node ./plugin.mjs"
   },
   "dependencies": {
-    "@deploysentinel/cypress-cloud": "*"
+    "@deploysentinel/cypress-parallel": "*"
   },
   "devDependencies": {
     "@types/node": "^17.0.12",

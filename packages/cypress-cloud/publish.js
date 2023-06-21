@@ -23,7 +23,7 @@ const newPkg = {
   ...pkg,
   main: "./index.js",
   bin: {
-    "cypress-cloud": "./bin/cli.js",
+    "cypress-parallel": "./bin/cli.js",
   },
   files: ["*"],
   bin: "./bin/cli.js",

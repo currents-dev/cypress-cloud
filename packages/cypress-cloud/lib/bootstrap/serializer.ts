@@ -1,7 +1,7 @@
 import {
   CurrentsRunParameters,
   CypressRunParameters,
-} from "@deploysentinel/cypress-cloud/types";
+} from "@deploysentinel/cypress-parallel/types";
 import Debug from "debug";
 import _ from "lodash";
 import { customAlphabet } from "nanoid";

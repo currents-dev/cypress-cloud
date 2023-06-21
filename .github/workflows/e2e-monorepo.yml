@@ -40,7 +40,7 @@ jobs:
         env:
           CURRENTS_API_URL: http://localhost:1234
         run: >
-          npx cypress-cloud run
+          npx cypress-parallel run
           --record
           --parallel
           --key some-key

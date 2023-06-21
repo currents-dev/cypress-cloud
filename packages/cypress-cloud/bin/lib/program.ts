@@ -5,7 +5,7 @@ import { Command, Option } from "./@commander-js/extra-typings";
 
 export const createProgram = (command: Command = new Command()) =>
   command
-    .name("cypress-cloud")
+    .name("cypress-parallel")
     .description(
       "Runs Cypress tests on CI using Currents as an orchestration and reporting service"
     )

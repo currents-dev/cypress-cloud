@@ -31,12 +31,12 @@ jobs:
       - name: Link monorepo packages
         run: npm install
 
-      - name: Run Cypress with cypress-cloud
+      - name: Run Cypress with cypress-parallel
         working-directory: ./examples/webapp
         env:
           CURRENTS_API_URL: http://localhost:1234
         run: >
-          npx cypress-cloud run
+          npx cypress-parallel run
           --record
           --parallel
           --key some-key
@@ -48,7 +48,7 @@ jobs:
       - name: Run in Offline mode
         working-directory: ./examples/webapp
         run: >
-          npx cypress-cloud run
+          npx cypress-parallel run
           --record false
           --browser chrome
           --tag smoke,linux

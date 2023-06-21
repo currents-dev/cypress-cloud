@@ -3,7 +3,7 @@ import "./stdout";
 import "./ws";
 
 const cypressPkg = require("cypress/package.json");
-const pkg = require("@deploysentinel/cypress-cloud/package.json");
+const pkg = require("@deploysentinel/cypress-parallel/package.json");
 
 import { initCapture } from "./capture";
 import { setCurrentsVersion, setCypressVersion } from "./httpClient";
