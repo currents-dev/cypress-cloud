@@ -2,7 +2,7 @@ name: e2e-smoke-windows
 
 on:
   push:
-    branches: [main]
+    # branches: [main]
 
 jobs:
   build:
