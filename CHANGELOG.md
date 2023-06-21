@@ -1,5 +1,12 @@
 
 
+# [1.8.0-beta.6](https://github.com/currents-dev/cypress-cloud/compare/v1.8.0-beta.5...v1.8.0-beta.6) (2023-06-21)
+
+
+### Bug Fixes
+
+* merge default and fs config ([474471b](https://github.com/currents-dev/cypress-cloud/commit/474471bfefb4caa030f570b873b942f6b7addf4f))
+
 # [1.8.0-beta.5](https://github.com/currents-dev/cypress-cloud/compare/v1.8.0-beta.3...v1.8.0-beta.5) (2023-06-13)
 
 
