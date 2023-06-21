@@ -50,7 +50,10 @@ export async function getCurrentsConfig(
 
     if (config) {
       debug("loaded currents config from '%s'\n%O", filepath, config);
-      _config = config;
+      _config = {
+        ...defaultConfig,
+        ...config,
+      };
       return _config;
     }
   }
@@ -66,16 +69,7 @@ export async function getCurrentsConfig(
 async function loadConfigFile(filepath: string) {
   try {
     debug("loading currents config file from '%s'", filepath);
-    const fsConfig = await import(filepath);
-
-    return {
-      ...defaultConfig,
-      ...fsConfig,
-    } as
-      | CurrentsConfig
-      | {
-          default: CurrentsConfig;
-        };
+    return await import(filepath);
   } catch (e) {
     debug("failed loading config file from: %s", e);
     return null;
