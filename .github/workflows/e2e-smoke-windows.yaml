@@ -27,6 +27,18 @@ jobs:
       - name: Link monorepo packages
         run: npm install
 
+      - name: Test ESM imports
+        working-directory: ./e2e/config-esm-js
+        run: >
+          npx cypress-cloud run
+          --record
+          --parallel
+          --key ${{ secrets.CURRENTS_RECORD_KEY }}
+          --browser chrome
+          --tag smoke,linux
+          --spec "./cypress/e2e/*.spec.js"
+          --ci-build-id "config-esm-js-${{ github.repository }}-${{ github.run_id }}-${{ github.run_attempt}}"
+
       - name: Run Cypress with cypress-cloud
         working-directory: ./examples/webapp
         run: |
