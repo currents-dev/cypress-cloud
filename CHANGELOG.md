@@ -1,3 +1,12 @@
+
+
+## [1.8.1](https://github.com/currents-dev/cypress-cloud/compare/v1.8.0...v1.8.1) (2023-06-27)
+
+
+### Bug Fixes
+
+* specify content-disposition header ([b021296](https://github.com/currents-dev/cypress-cloud/commit/b02129604ec31d21cda7e9ebcb3e60d7e80fdc25))
+
 # [1.8.0](https://github.com/currents-dev/cypress-cloud/compare/v1.8.0-beta.6...v1.8.0) (2023-06-27)
 
 ### Features
