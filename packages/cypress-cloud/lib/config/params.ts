@@ -13,7 +13,10 @@ const debug = Debug("currents:validateParams");
 export async function resolveCurrentsParams(
   params: CurrentsRunParameters
 ): Promise<CurrentsRunParameters> {
-  const configFromFile = await getCurrentsConfig(params.project);
+  const configFromFile = await getCurrentsConfig(
+    params.project,
+    params.cloudConfigFile
+  );
 
   debug("resolving currents params: %o", params);
   debug("resolving currents config file: %o", configFromFile);
@@ -163,6 +166,7 @@ export function getCypressRunAPIParams(
   return {
     ..._.pickBy(
       _.omit(params, [
+        "cloudConfigFile",
         "autoCancelAfterFailures",
         "cloudServiceUrl",
         "batchSize",

@@ -1,10 +1,10 @@
 import Debug from "debug";
-import path from "path";
-import os from 'os'
+
 import { P, match } from "ts-pattern";
 import { DetectedBrowser, ValidatedCurrentsParameters } from "../../types";
 import { bootCypress } from "../bootstrap";
-import { warn } from "../log";
+import { info, warn } from "../log";
+import { getConfigFilePath } from "./path";
 
 const debug = Debug("currents:config");
 
@@ -35,13 +35,14 @@ const defaultConfig: CurrentsConfig = {
 };
 
 export async function getCurrentsConfig(
-  projectRoot?: string
+  projectRoot?: string,
+  explicitConfigFilePath?: string
 ): Promise<CurrentsConfig> {
   if (_config) {
     return _config;
   }
 
-  const configFilePath = getConfigFilePath(projectRoot);
+  const configFilePath = getConfigFilePath(projectRoot, explicitConfigFilePath);
   // try loading possible config files
   for (const filepath of configFilePath) {
     const config = match(await loadConfigFile(filepath))
@@ -51,6 +52,7 @@ export async function getCurrentsConfig(
 
     if (config) {
       debug("loaded currents config from '%s'\n%O", filepath, config);
+      info("Using config file: '%s'", filepath);
       _config = {
         ...defaultConfig,
         ...config,
@@ -112,13 +114,4 @@ export async function getMergedConfig(params: ValidatedCurrentsParameters) {
   };
   debug("merged config: %O", result);
   return result;
-}
-
-function getConfigFilePath(projectRoot: string | null = null): string[] {
-  const prefix = projectRoot ?? process.cwd();
-  return [
-    "currents.config.js",
-    "currents.config.cjs",
-    "currents.config.mjs",
-  ].map((p) => `file://${path.resolve(prefix, p)}`);
 }

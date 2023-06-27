@@ -78,8 +78,6 @@ export async function run(params: CurrentsRunParameters = {}) {
     browser: validatedParams.browser,
   });
 
-  divider();
-
   info("Discovered %d spec files", specs.length);
   info(
     `Tags: ${tag.length > 0 ? tag.join(",") : false}; Group: ${
