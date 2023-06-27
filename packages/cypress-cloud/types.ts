@@ -107,6 +107,7 @@ export type StrippedCypressModuleAPIOptions = Omit<
   | "tag"
   | "group"
   | "ciBuildId"
+  | "cloudConfigFile"
 >;
 
 // Used to run Cypress via module API and via CLI
@@ -157,6 +158,11 @@ export type CurrentsRunParameters = StrippedCypressModuleAPIOptions & {
    * Whether to launch cypress in headed mode. If set, must be a boolean, defaults to false.
    */
   headed?: boolean;
+
+  /**
+   * Configuration file name or absolute path. Default value is 'currents.config.js', if specified, must be a string. The file will be resolved relative to the project root, unless it's an absolute path.
+   */
+  cloudConfigFile?: string;
 };
 
 // User-facing `run` interface

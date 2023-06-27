@@ -97,6 +97,12 @@ export const createProgram = (command: Command = new Command()) =>
       new Option("--headed [bool]", "Run cypress in headed mode")
         .default(false)
         .argParser((i) => (i === "false" ? false : true))
+    )
+    .addOption(
+      new Option(
+        "--cloud-config-file <path>",
+        "Specify the config file for cypress-cloud, defaults to 'currents.config.js' and will be searched in the project root, unless an aboslue path is provided"
+      ).default(undefined)
     );
 
 export const program = createProgram();

@@ -29,7 +29,7 @@ Install the package:
 npm install cypress-cloud
 ```
 
-- Create a new configuration file: `currents.config.js|mjs|cjs` in the Cypress project’s root (Using ESM project? See the guide below).
+- Create a new configuration file: `currents.config.js|mjs|cjs` in the Cypress project’s root. Use `--cloud-config-file` to explicitly provide the configuration file. Using ESM project? See the guide below.
 - Set the `projectId` and the record key obtained from [Currents](https://app.currents.dev) or your self-hosted instance of Sorry Cypress:
 
 ```js
@@ -88,13 +88,23 @@ module.exports = {
 };
 ```
 
-`cypress-cloud` will search for a configuration file at the project's root location (defined with `-P --project` CLI option) in the following order:
+### Configuration File Discovery
 
-- `currents.config.js`
-- `currents.config.cjs`
-- `currents.config.mjs`
+`cypress-cloud` will search for a configuration file as follows:
+
+- if `--cloud-config-file <string>` is defined, use its value
+
+  - use it as-is for absolute paths
+  - if it's a relative path, use the project's root location (defined with `-P --project` CLI option) as the base directory
+
+- otherwise, use the default filenames in the project's root location (defined with `-P --project` CLI option) in the following order:
+  - `currents.config.js`
+  - `currents.config.cjs`
+  - `currents.config.mjs`
 
 The configuration file will be read using [`import()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import) expression. Please make sure to use the correct syntax if you're using ESM modules (see the guide below).
+
+### Configuration Overrides
 
 You can override the configuration values via environment variables:
 
@@ -106,7 +116,7 @@ The configuration variables will resolve as follows:
 
 - the corresponding CLI flag or `run` function parameter, otherwise
 - environment variable if exist, otherwise
-- `currents.config.js|cjs|mjs` value, otherwise
+- configuration file `currents.config.js|cjs|mjs` value, otherwise
 - the default value, otherwise throw
 
 ## Batched Orchestration
@@ -193,7 +203,7 @@ For ESM projects (`"type": "module"` in `package.json`) you can use one of the f
 - `currents.config.js` - ESM formatted file (i.e. no `require` statements)
 - `currents.config.mjs` - ESM formatted file (i.e. no `require` statements)
 
-Also, make sure that your `cypress.config.js|mjs|cjs|ts` is formatted accordingly. See examples at [`./e2e`](./e2e) directory.
+Also, make sure that your `cypress.config.js|mjs|cjs|ts` is formatted accordingly. See examples in [`./e2e`](./e2e) directory.
 
 ## Troubleshooting
 
