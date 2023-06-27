@@ -24,31 +24,37 @@ jest.mock("../config", () => ({
 
 describe("validateParams", () => {
   it("should throw an error if cloudServiceUrl is invalid", () => {
-    expect(() => validateParams({ cloudServiceUrl: "" })).toThrow(
-      new ValidationError(cloudServiceUrlError)
-    );
+    expect(
+      async () => await validateParams({ cloudServiceUrl: "" })
+    ).rejects.toThrow(new ValidationError(cloudServiceUrlError));
 
     // invalid cloudServiceUrl
-    expect(() =>
-      validateParams({
-        testingType: "e2e",
-        projectId: "project-id",
-        recordKey: "record-key",
-        cloudServiceUrl: "not a valid url",
-      })
-    ).toThrow(
+    expect(
+      async () =>
+        await validateParams({
+          testingType: "e2e",
+          projectId: "project-id",
+          recordKey: "record-key",
+          cloudServiceUrl: "not a valid url",
+        })
+    ).rejects.toThrow(
       new ValidationError(cloudServiceInvalidUrlError + ': "not a valid url"')
     );
   });
   it("should throw an error if projectId is not provided", () => {
-    expect(() =>
-      validateParams({ cloudServiceUrl: "a", projectId: "" })
-    ).toThrow(new ValidationError(projectIdError));
+    expect(
+      async () => await validateParams({ cloudServiceUrl: "a", projectId: "" })
+    ).rejects.toThrow(new ValidationError(projectIdError));
   });
   it("should throw an error if recordKey is not provided", () => {
-    expect(() =>
-      validateParams({ projectId: "s", cloudServiceUrl: "f", recordKey: "" })
-    ).toThrow(new ValidationError(recordKeyError));
+    expect(
+      async () =>
+        await validateParams({
+          projectId: "s",
+          cloudServiceUrl: "f",
+          recordKey: "",
+        })
+    ).rejects.toThrow(new ValidationError(recordKeyError));
   });
 
   it("should throw an error when a required parameter is missing", () => {
@@ -61,12 +67,12 @@ describe("validateParams", () => {
       recordKey: "some-key",
     };
 
-    expect(() => validateParams(params)).toThrowError(
+    expect(async () => await validateParams(params)).rejects.toThrowError(
       "Missing required parameter"
     );
   });
 
-  it("should transform string tag", () => {
+  it("should transform string tag", async () => {
     const params: CurrentsRunParameters = {
       batchSize: 10,
       testingType: "e2e",
@@ -76,12 +82,12 @@ describe("validateParams", () => {
       tag: "a,b,c",
     };
 
-    expect(validateParams(params)).toMatchObject({
+    expect(await validateParams(params)).toMatchObject({
       tag: expect.arrayContaining(["a", "b", "c"]),
     });
   });
 
-  it("should transform string[] tag", () => {
+  it("should transform string[] tag", async () => {
     const params: CurrentsRunParameters = {
       batchSize: 10,
       testingType: "e2e",
@@ -91,12 +97,12 @@ describe("validateParams", () => {
       tag: ["a", "b"],
     };
 
-    expect(validateParams(params)).toMatchObject({
+    expect(await validateParams(params)).toMatchObject({
       tag: expect.arrayContaining(["a", "b"]),
     });
   });
 
-  it("should return validated params if all required parameters are provided", () => {
+  it("should return validated params if all required parameters are provided", async () => {
     const params: CurrentsRunParameters = {
       batchSize: 10,
       testingType: "e2e",
@@ -106,7 +112,7 @@ describe("validateParams", () => {
       tag: [],
     };
 
-    expect(validateParams(params)).toEqual({
+    expect(await validateParams(params)).toEqual({
       ...params,
     });
   });
@@ -126,10 +132,10 @@ describe("validateParams", () => {
     ["true", true, 1],
     ["false", false, false],
     ["positive number", 3, 3],
-  ])("autoCancelAfterFailures: %s", (_description, input, expected) => {
+  ])("autoCancelAfterFailures: %s", async (_description, input, expected) => {
     const params = { ...baseParams, autoCancelAfterFailures: input };
     // @ts-ignore
-    const result = validateParams(params);
+    const result = await validateParams(params);
     expect(result.autoCancelAfterFailures).toEqual(expected);
   });
 
@@ -141,10 +147,10 @@ describe("validateParams", () => {
     "autoCancelAfterFailures: throws ValidationError for %s",
     (_description, input) => {
       const params = { ...baseParams, autoCancelAfterFailures: input };
-      expect(() => {
+      expect(async () => {
         // @ts-ignore
-        validateParams(params);
-      }).toThrow(ValidationError);
+        await validateParams(params);
+      }).rejects.toThrow(ValidationError);
     }
   );
 });

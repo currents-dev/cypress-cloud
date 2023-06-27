@@ -1,3 +1,4 @@
+export type InstanceId = string;
 export type TestingType = Cypress.TestingType;
 export type SpecType = "component" | "integration";
 export type ArrayItemType<T> = T extends (infer U)[] ? U : T;
@@ -5,6 +6,11 @@ export type NonEmptyArray<T> = [T, ...T[]];
 
 export type CypressRun = ArrayItemType<
   CypressCommandLine.CypressRunResult["runs"]
+>;
+export type CypressTest = ArrayItemType<CypressRun["tests"]>;
+export type CypressTestAttempt = ArrayItemType<CypressTest["attempts"]>;
+export type CypressScreenshot = ArrayItemType<
+  CypressTestAttempt["screenshots"]
 >;
 
 export type CypressResult =
@@ -17,15 +23,6 @@ export type Platform = {
   browserName: string;
   browserVersion: string;
 };
-
-export interface CommitData {
-  sha: string;
-  branch?: string;
-  authorName?: string;
-  authorEmail?: string;
-  message?: string;
-  remoteOrigin?: string;
-}
 
 export type DetectedBrowser = {
   name: string; // or enum? not sure
@@ -94,16 +91,6 @@ export type ScreenshotArtifact = CypressCommandLine.ScreenshotInformation & {
   screenshotId: string;
 };
 
-export interface TestsResult {
-  pending: number;
-  failures: number;
-  skipped: number;
-  passes: number;
-  tests: number;
-}
-
-export type SummaryResult = Record<string, CypressCommandLine.CypressRunResult>;
-
 // Explicitly filter cypress record-related flags - prevent triggering recording mode to avoid confusion
 export type StrippedCypressModuleAPIOptions = Omit<
   Partial<CypressCommandLine.CypressRunOptions>,
@@ -165,6 +152,11 @@ export type CurrentsRunParameters = StrippedCypressModuleAPIOptions & {
 
   /** Automatically abort the run after the specified number of failed tests. Overrides the default project settings. If set, must be a positive integer or "false" to disable (Currents-only) */
   autoCancelAfterFailures?: number | false;
+
+  /**
+   * Whether to launch cypress in headed mode. If set, must be a boolean, defaults to false.
+   */
+  headed?: boolean;
 };
 
 // User-facing `run` interface

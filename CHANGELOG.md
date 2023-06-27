@@ -1,5 +1,50 @@
 
 
+# [1.8.0-beta.6](https://github.com/currents-dev/cypress-cloud/compare/v1.8.0-beta.5...v1.8.0-beta.6) (2023-06-21)
+
+
+### Bug Fixes
+
+* merge default and fs config ([474471b](https://github.com/currents-dev/cypress-cloud/commit/474471bfefb4caa030f570b873b942f6b7addf4f))
+
+# [1.8.0-beta.5](https://github.com/currents-dev/cypress-cloud/compare/v1.8.0-beta.3...v1.8.0-beta.5) (2023-06-13)
+
+
+### Bug Fixes
+
+* support ESM packages ([#144](https://github.com/currents-dev/cypress-cloud/issues/144)) ([1d17d13](https://github.com/currents-dev/cypress-cloud/commit/1d17d13c9df2d7a63b23b9cb9ce8c9667efabcd4))
+
+# [1.8.0-beta.4](https://github.com/currents-dev/cypress-cloud/compare/v1.8.0-beta.3...v1.8.0-beta.4) (2023-06-13)
+
+
+### Bug Fixes
+
+* support ESM packages ([#144](https://github.com/currents-dev/cypress-cloud/issues/144)) ([1d17d13](https://github.com/currents-dev/cypress-cloud/commit/1d17d13c9df2d7a63b23b9cb9ce8c9667efabcd4))
+
+# [1.8.0-beta.3](https://github.com/currents-dev/cypress-cloud/compare/v1.8.0-beta.2...v1.8.0-beta.3) (2023-06-12)
+
+
+### Bug Fixes
+
+* support --headed mode ([2e8c6e2](https://github.com/currents-dev/cypress-cloud/commit/2e8c6e27675321e30273df4bf9a50d2af686ba59))
+
+# [1.8.0-beta.2](https://github.com/currents-dev/cypress-cloud/compare/v1.8.0-beta.1...v1.8.0-beta.2) (2023-06-05)
+
+# [1.8.0-beta.1](https://github.com/currents-dev/cypress-cloud/compare/v1.8.0-beta.0...v1.8.0-beta.1) (2023-06-02)
+
+# [1.8.0-beta.0](https://github.com/currents-dev/cypress-cloud/compare/v1.7.4...v1.8.0-beta.0) (2023-06-01)
+
+
+### Bug Fixes
+
+* report results for cypress crashes ([eac06a4](https://github.com/currents-dev/cypress-cloud/commit/eac06a44a2669cf499e799171383040e500c88a4))
+
+
+### Features
+
+* report specs early via spec:before ([4a3da39](https://github.com/currents-dev/cypress-cloud/commit/4a3da396940ae4e32ce09c5cb5cca1782ed443e7))
+* use ws to send spec results asap ([e521048](https://github.com/currents-dev/cypress-cloud/commit/e5210483e0893fd361901fa5d1364f9b12b98b68))
+
 ## [1.7.4](https://github.com/currents-dev/cypress-cloud/compare/v1.7.3...v1.7.4) (2023-04-28)
 
 

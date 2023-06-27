@@ -12,6 +12,8 @@ const defaultOptions: ValidatedCurrentsParameters = {
   batchSize: 1,
   testingType: "e2e",
   recordKey: "some",
+  tag: [],
+  autoCancelAfterFailures: undefined,
 };
 describe("runSpecFile", () => {
   it("should set record to false", () => {
@@ -38,7 +40,6 @@ describe("runSpecFile", () => {
       {
         spec: "cypress/integration/test.spec.js",
       },
-
       {
         ...defaultOptions,
         env: {
@@ -50,7 +51,7 @@ describe("runSpecFile", () => {
     expect(run).toHaveBeenCalledWith(
       expect.objectContaining({
         env: {
-          currents_ws: true,
+          currents_ws: expect.any(Number),
           foo: "bar",
         },
       })

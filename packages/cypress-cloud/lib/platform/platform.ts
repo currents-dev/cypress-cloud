@@ -2,6 +2,7 @@ import Debug from "debug";
 import getos from "getos";
 import { cpus, freemem, platform, release, totalmem } from "os";
 import { promisify } from "util";
+
 const debug = Debug("currents:platform");
 
 const getOsVersion = async () => {

@@ -2,7 +2,6 @@ import { BPromise } from "../lang";
 import { warn } from "../log";
 import { Event, pubsub } from "../pubsub";
 import { runTillDone } from "./runner";
-import { summary } from "./state";
 
 let cancellable: {
   cancel: () => void;
@@ -24,11 +23,11 @@ export async function runTillDoneOrCancelled(
         _reject(new Error("BlueBird is misconfigured: onCancel is undefined"));
         return;
       }
-      onCancel(() => _resolve(summary));
+      onCancel(() => _resolve(void 0));
       runTillDone(...args).then(
         () => {
           resolve();
-          _resolve(summary);
+          _resolve(void 0);
         },
         (error) => {
           reject();

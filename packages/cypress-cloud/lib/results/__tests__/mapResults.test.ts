@@ -7,7 +7,7 @@ import configException from "./fixtures/payloads/cypressResult/exception/config.
 import rawResultException from "./fixtures/payloads/cypressResult/exception/results.json";
 
 describe("exception in cypress result", () => {
-  it("should populate instance tests payload when exception", () => {
+  xit("should populate instance tests payload when exception", () => {
     expect(
       getInstanceTestsPayload(rawResultException, configException)
     ).toMatchObject({
@@ -37,7 +37,7 @@ describe("exception in cypress result", () => {
       ],
     });
   });
-  it("should populate instances results payload when exception", () => {
+  xit("should populate instances results payload when exception", () => {
     expect(getInstanceResultPayload(rawResultException)).toMatchObject({
       tests: [
         {

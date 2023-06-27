@@ -3,7 +3,7 @@ import "./init";
 import Debug from "debug";
 import { CurrentsRunParameters } from "../types";
 import { createRun } from "./api";
-import { cutInitialOutput } from "./capture";
+import { cutInitialOutput, getCapturedOutput } from "./capture";
 import { getCI } from "./ciProvider";
 import {
   getMergedConfig,
@@ -16,9 +16,21 @@ import { getGitInfo } from "./git";
 import { setAPIBaseUrl, setRunId } from "./httpClient";
 import { bold, divider, info, spacer, title } from "./log";
 import { getPlatform } from "./platform";
+import { pubsub } from "./pubsub";
 import { summarizeTestResults, summaryTable } from "./results";
-import { runTillDoneOrCancelled, summary, uploadTasks } from "./runner";
+import {
+  createReportTaskSpec,
+  getExecutionStateResults,
+  reportTasks,
+  runTillDoneOrCancelled,
+  setConfig,
+  setSpecAfter,
+  setSpecBefore,
+  setSpecOutput,
+} from "./runner";
+import { shutdown } from "./shutdown";
 import { getSpecFiles } from "./specMatcher";
+import { startWSS } from "./ws";
 
 const debug = Debug("currents:run");
 
@@ -31,7 +43,8 @@ export async function run(params: CurrentsRunParameters = {}) {
     info(`Skipping cloud orchestration because --record is set to false`);
     return runBareCypress(params);
   }
-  const validatedParams = validateParams(params);
+
+  const validatedParams = await validateParams(params);
   setAPIBaseUrl(validatedParams.cloudServiceUrl);
 
   const {
@@ -47,6 +60,10 @@ export async function run(params: CurrentsRunParameters = {}) {
   } = validatedParams;
 
   const config = await getMergedConfig(validatedParams);
+
+  // %state
+  setConfig(config?.resolved);
+
   const { specs, specPattern } = await getSpecFiles({
     config,
     params: validatedParams,
@@ -88,11 +105,12 @@ export async function run(params: CurrentsRunParameters = {}) {
     autoCancelAfterFailures,
   });
 
-  info("🎥 Run URL:", bold(run.runUrl));
-
   setRunId(run.runId);
-
+  info("🎥 Run URL:", bold(run.runUrl));
   cutInitialOutput();
+
+  await startWSS();
+  listenToSpecEvents();
 
   await runTillDoneOrCancelled(
     {
@@ -100,7 +118,6 @@ export async function run(params: CurrentsRunParameters = {}) {
       groupId: run.groupId,
       machineId: run.machineId,
       platform,
-      config,
       specs,
     },
     validatedParams
@@ -108,12 +125,14 @@ export async function run(params: CurrentsRunParameters = {}) {
 
   divider();
 
-  await Promise.allSettled(uploadTasks);
-  const _summary = summarizeTestResults(Object.values(summary), config);
+  await Promise.allSettled(reportTasks);
+  const _summary = summarizeTestResults(getExecutionStateResults(), config);
 
   title("white", "Cloud Run Finished");
   console.log(summaryTable(_summary));
   info("🏁 Recorded Run:", bold(run.runUrl));
+
+  await shutdown();
 
   spacer();
   if (_summary.status === "finished") {
@@ -122,5 +141,23 @@ export async function run(params: CurrentsRunParameters = {}) {
       runUrl: run.runUrl,
     };
   }
+
   return _summary;
+}
+
+function listenToSpecEvents() {
+  pubsub.on("before:spec", async ({ spec }: { spec: Cypress.Spec }) => {
+    debug("before:spec %o", spec);
+    setSpecBefore(spec.relative);
+  });
+
+  pubsub.on(
+    "after:spec",
+    async ({ spec, results }: { spec: Cypress.Spec; results: any }) => {
+      debug("after:spec %o %o", spec, results);
+      setSpecAfter(spec.relative, results);
+      setSpecOutput(spec.relative, getCapturedOutput());
+      createReportTaskSpec(spec.relative);
+    }
+  );
 }

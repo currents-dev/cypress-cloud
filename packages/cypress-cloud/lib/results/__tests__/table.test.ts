@@ -1,5 +1,5 @@
 import { expect } from "@jest/globals";
-import { ResolvedConfig } from "../config";
+import { MergedConfig } from "../../config";
 import { summarizeTestResults } from "../results";
 import { summaryTable } from "../table";
 import commonPath from "./fixtures/payloads/cypressResult/no-exception/common-path";
@@ -10,7 +10,8 @@ import singlePassed from "./fixtures/payloads/cypressResult/no-exception/single-
 describe("Table", () => {
   it("renders table with failed tests correctly", () => {
     const result = summaryTable(
-      summarizeTestResults(Object.values(singleFailed), {} as ResolvedConfig)
+      // @ts-ignore
+      summarizeTestResults(Object.values(singleFailed), {} as MergedConfig)
     );
 
     expect(result).toMatchSnapshot();
@@ -18,21 +19,24 @@ describe("Table", () => {
 
   it("renders table with only successful tests correctly", () => {
     const result = summaryTable(
-      summarizeTestResults(Object.values(singlePassed), {} as ResolvedConfig)
+      // @ts-ignore
+      summarizeTestResults(Object.values(singlePassed), {} as MergedConfig)
     );
     expect(result).toMatchSnapshot();
   });
 
   it("renders table with mixed results ", () => {
     const result = summaryTable(
-      summarizeTestResults(Object.values(mixedResults), {} as ResolvedConfig)
+      // @ts-ignore
+      summarizeTestResults(Object.values(mixedResults), {} as MergedConfig)
     );
     expect(result).toMatchSnapshot();
   });
 
   it("renders common path stripped", () => {
     const result = summaryTable(
-      summarizeTestResults(Object.values(commonPath), {} as ResolvedConfig)
+      // @ts-ignore
+      summarizeTestResults(Object.values(commonPath), {} as MergedConfig)
     );
     expect(result).toMatchSnapshot();
   });

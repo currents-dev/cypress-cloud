@@ -10,11 +10,13 @@ import { error } from "../log";
 import { getCurrentsConfig } from "./config";
 const debug = Debug("currents:validateParams");
 
-export function resolveCurrentsParams(
+export async function resolveCurrentsParams(
   params: CurrentsRunParameters
-): CurrentsRunParameters {
-  const configFromFile = getCurrentsConfig(params.project);
+): Promise<CurrentsRunParameters> {
+  const configFromFile = await getCurrentsConfig(params.project);
 
+  debug("resolving currents params: %o", params);
+  debug("resolving currents config file: %o", configFromFile);
   const cloudServiceUrl =
     params.cloudServiceUrl ??
     process.env.CURRENTS_API_URL ??
@@ -51,12 +53,12 @@ export function resolveCurrentsParams(
 export const projectIdError = `Cannot resolve projectId. Please use one of the following:
 - provide it as a "projectId" property for "run" API method
 - set CURRENTS_PROJECT_ID environment variable
-- set "projectId" in "currents.config.js" file`;
+- set "projectId" in "currents.config.{c}js" file`;
 
 export const cloudServiceUrlError = `Cannot resolve cloud service URL. Please use one of the following:
 - provide it as a "cloudServiceUrl" property for "run" API method
 - set CURRENTS_API_URL environment variable
-- set "cloudServiceUrl" in "currents.config.js" file`;
+- set "cloudServiceUrl" in "currents.config.{c}js" file`;
 
 export const cloudServiceInvalidUrlError = `Invalid cloud service URL provided`;
 
@@ -65,14 +67,15 @@ export const recordKeyError = `Cannot resolve record key. Please use one of the 
 - pass it as a CLI flag '-k, --key <record-key>'
 - provide it as a "recordKey" property for "run" API method
 - set CURRENTS_RECORD_KEY environment variable
-- set "recordKey" in "currents.config.js" file
+- set "recordKey" in "currents.config.{c}js" file
 `;
 
-export function validateParams(
+export async function validateParams(
   _params: CurrentsRunParameters
-): ValidatedCurrentsParameters {
-  const params = resolveCurrentsParams(_params);
+): Promise<ValidatedCurrentsParameters> {
+  const params = await resolveCurrentsParams(_params);
 
+  debug("validating currents params: %o", params);
   if (!params.cloudServiceUrl) {
     throw new ValidationError(cloudServiceUrlError);
   }
@@ -173,7 +176,6 @@ export function getCypressRunAPIParams(
         "ciBuildId",
         "spec",
         "exit",
-        "headed",
         "headless",
       ]),
       Boolean

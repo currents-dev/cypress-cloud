@@ -11,10 +11,7 @@ import { getBootstrapArgs } from "./serializer";
 
 const debug = Debug("currents:boot");
 
-export const bootCypress = async (
-  port: number,
-  params: ValidatedCurrentsParameters
-) => {
+export const bootCypress = async (params: ValidatedCurrentsParameters) => {
   debug("booting cypress...");
   const tempFilePath = await createTempFile();
 
@@ -22,7 +19,7 @@ export const bootCypress = async (
   debug("cypress executable location: %s", cypressBin);
 
   // it is important to pass the same args in order to get the same config as for the actual run
-  const args = getBootstrapArgs({ port, tempFilePath, params });
+  const args = getBootstrapArgs({ tempFilePath, params });
   debug("booting cypress with args: %o", args);
   const { stdout, stderr } = await execCypress(cypressBin, args);
 

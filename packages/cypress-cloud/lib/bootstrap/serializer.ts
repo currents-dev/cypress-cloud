@@ -12,11 +12,9 @@ const getDummySpec = customAlphabet("abcdefghijklmnopqrstuvwxyz", 10);
 
 export function getBootstrapArgs({
   params,
-  port,
   tempFilePath,
 }: {
   params: CurrentsRunParameters;
-  port: number;
   tempFilePath: string;
 }) {
   return _.chain(getCypressCLIParams(params))
@@ -26,7 +24,6 @@ export function getBootstrapArgs({
       env: {
         ...(opts.env ?? {}),
         currents_temp_file: tempFilePath,
-        currents_port: port,
         currents_debug_enabled: process.env.DEBUG?.includes("currents:")
           ? true
           : false,
