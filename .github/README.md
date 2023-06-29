@@ -79,6 +79,11 @@ module.exports = {
   projectId: "Ij0RfK", // Project Id obtained from https://app.currents.dev or Sorry Cypress
   recordKey: "XXXXXXX", // Record key obtained from https://app.currents.dev, any value for Sorry Cypress
   cloudServiceUrl: "https://cy.currents.dev", // Sorry Cypress users - the director service URL
+  // Additional headers for network requests, undefined by default
+  networkHeaders: {
+    "User-Agent": "Custom",
+    "x-ms-blob-type": "BlockBlob"
+  }
   e2e: {
     batchSize: 3, // orchestration batch size for e2e tests (Currents only, read below)
   },
@@ -258,4 +263,4 @@ npm install cypress-cloud --registry http://localhost:4873
 
 ## Disclaimer
 
-This software is not affilicated with Cypress.io Inc. All third party trademarks and materials (including logos, icons and labels) referenced herein are the property of their respective owners. The third party products or services that this software connects to are subject to their respective owners, please refer to their intellectual property and terms of service agreements.
+This software is not affiliated with Cypress.io Inc. All third-party trademarks and materials (including logos, icons and labels) referenced herein are the property of their respective owners. The third-party products or services that this software connects to are subject to their respective owners, please refer to their intellectual property and terms of service agreements.

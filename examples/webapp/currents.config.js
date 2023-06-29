@@ -9,4 +9,5 @@ module.exports = {
     ? "Ij0RfK"
     : "1OPP8c",
   // cloudServiceUrl: "http://localhost:1234",
+userAgent: "custom"
 };

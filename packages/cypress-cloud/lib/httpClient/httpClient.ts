@@ -9,6 +9,7 @@ import axiosRetry from "axios-retry";
 import Debug from "debug";
 import _ from "lodash";
 import prettyMilliseconds from "pretty-ms";
+import { getCurrentsConfig } from "../config";
 import { ValidationError } from "../errors";
 import { warn } from "../log";
 import { getAPIBaseUrl, getDelay, isRetriableError } from "./config";
@@ -20,21 +21,24 @@ const MAX_RETRIES = 3;
 
 let _client: AxiosInstance | null = null;
 
-export function getClient() {
+export async function getClient() {
   if (_client) {
     return _client;
   }
+  const currentsConfig = await getCurrentsConfig();
   _client = axios.create({
     baseURL: getAPIBaseUrl(),
   });
 
   _client.interceptors.request.use((config) => {
+    const ccyVerson = _currentsVersion ?? "0.0.0";
     const headers: RawAxiosRequestHeaders = {
       ...config.headers,
       // @ts-ignore
       "x-cypress-request-attempt": config["axios-retry"]?.retryCount ?? 0,
       "x-cypress-version": _cypressVersion ?? "0.0.0",
-      "x-ccy-version": _currentsVersion ?? "0.0.0",
+      "x-ccy-version": ccyVerson,
+      "User-Agent": `cypress-cloud/${ccyVerson}`,
     };
     if (_runId) {
       headers["x-cypress-run-id"] = _runId;
@@ -42,6 +46,19 @@ export function getClient() {
     if (!headers["Content-Type"]) {
       headers["Content-Type"] = "application/json";
     }
+
+    if (currentsConfig.networkHeaders) {
+      const filteredHeaders = _.omit(currentsConfig.networkHeaders, [
+        "x-cypress-request-attempt",
+        "x-cypress-version",
+        "x-ccy-version",
+        "x-cypress-run-id",
+        "Content-Type",
+      ]);
+      debug("using custom network headers: %o", filteredHeaders);
+      Object.assign(headers, filteredHeaders);
+    }
+
     const req = {
       ...config,
       headers,
@@ -93,10 +110,10 @@ function onRetry(
   );
 }
 
-export const makeRequest = <T = any, D = any>(
+export const makeRequest = async <T = any, D = any>(
   config: AxiosRequestConfig<D>
 ) => {
-  return getClient()<D, AxiosResponse<T>>(config)
+  return (await getClient())<D, AxiosResponse<T>>(config)
     .then((res) => {
       debug("network response: %o", _.omit(res, "request", "config"));
       return res;
