@@ -20,6 +20,7 @@ export type CurrentsConfig = {
   cloudServiceUrl: string;
   e2e: E2EConfig;
   component: ComponentConfig;
+  networkHeaders?: Record<string, string>;
 };
 
 let _config: CurrentsConfig | null = null;
@@ -32,6 +33,7 @@ const defaultConfig: CurrentsConfig = {
     batchSize: 5,
   },
   cloudServiceUrl: "https://cy.currents.dev",
+  networkHeaders: undefined,
 };
 
 export async function getCurrentsConfig(
