@@ -1,5 +1,12 @@
 
 
+## [1.8.2](https://github.com/currents-dev/cypress-cloud/compare/v1.8.1...v1.8.2) (2023-06-29)
+
+
+### Bug Fixes
+
+* support custom network headers ([12ba9f4](https://github.com/currents-dev/cypress-cloud/commit/12ba9f4e606b7ea6725bc86f2cc2f46173112da3)), closes [#139](https://github.com/currents-dev/cypress-cloud/issues/139)
+
 ## [1.8.1](https://github.com/currents-dev/cypress-cloud/compare/v1.8.0...v1.8.1) (2023-06-27)
 
 
