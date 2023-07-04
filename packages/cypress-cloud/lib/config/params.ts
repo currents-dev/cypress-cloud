@@ -166,6 +166,7 @@ export function getCypressRunAPIParams(
   return {
     ..._.pickBy(
       _.omit(params, [
+        "cloudDebug",
         "cloudConfigFile",
         "autoCancelAfterFailures",
         "cloudServiceUrl",

@@ -212,13 +212,22 @@ Also, make sure that your `cypress.config.js|mjs|cjs|ts` is formatted accordingl
 
 ## Troubleshooting
 
-Enable the debug mode and run the command:
+Enable the debug mode by adding `--cloud-debug true | all | cypress | currents | commit-info` flag
+
+- `true | all` enable debug mode for all the tools
+- `cypress` activate debug mode for cypress only
+- `currents` activate the debug mode for currents only
+- `commit-info` activate the debug mode for git commit info only
 
 ```sh
-DEBUG=currents:* npx cypress-cloud run ...
+# show all the debug information
+npx cypress-cloud run ... --cloud-debug
+
+# show only currents related debug information
+npx cypress-cloud run ... --cloud-debug currents,commit-info
 ```
 
-Capture all the logs in a plain text file and submit an issue.
+Capture all the logs as a plain text file and share it with the support team for further troubleshooting.
 
 ## Testing
 

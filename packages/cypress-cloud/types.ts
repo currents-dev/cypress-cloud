@@ -91,6 +91,14 @@ export type ScreenshotArtifact = CypressCommandLine.ScreenshotInformation & {
   screenshotId: string;
 };
 
+export enum DebugMode {
+  None = "none",
+  All = "all",
+  Currents = "currents",
+  Cypress = "cypress",
+  CommitInfo = "commit-info",
+}
+
 // Explicitly filter cypress record-related flags - prevent triggering recording mode to avoid confusion
 export type StrippedCypressModuleAPIOptions = Omit<
   Partial<CypressCommandLine.CypressRunOptions>,
@@ -163,6 +171,11 @@ export type CurrentsRunParameters = StrippedCypressModuleAPIOptions & {
    * Configuration file name or absolute path. Default value is 'currents.config.js', if specified, must be a string. The file will be resolved relative to the project root, unless it's an absolute path.
    */
   cloudConfigFile?: string;
+
+  /**
+   * Enable debug mode for cypress-cloud, this will print out logs for troubleshooting.
+   */
+  cloudDebug?: DebugMode | true | string | string[];
 };
 
 // User-facing `run` interface

@@ -1,5 +1,12 @@
 
 
+# [1.9.0-beta.0](https://github.com/currents-dev/cypress-cloud/compare/v1.8.2...v1.9.0-beta.0) (2023-07-03)
+
+
+### Features
+
+* enable debug mode ([68bef22](https://github.com/currents-dev/cypress-cloud/commit/68bef2245d81f6b609cf56b9b7d565cd66832ddd))
+
 ## [1.8.2](https://github.com/currents-dev/cypress-cloud/compare/v1.8.1...v1.8.2) (2023-06-29)
 
 

@@ -1,5 +1,6 @@
 import { CurrentsRunParameters, TestingType } from "cypress-cloud/types";
 import Debug from "debug";
+import { activateDebug } from "../../lib/debug";
 import { sanitizeAndConvertNestedArgs } from "./parser";
 import { program } from "./program";
 
@@ -9,15 +10,17 @@ export function parseCLIOptions(
   _program: typeof program = program,
   ...args: Parameters<typeof program.parse>
 ) {
-  _program.parse(...args);
-  debug("parsed CLI flags %o", _program.opts());
+  const opts = _program.parse(...args).opts();
 
-  const { e2e, component } = _program.opts();
+  activateDebug(opts.cloudDebug);
+  debug("parsed CLI flags %o", opts);
+
+  const { e2e, component } = opts;
   if (e2e && component) {
     _program.error("Cannot use both e2e and component options");
   }
 
-  return getRunParametersFromCLI(_program.opts());
+  return getRunParametersFromCLI(opts);
 }
 
 /**
