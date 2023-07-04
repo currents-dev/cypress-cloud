@@ -22,6 +22,7 @@ async function uploadFile(file: string, url: string, type: UploadTypes) {
     data: f,
     headers: {
       "Content-Type": type,
+      "Content-Disposition": `inline`,
     },
   });
 }

@@ -1,11 +1,78 @@
+# [1.9.0](https://github.com/currents-dev/cypress-cloud/compare/v1.9.0-beta.0...v1.9.0) (2023-07-04)
 
+### Features
 
-## [1.7.4](https://github.com/currents-dev/cypress-cloud/compare/v1.7.3...v1.7.4) (2023-04-28)
+- enable debug mode ([68bef22](https://github.com/currents-dev/cypress-cloud/commit/68bef2245d81f6b609cf56b9b7d565cd66832ddd))
 
+## [1.8.2](https://github.com/currents-dev/cypress-cloud/compare/v1.8.1...v1.8.2) (2023-06-29)
 
 ### Bug Fixes
 
-* return runUrl in run result ([#126](https://github.com/currents-dev/cypress-cloud/issues/126)) ([2dbb8ab](https://github.com/currents-dev/cypress-cloud/commit/2dbb8ab969e3ffd46d99a64e7ebcf5b35a6344c3))
+- support custom network headers ([12ba9f4](https://github.com/currents-dev/cypress-cloud/commit/12ba9f4e606b7ea6725bc86f2cc2f46173112da3)), closes [#139](https://github.com/currents-dev/cypress-cloud/issues/139)
+
+## [1.8.1](https://github.com/currents-dev/cypress-cloud/compare/v1.8.0...v1.8.1) (2023-06-27)
+
+### Bug Fixes
+
+- specify content-disposition header ([b021296](https://github.com/currents-dev/cypress-cloud/commit/b02129604ec31d21cda7e9ebcb3e60d7e80fdc25))
+
+# [1.8.0](https://github.com/currents-dev/cypress-cloud/compare/v1.8.0-beta.6...v1.8.0) (2023-06-27)
+
+### Features
+
+- add --cloud-config-file ([e301df5](https://github.com/currents-dev/cypress-cloud/commit/e301df5d22504b2244b9e8388b54dfcb352de069))
+- support --headed mode ([2e8c6e2](https://github.com/currents-dev/cypress-cloud/commit/2e8c6e27675321e30273df4bf9a50d2af686ba59))
+- report specs early via spec:before ([4a3da39](https://github.com/currents-dev/cypress-cloud/commit/4a3da396940ae4e32ce09c5cb5cca1782ed443e7))
+
+### Bug Fixes
+
+- support ESM packages ([#144](https://github.com/currents-dev/cypress-cloud/issues/144)) ([1d17d13](https://github.com/currents-dev/cypress-cloud/commit/1d17d13c9df2d7a63b23b9cb9ce8c9667efabcd4))
+- report results for cypress crashes ([eac06a4](https://github.com/currents-dev/cypress-cloud/commit/eac06a44a2669cf499e799171383040e500c88a4))
+
+# [1.8.0-beta.6](https://github.com/currents-dev/cypress-cloud/compare/v1.8.0-beta.5...v1.8.0-beta.6) (2023-06-21)
+
+### Bug Fixes
+
+- merge default and fs config ([474471b](https://github.com/currents-dev/cypress-cloud/commit/474471bfefb4caa030f570b873b942f6b7addf4f))
+
+# [1.8.0-beta.5](https://github.com/currents-dev/cypress-cloud/compare/v1.8.0-beta.3...v1.8.0-beta.5) (2023-06-13)
+
+### Bug Fixes
+
+- support ESM packages ([#144](https://github.com/currents-dev/cypress-cloud/issues/144)) ([1d17d13](https://github.com/currents-dev/cypress-cloud/commit/1d17d13c9df2d7a63b23b9cb9ce8c9667efabcd4))
+
+# [1.8.0-beta.4](https://github.com/currents-dev/cypress-cloud/compare/v1.8.0-beta.3...v1.8.0-beta.4) (2023-06-13)
+
+### Bug Fixes
+
+- support ESM packages ([#144](https://github.com/currents-dev/cypress-cloud/issues/144)) ([1d17d13](https://github.com/currents-dev/cypress-cloud/commit/1d17d13c9df2d7a63b23b9cb9ce8c9667efabcd4))
+
+# [1.8.0-beta.3](https://github.com/currents-dev/cypress-cloud/compare/v1.8.0-beta.2...v1.8.0-beta.3) (2023-06-12)
+
+### Bug Fixes
+
+- support --headed mode ([2e8c6e2](https://github.com/currents-dev/cypress-cloud/commit/2e8c6e27675321e30273df4bf9a50d2af686ba59))
+
+# [1.8.0-beta.2](https://github.com/currents-dev/cypress-cloud/compare/v1.8.0-beta.1...v1.8.0-beta.2) (2023-06-05)
+
+# [1.8.0-beta.1](https://github.com/currents-dev/cypress-cloud/compare/v1.8.0-beta.0...v1.8.0-beta.1) (2023-06-02)
+
+# [1.8.0-beta.0](https://github.com/currents-dev/cypress-cloud/compare/v1.7.4...v1.8.0-beta.0) (2023-06-01)
+
+### Bug Fixes
+
+- report results for cypress crashes ([eac06a4](https://github.com/currents-dev/cypress-cloud/commit/eac06a44a2669cf499e799171383040e500c88a4))
+
+### Features
+
+- report specs early via spec:before ([4a3da39](https://github.com/currents-dev/cypress-cloud/commit/4a3da396940ae4e32ce09c5cb5cca1782ed443e7))
+- use ws to send spec results asap ([e521048](https://github.com/currents-dev/cypress-cloud/commit/e5210483e0893fd361901fa5d1364f9b12b98b68))
+
+## [1.7.4](https://github.com/currents-dev/cypress-cloud/compare/v1.7.3...v1.7.4) (2023-04-28)
+
+### Bug Fixes
+
+- return runUrl in run result ([#126](https://github.com/currents-dev/cypress-cloud/issues/126)) ([2dbb8ab](https://github.com/currents-dev/cypress-cloud/commit/2dbb8ab969e3ffd46d99a64e7ebcf5b35a6344c3))
 
 ## [1.7.3](https://github.com/currents-dev/cypress-cloud/compare/v1.7.2...v1.7.3) (2023-04-12)
 

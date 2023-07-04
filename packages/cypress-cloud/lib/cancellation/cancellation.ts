@@ -1,4 +1,4 @@
-import { Event, pubsub } from "./pubsub";
+import { Event, pubsub } from "../pubsub";
 
 interface ExecutionState {
   cancellationReason: string | null;

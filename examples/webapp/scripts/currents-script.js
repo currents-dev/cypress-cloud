@@ -14,4 +14,6 @@ const { run } = require("@deploysentinel/cypress-parallel");
 
   assert(result?.totalPassed === 1);
   assert(result?.totalTests === 1);
+  assert(result?.totalFailed === 0);
+  assert(typeof result?.runUrl === "string");
 })();

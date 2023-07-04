@@ -29,7 +29,7 @@ Install the package:
 npm install cypress-cloud
 ```
 
-- Create a new configuration file: `currents.config.js` in the Cypress project’s root
+- Create a new configuration file: `currents.config.js|mjs|cjs` in the Cypress project’s root. Use `--cloud-config-file` to explicitly provide the configuration file. Using ESM project? See the guide below.
 - Set the `projectId` and the record key obtained from [Currents](https://app.currents.dev) or your self-hosted instance of Sorry Cypress:
 
 ```js
@@ -79,6 +79,11 @@ module.exports = {
   projectId: "Ij0RfK", // Project Id obtained from https://app.currents.dev or Sorry Cypress
   recordKey: "XXXXXXX", // Record key obtained from https://app.currents.dev, any value for Sorry Cypress
   cloudServiceUrl: "https://cy.currents.dev", // Sorry Cypress users - the director service URL
+  // Additional headers for network requests, undefined by default
+  networkHeaders: {
+    "User-Agent": "Custom",
+    "x-ms-blob-type": "BlockBlob"
+  }
   e2e: {
     batchSize: 3, // orchestration batch size for e2e tests (Currents only, read below)
   },
@@ -88,9 +93,25 @@ module.exports = {
 };
 ```
 
-`cypress-cloud` will search for `currents.config.js` at the project's root location (defined with `-P --project` CLI option).
+### Configuration File Discovery
 
-Override the default configuration values via environment variables:
+`cypress-cloud` will search for a configuration file as follows:
+
+- if `--cloud-config-file <string>` is defined, use its value
+
+  - use it as-is for absolute paths
+  - if it's a relative path, use the project's root location (defined with `-P --project` CLI option) as the base directory
+
+- otherwise, use the default filenames in the project's root location (defined with `-P --project` CLI option) in the following order:
+  - `currents.config.js`
+  - `currents.config.cjs`
+  - `currents.config.mjs`
+
+The configuration file will be read using [`import()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import) expression. Please make sure to use the correct syntax if you're using ESM modules (see the guide below).
+
+### Configuration Overrides
+
+You can override the configuration values via environment variables:
 
 - `CURRENTS_API_URL` - sorry-cypress users - set the URL of your director service
 - `CURRENTS_PROJECT_ID` - set the `projectId`
@@ -100,7 +121,7 @@ The configuration variables will resolve as follows:
 
 - the corresponding CLI flag or `run` function parameter, otherwise
 - environment variable if exist, otherwise
-- `currents.config.js` value, otherwise
+- configuration file `currents.config.js|cjs|mjs` value, otherwise
 - the default value, otherwise throw
 
 ## Batched Orchestration
@@ -179,15 +200,34 @@ As an alternative, you can activate the `cloudPlugin` first, and then implement 
 
 Enable the debug mode to troubleshoot files discovery: `DEBUG=currents:specs npx cypress-cloud ...`
 
+### Usage with ESM project
+
+For ESM projects (`"type": "module"` in `package.json`) you can use one of the following formats:
+
+- `currents.config.cjs` - CommonJS formatted file
+- `currents.config.js` - ESM formatted file (i.e. no `require` statements)
+- `currents.config.mjs` - ESM formatted file (i.e. no `require` statements)
+
+Also, make sure that your `cypress.config.js|mjs|cjs|ts` is formatted accordingly. See examples in [`./e2e`](./e2e) directory.
+
 ## Troubleshooting
 
-Enable the debug mode and run the command:
+Enable the debug mode by adding `--cloud-debug true | all | cypress | currents | commit-info` flag
+
+- `true | all` enable debug mode for all the tools
+- `cypress` activate debug mode for cypress only
+- `currents` activate the debug mode for currents only
+- `commit-info` activate the debug mode for git commit info only
 
 ```sh
-DEBUG=currents:* npx cypress-cloud run ...
+# show all the debug information
+npx cypress-cloud run ... --cloud-debug
+
+# show only currents related debug information
+npx cypress-cloud run ... --cloud-debug currents,commit-info
 ```
 
-Capture all the logs in a plain text file and submit an issue.
+Capture all the logs as a plain text file and share it with the support team for further troubleshooting.
 
 ## Testing
 
@@ -230,8 +270,6 @@ Using:
 npm install cypress-cloud --registry http://localhost:4873
 ```
 
-
-
 ## Disclaimer
 
-This software is not affilicated with Cypress.io Inc. All third party trademarks and materials (including logos, icons and labels) referenced herein are the property of their respective owners. The third party products or services that this software connects to are subject to their respective owners, please refer to their intellectual property and terms of service agreements.
+This software is not affiliated with Cypress.io Inc. All third-party trademarks and materials (including logos, icons and labels) referenced herein are the property of their respective owners. The third-party products or services that this software connects to are subject to their respective owners, please refer to their intellectual property and terms of service agreements.

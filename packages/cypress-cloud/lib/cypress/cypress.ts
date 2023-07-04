@@ -7,6 +7,9 @@ import {
 import Debug from "debug";
 import _ from "lodash";
 import { getCypressRunAPIParams } from "../config";
+import { safe } from "../lang";
+import { warn } from "../log";
+import { getWSSPort } from "../ws";
 
 const debug = Debug("currents:cypress");
 interface RunCypressSpecFile {
@@ -46,31 +49,51 @@ export async function runSpecFile(
     },
     env: {
       ...runAPIOptions.env,
-      currents_ws: true,
+      currents_ws: getWSSPort(),
     },
     spec,
   };
   debug("running cypress with options %o", options);
   const result = await cypress.run(options);
 
+  if (result.status === "failed") {
+    warn('Cypress runner failed with message: "%s"', result.message);
+    warn(
+      "The following spec files will be marked as failed: %s",
+      spec
+        .split(",")
+        .map((i) => `\n - ${i}`)
+        .join("")
+    );
+  }
   debug("cypress run result %o", result);
   return result;
 }
 
-export const runSpecFileSafe = async (
-  { spec }: RunCypressSpecFile,
+export const runSpecFileSafe = (
+  spec: RunCypressSpecFile,
   cypressRunOptions: ValidatedCurrentsParameters
-): Promise<CypressResult> => {
-  try {
-    return await runSpecFile({ spec }, cypressRunOptions);
-  } catch (error) {
-    debug("cypress run exception %o", error);
-    return {
-      status: "failed",
-      failures: 1,
-      message: `Cypress process crashed with an error:\n${
+): Promise<CypressResult> =>
+  safe(
+    runSpecFile,
+    (error) => {
+      const message = `Cypress runnner crashed with an error:\n${
         (error as Error).message
-      }\n${(error as Error).stack}}`,
-    };
-  }
-};
+      }\n${(error as Error).stack}}`;
+      debug("cypress run exception %o", error);
+      warn('Cypress runner crashed: "%s"', message);
+      warn(
+        "The following spec files will be marked as failed: %s",
+        spec.spec
+          .split(",")
+          .map((i) => `\n - ${i}`)
+          .join("")
+      );
+      return {
+        status: "failed" as const,
+        failures: 1,
+        message,
+      };
+    },
+    () => {}
+  )(spec, cypressRunOptions);

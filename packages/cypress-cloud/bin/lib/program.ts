@@ -1,6 +1,7 @@
 // https://github.com/currents-dev/cypress-cloud/issues/71
 // keep the local copy to prevent from importing
 // commander.js from the global node_modules
+import { DebugMode } from "../../types";
 import { Command, Option } from "./@commander-js/extra-typings";
 
 export const createProgram = (command: Command = new Command()) =>
@@ -92,6 +93,29 @@ export const createProgram = (command: Command = new Command()) =>
         "--auto-cancel-after-failures <number | false>",
         "Automatically abort the run after the specified number of failed tests. Overrides the default project settings. If set, must be a positive integer or 'false' to disable (Currents-only)"
       ).argParser(parseAutoCancelFailures)
+    )
+    .addOption(
+      new Option("--headed [bool]", "Run cypress in headed mode")
+        .default(false)
+        .argParser((i) => (i === "false" ? false : true))
+    )
+    .addOption(
+      new Option(
+        "--cloud-config-file <path>",
+        "Specify the config file for cypress-cloud, defaults to 'currents.config.js' and will be searched in the project root, unless an aboslue path is provided"
+      ).default(undefined)
+    )
+    .addOption(
+      new Option(
+        `--cloud-debug [true | string]`,
+        `Enable debug mode for cypress-cloud, this will print out logs for troubleshooting. Values: [true | ${Object.values(
+          DebugMode
+        ).join(
+          " | "
+        )}]. Use comma to separate multiple values, e.g. --cloud-debug commit-info,currents`
+      )
+        .argParser(parseCommaSeparatedList)
+        .default(undefined)
     );
 
 export const program = createProgram();

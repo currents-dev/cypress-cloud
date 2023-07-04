@@ -1,0 +1,10 @@
+{
+  "name": "test-config-esm-cjs",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "cypress-cloud": "*"
+  },
+  "devDependencies": {}
+}
