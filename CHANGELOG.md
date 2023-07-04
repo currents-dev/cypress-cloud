@@ -1,25 +1,20 @@
-
-
-# [1.9.0-beta.0](https://github.com/currents-dev/cypress-cloud/compare/v1.8.2...v1.9.0-beta.0) (2023-07-03)
-
+# [1.9.0](https://github.com/currents-dev/cypress-cloud/compare/v1.9.0-beta.0...v1.9.0) (2023-07-04)
 
 ### Features
 
-* enable debug mode ([68bef22](https://github.com/currents-dev/cypress-cloud/commit/68bef2245d81f6b609cf56b9b7d565cd66832ddd))
+- enable debug mode ([68bef22](https://github.com/currents-dev/cypress-cloud/commit/68bef2245d81f6b609cf56b9b7d565cd66832ddd))
 
 ## [1.8.2](https://github.com/currents-dev/cypress-cloud/compare/v1.8.1...v1.8.2) (2023-06-29)
 
-
 ### Bug Fixes
 
-* support custom network headers ([12ba9f4](https://github.com/currents-dev/cypress-cloud/commit/12ba9f4e606b7ea6725bc86f2cc2f46173112da3)), closes [#139](https://github.com/currents-dev/cypress-cloud/issues/139)
+- support custom network headers ([12ba9f4](https://github.com/currents-dev/cypress-cloud/commit/12ba9f4e606b7ea6725bc86f2cc2f46173112da3)), closes [#139](https://github.com/currents-dev/cypress-cloud/issues/139)
 
 ## [1.8.1](https://github.com/currents-dev/cypress-cloud/compare/v1.8.0...v1.8.1) (2023-06-27)
 
-
 ### Bug Fixes
 
-* specify content-disposition header ([b021296](https://github.com/currents-dev/cypress-cloud/commit/b02129604ec31d21cda7e9ebcb3e60d7e80fdc25))
+- specify content-disposition header ([b021296](https://github.com/currents-dev/cypress-cloud/commit/b02129604ec31d21cda7e9ebcb3e60d7e80fdc25))
 
 # [1.8.0](https://github.com/currents-dev/cypress-cloud/compare/v1.8.0-beta.6...v1.8.0) (2023-06-27)
 
