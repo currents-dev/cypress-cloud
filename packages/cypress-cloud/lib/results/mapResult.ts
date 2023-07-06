@@ -6,7 +6,7 @@ import {
 } from "cypress-cloud/types";
 
 import * as SpecAfter from "../runner/spec.type";
-import { getConfig } from "../runner/state";
+import { ConfigState } from "../state";
 import { getFakeTestFromException } from "./results";
 
 function getScreenshot(s: SpecAfter.Screenshot): CypressScreenshot {
@@ -45,12 +45,13 @@ function getTest(
 }
 
 export function specResultsToCypressResults(
+  configState: ConfigState,
   specAfterResult: SpecAfter.SpecResult
 ): CypressCommandLine.CypressRunResult {
   return {
     status: "finished",
     // @ts-ignore
-    config: getConfig(),
+    config: configState.getConfig(),
     totalDuration: specAfterResult.stats.wallClockDuration,
     totalSuites: specAfterResult.stats.suites,
     totalTests: specAfterResult.stats.tests,
