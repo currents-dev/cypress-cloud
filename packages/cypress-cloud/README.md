@@ -21,3 +21,14 @@ Integrate Cypress with alternative cloud services like Currents or Sorry Cypress
 The package documentation is available at https://github.com/currents-dev/cypress-cloud
 
 🍰
+
+## License
+
+GNU General Public License Version 3
+
+Copyright (C) 2023 Currents Software Inc https://currents.dev.
+
+This is free software, and you are welcome to redistribute it under certain
+conditions. This program comes with no warranty. Parts of this program are MIT
+licensed. Refer to the license for details
+https://github.com/currents-dev/cypress-cloud/blob/main/LICENSE.md

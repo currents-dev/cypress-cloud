@@ -1,6 +1,7 @@
 import "./init";
 
 import Debug from "debug";
+import { getLegalNotice } from "../legal";
 import { CurrentsRunParameters } from "../types";
 import { createRun } from "./api";
 import { cutInitialOutput, getCapturedOutput } from "./capture";
@@ -13,6 +14,7 @@ import {
 } from "./config";
 import { runBareCypress } from "./cypress";
 import { activateDebug } from "./debug";
+import { isCurrents } from "./env";
 import { getGitInfo } from "./git";
 import { setAPIBaseUrl, setRunId } from "./httpClient";
 import { bold, divider, info, spacer, title } from "./log";
@@ -48,6 +50,10 @@ export async function run(params: CurrentsRunParameters = {}) {
 
   const validatedParams = await validateParams(params);
   setAPIBaseUrl(validatedParams.cloudServiceUrl);
+
+  if (!isCurrents()) {
+    console.log(getLegalNotice());
+  }
 
   const {
     recordKey,
