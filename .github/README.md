@@ -12,7 +12,7 @@ Integrate Cypress with alternative cloud services like Currents or Sorry Cypress
 
 <p align="center">
 <a href="../CHANGELOG.md">Changelog</a> | <a href="https://currents.dev/readme/guides/cypress-compatibility">Compatibility</a> |
-<a href="https://currents.dev/readme">Documentation</a> | <a href="./packages/cypress-cloud/LICENSE.md">License</a>
+<a href="https://currents.dev/readme">Documentation</a> | <a href="https://github.com/currents-dev/cypress-cloud/blob/main/LICENSE.md">License</a>
 
 </p>
 
@@ -269,6 +269,17 @@ Using:
 ```sh
 npm install cypress-cloud --registry http://localhost:4873
 ```
+
+## License
+
+GNU General Public License Version 3
+
+Copyright (C) 2023 Currents Software Inc https://currents.dev.
+
+This is free software, and you are welcome to redistribute it under certain
+conditions. This program comes with no warranty. Parts of this program are MIT
+licensed. Refer to the license for details
+https://github.com/currents-dev/cypress-cloud/blob/main/LICENSE.md
 
 ## Disclaimer
 
