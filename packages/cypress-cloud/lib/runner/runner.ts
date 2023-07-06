@@ -17,16 +17,14 @@ import {
 import { runSpecFileSafe } from "../cypress";
 import { isCurrents } from "../env";
 import { divider, info, title, warn } from "../log";
+import { ConfigState, ExecutionState } from "../state";
 import { createReportTask, reportTasks } from "./reportTask";
-import {
-  initExecutionState,
-  setInstanceOutput,
-  setInstanceResult,
-} from "./state";
 
 const debug = Debug("currents:runner");
 
 export async function runTillDone(
+  executionState: ExecutionState,
+  configState: ConfigState,
   {
     runId,
     groupId,
@@ -41,7 +39,7 @@ export async function runTillDone(
   let hasMore = true;
 
   while (hasMore) {
-    const newTasks = await runBatch({
+    const newTasks = await runBatch(executionState, configState, {
       runMeta: {
         runId,
         groupId,
@@ -56,24 +54,30 @@ export async function runTillDone(
       hasMore = false;
       break;
     }
-    newTasks.forEach((t) => createReportTask(t.instanceId));
+    newTasks.forEach((t) =>
+      createReportTask(configState, executionState, t.instanceId)
+    );
   }
 }
 
-async function runBatch({
-  runMeta,
-  params,
-  allSpecs,
-}: {
-  runMeta: {
-    runId: string;
-    groupId: string;
-    machineId: string;
-    platform: CreateInstancePayload["platform"];
-  };
-  allSpecs: SpecWithRelativeRoot[];
-  params: ValidatedCurrentsParameters;
-}) {
+async function runBatch(
+  executionState: ExecutionState,
+  configState: ConfigState,
+  {
+    runMeta,
+    params,
+    allSpecs,
+  }: {
+    runMeta: {
+      runId: string;
+      groupId: string;
+      machineId: string;
+      platform: CreateInstancePayload["platform"];
+    };
+    allSpecs: SpecWithRelativeRoot[];
+    params: ValidatedCurrentsParameters;
+  }
+) {
   let batch = {
     specs: [] as InstanceResponseSpecDetails[],
     claimedInstances: 0,
@@ -121,7 +125,7 @@ async function runBatch({
    */
 
   // %state
-  batch.specs.forEach(initExecutionState);
+  batch.specs.forEach((i) => executionState.initInstance(i));
 
   divider();
   info(
@@ -148,12 +152,16 @@ async function runBatch({
 
   // %state
   batch.specs.forEach((spec) => {
-    setInstanceOutput(spec.instanceId, output);
+    executionState.setInstanceOutput(spec.instanceId, output);
     const specRunResult = getCypressRunResultForSpec(spec.spec, rawResult);
     if (!specRunResult) {
       return;
     }
-    setInstanceResult(spec.instanceId, specRunResult);
+    executionState.setInstanceResult(
+      configState,
+      spec.instanceId,
+      specRunResult
+    );
   });
 
   resetCapture();

@@ -8,7 +8,7 @@ import {
   UpdateInstanceResultsPayload,
 } from "../api";
 import { MergedConfig } from "../config";
-import { getConfig } from "../runner/state";
+import { ConfigState } from "../state";
 
 const debug = Debug("currents:results");
 
@@ -215,18 +215,21 @@ const getDummyFailedTest = (start: string, error: string) => ({
   ],
 });
 
-export function getFailedDummyResult({
-  specs,
-  error,
-}: {
-  specs: string[];
-  error: string;
-}): CypressCommandLine.CypressRunResult {
+export function getFailedDummyResult(
+  configState: ConfigState,
+  {
+    specs,
+    error,
+  }: {
+    specs: string[];
+    error: string;
+  }
+): CypressCommandLine.CypressRunResult {
   const start = new Date().toISOString();
   const end = new Date().toISOString();
   return {
     // @ts-ignore
-    config: getConfig() ?? {},
+    config: configState.getConfig() ?? {},
     status: "finished",
     startedTestsAt: new Date().toISOString(),
     endedTestsAt: new Date().toISOString(),

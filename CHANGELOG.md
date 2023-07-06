@@ -1,3 +1,12 @@
+
+
+## [1.9.1-beta.0](https://github.com/currents-dev/cypress-cloud/compare/v1.9.0...v1.9.1-beta.0) (2023-07-06)
+
+
+### Bug Fixes
+
+* prevent shared execution state ([f71ad89](https://github.com/currents-dev/cypress-cloud/commit/f71ad89b02df80d9bf5e9c0da7e4a2c0ad8212dc))
+
 # [1.9.0](https://github.com/currents-dev/cypress-cloud/compare/v1.9.0-beta.0...v1.9.0) (2023-07-04)
 
 ### Features

@@ -23,21 +23,19 @@ import { pubsub } from "./pubsub";
 import { summarizeTestResults, summaryTable } from "./results";
 import {
   createReportTaskSpec,
-  getExecutionStateResults,
   reportTasks,
   runTillDoneOrCancelled,
-  setConfig,
-  setSpecAfter,
-  setSpecBefore,
-  setSpecOutput,
 } from "./runner";
 import { shutdown } from "./shutdown";
 import { getSpecFiles } from "./specMatcher";
+import { ConfigState, ExecutionState } from "./state";
 import { startWSS } from "./ws";
 
 const debug = Debug("currents:run");
 
 export async function run(params: CurrentsRunParameters = {}) {
+  const executionState = new ExecutionState();
+  const configState = new ConfigState();
   activateDebug(params.cloudDebug);
   debug("run params %o", params);
   params = preprocessParams(params);
@@ -68,9 +66,7 @@ export async function run(params: CurrentsRunParameters = {}) {
   } = validatedParams;
 
   const config = await getMergedConfig(validatedParams);
-
-  // %state
-  setConfig(config?.resolved);
+  configState.setConfig(config?.resolved);
 
   const { specs, specPattern } = await getSpecFiles({
     config,
@@ -116,9 +112,11 @@ export async function run(params: CurrentsRunParameters = {}) {
   cutInitialOutput();
 
   await startWSS();
-  listenToSpecEvents();
+  listenToSpecEvents(configState, executionState);
 
   await runTillDoneOrCancelled(
+    executionState,
+    configState,
     {
       runId: run.runId,
       groupId: run.groupId,
@@ -132,7 +130,10 @@ export async function run(params: CurrentsRunParameters = {}) {
   divider();
 
   await Promise.allSettled(reportTasks);
-  const _summary = summarizeTestResults(getExecutionStateResults(), config);
+  const _summary = summarizeTestResults(
+    executionState.getResults(configState),
+    config
+  );
 
   title("white", "Cloud Run Finished");
   console.log(summaryTable(_summary));
@@ -151,19 +152,22 @@ export async function run(params: CurrentsRunParameters = {}) {
   return _summary;
 }
 
-function listenToSpecEvents() {
+function listenToSpecEvents(
+  configState: ConfigState,
+  executionState: ExecutionState
+) {
   pubsub.on("before:spec", async ({ spec }: { spec: Cypress.Spec }) => {
     debug("before:spec %o", spec);
-    setSpecBefore(spec.relative);
+    executionState.setSpecBefore(spec.relative);
   });
 
   pubsub.on(
     "after:spec",
     async ({ spec, results }: { spec: Cypress.Spec; results: any }) => {
       debug("after:spec %o %o", spec, results);
-      setSpecAfter(spec.relative, results);
-      setSpecOutput(spec.relative, getCapturedOutput());
-      createReportTaskSpec(spec.relative);
+      executionState.setSpecAfter(spec.relative, results);
+      executionState.setSpecOutput(spec.relative, getCapturedOutput());
+      createReportTaskSpec(configState, executionState, spec.relative);
     }
   );
 }
