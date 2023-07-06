@@ -1,6 +1,7 @@
 // https://github.com/currents-dev/cypress-cloud/issues/71
 // keep the local copy to prevent from importing
 // commander.js from the global node_modules
+import { getLegalNotice } from "../../legal";
 import { DebugMode } from "../../types";
 import { Command, Option } from "./@commander-js/extra-typings";
 
@@ -8,7 +9,11 @@ export const createProgram = (command: Command = new Command()) =>
   command
     .name("cypress-cloud")
     .description(
-      "Runs Cypress tests on CI using Currents as an orchestration and reporting service"
+      `
+Run Cypress tests on CI using https://currents.dev or https://sorry-cypress.dev as an orchestration and reporting service
+
+${getLegalNotice()}
+      `
     )
     .option(
       "-b, --browser <browser-name-or-path>",
