@@ -47,6 +47,7 @@ export async function run(params: CurrentsRunParameters = {}) {
   }
 
   const validatedParams = await validateParams(params);
+  configState.setCurrentsParams(validatedParams);
   setAPIBaseUrl(validatedParams.cloudServiceUrl);
 
   if (!isCurrents()) {
@@ -66,7 +67,7 @@ export async function run(params: CurrentsRunParameters = {}) {
   } = validatedParams;
 
   const config = await getMergedConfig(validatedParams);
-  configState.setConfig(config?.resolved);
+  configState.setConfig(config.resolved);
 
   const { specs, specPattern } = await getSpecFiles({
     config,
@@ -152,6 +153,7 @@ export async function run(params: CurrentsRunParameters = {}) {
   return _summary;
 }
 
+const timeouts: Record<string, NodeJS.Timeout> = {};
 function listenToSpecEvents(
   configState: ConfigState,
   executionState: ExecutionState
@@ -159,6 +161,23 @@ function listenToSpecEvents(
   pubsub.on("before:spec", async ({ spec }: { spec: Cypress.Spec }) => {
     debug("before:spec %o", spec);
     executionState.setSpecBefore(spec.relative);
+
+    const specRetries =
+      configState.getCurrentsParams()?.experimentalSpecRetries;
+    if (specRetries) {
+      timeouts[spec.absolute] = setTimeout(() => {
+        debug(
+          "spec timedout after %s seconds, %o",
+          specRetries.timeoutSeconds,
+          spec
+        );
+        executionState.setSpecTimedout(spec.relative);
+        pubsub.emit("currents:spec:retry", {
+          spec,
+          timeout: specRetries.timeoutSeconds,
+        });
+      }, specRetries.timeoutSeconds * 1000);
+    }
   });
 
   pubsub.on(
@@ -168,6 +187,11 @@ function listenToSpecEvents(
       executionState.setSpecAfter(spec.relative, results);
       executionState.setSpecOutput(spec.relative, getCapturedOutput());
       createReportTaskSpec(configState, executionState, spec.relative);
+
+      if (timeouts[spec.absolute]) {
+        clearTimeout(timeouts[spec.absolute]);
+        delete timeouts[spec.absolute];
+      }
     }
   );
 }

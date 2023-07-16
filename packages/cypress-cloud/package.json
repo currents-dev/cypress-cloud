@@ -69,6 +69,7 @@
     "lil-http-terminator": "^1.2.3",
     "lodash": "^4.17.21",
     "nanoid": "^3.3.4",
+    "pidtree": "^0.6.0",
     "pretty-ms": "^7.0.1",
     "source-map-support": "^0.5.21",
     "table": "^6.8.1",
@@ -90,7 +91,8 @@
       "./index.ts",
       "./bin/*.ts",
       "./plugin/*.ts",
-      "./support/*.ts "
+      "./support/*.ts",
+      "./lib/cypress/cypress_worker.ts"
     ],
     "external": [
       "cypress"

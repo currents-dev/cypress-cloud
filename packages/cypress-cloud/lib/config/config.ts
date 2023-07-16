@@ -1,7 +1,11 @@
 import Debug from "debug";
 
 import { P, match } from "ts-pattern";
-import { DetectedBrowser, ValidatedCurrentsParameters } from "../../types";
+import {
+  DetectedBrowser,
+  SpecRetryConfig,
+  ValidatedCurrentsParameters,
+} from "../../types";
 import { bootCypress } from "../bootstrap";
 import { info, warn } from "../log";
 import { getConfigFilePath } from "./path";
@@ -21,6 +25,7 @@ export type CurrentsConfig = {
   e2e: E2EConfig;
   component: ComponentConfig;
   networkHeaders?: Record<string, string>;
+  experimentalSpecRetries?: SpecRetryConfig;
 };
 
 let _config: CurrentsConfig | null = null;

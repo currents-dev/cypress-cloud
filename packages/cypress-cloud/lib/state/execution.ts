@@ -1,4 +1,4 @@
-import { InstanceId } from "cypress-cloud/types";
+import { InstanceId, SpecWithRelativeRoot } from "cypress-cloud/types";
 import { error, warn } from "../log";
 import { getFailedDummyResult } from "../results";
 import {
@@ -13,7 +13,7 @@ const debug = Debug("currents:state");
 
 type InstanceExecutionState = {
   instanceId: InstanceId;
-  spec: string;
+  spec: SpecWithRelativeRoot;
   output?: string;
   specBefore?: Date;
   createdAt: Date;
@@ -22,11 +22,32 @@ type InstanceExecutionState = {
   specAfter?: Date;
   specAfterResults?: SpecResult;
   reportStartedAt?: Date;
+  executionsCount: number;
+  timeoutsCount: number;
 };
 
 export class ExecutionState {
   private state: Record<InstanceId, InstanceExecutionState> = {};
 
+  public getSpecTimeouts(specRelative: string) {
+    return this.getSpecRelative(specRelative).timeoutsCount;
+  }
+
+  public setSpecTimedout(specRelative: string) {
+    this.getSpecRelative(specRelative).timeoutsCount++;
+  }
+
+  public getExecutionsCount(specRelative: string) {
+    return this.getSpecRelative(specRelative).executionsCount;
+  }
+
+  public incrementExecutionsCount(specRelative: string) {
+    this.getSpecRelative(specRelative).executionsCount++;
+  }
+
+  public hasSpecAfterResults(specRelative: string) {
+    return !!this.getSpecRelative(specRelative)?.specAfterResults;
+  }
   public getResults(configState: ConfigState) {
     return Object.values(this.state).map((i) =>
       this.getInstanceResults(configState, i.instanceId)
@@ -37,8 +58,18 @@ export class ExecutionState {
     return this.state[instanceId];
   }
 
-  public getSpec(spec: string) {
-    return Object.values(this.state).find((i) => i.spec === spec);
+  public getSpecRelative(spec: string) {
+    const result = Object.values(this.state).find(
+      (i) => i.spec.relative === spec
+    );
+    if (!result) {
+      throw new Error('Cannot find execution state for spec "' + spec + '"');
+    }
+    return result;
+  }
+
+  public getSpecAbsolute(spec: string) {
+    return Object.values(this.state).find((i) => i.spec.absolute === spec);
   }
 
   public initInstance({
@@ -46,18 +77,20 @@ export class ExecutionState {
     spec,
   }: {
     instanceId: InstanceId;
-    spec: string;
+    spec: InstanceExecutionState["spec"];
   }) {
     debug('Init execution state for "%s"', spec);
     this.state[instanceId] = {
       instanceId,
       spec,
       createdAt: new Date(),
+      executionsCount: 0,
+      timeoutsCount: 0,
     };
   }
 
   public setSpecBefore(spec: string) {
-    const i = this.getSpec(spec);
+    const i = this.getSpecRelative(spec);
     if (!i) {
       warn('Cannot find execution state for spec "%s"', spec);
       return;
@@ -67,7 +100,7 @@ export class ExecutionState {
   }
 
   public setSpecAfter(spec: string, results: SpecResult) {
-    const i = this.getSpec(spec);
+    const i = this.getSpecRelative(spec);
     if (!i) {
       warn('Cannot find execution state for spec "%s"', spec);
       return;
@@ -77,7 +110,7 @@ export class ExecutionState {
   }
 
   public setSpecOutput(spec: string, output: string) {
-    const i = this.getSpec(spec);
+    const i = this.getSpecRelative(spec);
     if (!i) {
       warn('Cannot find execution state for spec "%s"', spec);
       return;
@@ -99,7 +132,6 @@ export class ExecutionState {
   }
 
   public setInstanceResult(
-    configState: ConfigState,
     instanceId: string,
     results: CypressCommandLine.CypressRunResult
   ) {
@@ -138,6 +170,14 @@ export class ExecutionState {
       return backfillException(i.runResults);
     }
 
+    if (i.executionsCount == i.timeoutsCount && i.timeoutsCount > 0) {
+      return getFailedDummyResult(configState, {
+        specs: [i.spec],
+        error: `Failed to complete before spec timeout\n
+Timeout: ${configState.getSpecTimeout()} seconds
+Retries: ${configState.getSpecRetryLimit()}`,
+      });
+    }
     debug('No results detected for "%s"', i.spec);
     return getFailedDummyResult(configState, {
       specs: [i.spec],

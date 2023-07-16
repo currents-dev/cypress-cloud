@@ -38,13 +38,13 @@ export const createReportTask = (
 export const createReportTaskSpec = (
   configState: ConfigState,
   executionState: ExecutionState,
-  spec: string
+  specRelative: string
 ) => {
-  const i = executionState.getSpec(spec);
+  const i = executionState.getSpecRelative(specRelative);
   if (!i) {
-    error("Cannot find execution state for spec %s", spec);
+    error("Cannot find execution state for spec %s", specRelative);
     return;
   }
-  debug("Creating report task for spec %s", spec);
+  debug("Creating report task for spec %s", specRelative);
   return createReportTask(configState, executionState, i.instanceId);
 };

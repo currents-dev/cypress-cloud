@@ -1,6 +1,6 @@
 module.exports = {
   e2e: {
-    batchSize: 2, // how many specs to send in one batch
+    batchSize: 3, // how many specs to send in one batch
   },
   component: {
     batchSize: 5, // how many specs to send in one batch
@@ -9,5 +9,9 @@ module.exports = {
     ? "Ij0RfK"
     : "Ij0RfK",
   // cloudServiceUrl: "http://localhost:1234",
-  userAgent: "custom",
+  // userAgent: "custom",
+  experimentalSpecRetries: {
+    timeoutSeconds: 5,
+    retries: 1,
+  },
 };

@@ -50,6 +50,9 @@ export async function resolveCurrentsParams(
     projectId,
     batchSize,
     testingType,
+    ...{
+      experimentalSpecRetries: configFromFile.experimentalSpecRetries,
+    },
   };
 }
 
@@ -166,6 +169,7 @@ export function getCypressRunAPIParams(
   return {
     ..._.pickBy(
       _.omit(params, [
+        "experimentalSpecRetries",
         "cloudDebug",
         "cloudConfigFile",
         "autoCancelAfterFailures",

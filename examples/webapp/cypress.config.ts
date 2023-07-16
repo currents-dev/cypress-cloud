@@ -9,7 +9,7 @@ module.exports = defineConfig({
     baseUrl: "https://todomvc.com/examples/vanillajs",
     videoUploadOnPasses: false,
     supportFile: "cypress/support/e2e.ts",
-    specPattern: "cypress/*/**/*.spec.js",
+    specPattern: "cypress/**/*.spec.js",
     setupNodeEvents(on, config) {
       require("@cypress/grep/src/plugin")(config);
       require("cypress-terminal-report/src/installLogsPrinter")(on);

@@ -2,6 +2,7 @@ import { CypressResult, ScreenshotArtifact } from "cypress-cloud/types";
 import Debug from "debug";
 import _ from "lodash";
 import { nanoid } from "nanoid";
+import { P, match } from "ts-pattern";
 import {
   SetInstanceTestsPayload,
   TestState,
@@ -9,7 +10,6 @@ import {
 } from "../api";
 import { MergedConfig } from "../config";
 import { ConfigState } from "../state";
-
 const debug = Debug("currents:results");
 
 export const isSuccessResult = (
@@ -221,7 +221,13 @@ export function getFailedDummyResult(
     specs,
     error,
   }: {
-    specs: string[];
+    specs:
+      | string[]
+      | {
+          relative: string;
+          absolute: string;
+          relativeToCommonRoot: string;
+        }[];
     error: string;
   }
 ): CypressCommandLine.CypressRunResult {
@@ -263,12 +269,20 @@ export function getFailedDummyResult(
       hooks: [],
       error,
       video: null,
-      spec: {
-        name: s,
-        relative: s,
-        absolute: s,
-        relativeToCommonRoot: s,
-      },
+      spec: match(s)
+        .with(P.string, (s) => ({
+          name: s,
+          relative: s,
+          absolute: s,
+          relativeToCommonRoot: s,
+        }))
+        .otherwise((s) => ({
+          name: s.relative,
+          relative: s.relative,
+          absolute: s.absolute,
+          relativeToCommonRoot: s.relativeToCommonRoot,
+        })),
+
       tests: [getDummyFailedTest(start, error)],
       shouldUploadVideo: false,
       skippedSpec: false,

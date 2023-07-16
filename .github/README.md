@@ -90,6 +90,20 @@ module.exports = {
   component: {
     batchSize: 5, // orchestration batch size for component tests (Currents only, read below)
   },
+  // If provided, enables individual spec timeouts with retries.
+  // Each spec file will have to complete (invoke spec:after hook) before the timeout expires.
+  // The timeout start from the moment "spec:after" hook is received for the spec
+  // If the timeout expires:
+  //   - the currently running spec will be terminated
+  //   - cypress-cloud will retry running the spec up to `retries` times
+  //   - if no successful completion detected, the spec file will be marked as failed
+  //
+  // The batched executions will run include all non-reported specs in each retry until
+  // all specs in the batch either reported results or exhasted all the retries
+  experimentalSpecRetries: {
+    timeoutSeconds: number;
+    retries: number;
+  }
 };
 ```
 

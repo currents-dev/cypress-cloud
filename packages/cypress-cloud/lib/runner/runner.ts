@@ -2,8 +2,8 @@ import {
   SpecWithRelativeRoot,
   ValidatedCurrentsParameters,
 } from "cypress-cloud/types";
+import path from "path";
 import { getCapturedOutput, resetCapture } from "../capture";
-
 import { getCypressRunResultForSpec } from "../results";
 
 import Debug from "debug";
@@ -14,9 +14,10 @@ import {
   InstanceResponseSpecDetails,
 } from "../api";
 
-import { runSpecFileSafe } from "../cypress";
+import { runSpecFilesSafe, runSpecFilesSafeWithRetry } from "../cypress";
 import { isCurrents } from "../env";
-import { divider, info, title, warn } from "../log";
+import { notEmpty } from "../lang";
+import { divider, info, title } from "../log";
 import { ConfigState, ExecutionState } from "../state";
 import { createReportTask, reportTasks } from "./reportTask";
 
@@ -118,14 +119,22 @@ async function runBatch(
    * - run the rest of unreported specs in the batch
    *
    * But detecting the crashed spec is error-prone and inaccurate,
-   * so we fall back to reporting hard crash to all subsequent
+   * so we fall back to reporting hard crash for all subsequent
    * specs in the batch.
    *
-   * Worst-case scenario: we report hard crash to all specs in the batch.
+   * Worst-case scenario: we report hard crash for all specs in the batch.
+   *
+   * UPDATE July 15: We now have a better way to detect crashed specs via spec:before
    */
 
-  // %state
-  batch.specs.forEach((i) => executionState.initInstance(i));
+  batch.specs.forEach((i) =>
+    executionState.initInstance({
+      ...i,
+      spec:
+        allSpecs.find((s) => s.relative === i.spec) ??
+        getFakeSpecDescriptor(i.spec),
+    })
+  );
 
   divider();
   info(
@@ -135,33 +144,41 @@ async function runBatch(
     batch.totalInstances
   );
 
-  const rawResult = await runSpecFileSafe(
-    {
-      // use absolute paths - user can run the program from a different directory, e.g. nx or a monorepo workspace
-      // cypress still report the path relative to the project root
-      spec: batch.specs
-        .map((bs) => getSpecAbsolutePath(allSpecs, bs.spec))
-        .join(","),
-    },
-    params
-  );
+  function getRawResult() {
+    const specRetries = params.experimentalSpecRetries;
+    if (!!specRetries) {
+      return runSpecFilesSafeWithRetry(
+        configState,
+        executionState,
+        batch.specs
+          .map((bs) => allSpecs.find((i) => i.relative === bs.spec))
+          .filter(notEmpty),
+        params
+      );
+    }
+    return runSpecFilesSafe(
+      batch.specs
+        .map((bs) => allSpecs.find((i) => i.relative === bs.spec))
+        .filter(notEmpty),
+      params
+    );
+  }
+  const rawResult = await getRawResult();
 
   title("blue", "Reporting results and artifacts in background...");
 
   const output = getCapturedOutput();
 
-  // %state
   batch.specs.forEach((spec) => {
     executionState.setInstanceOutput(spec.instanceId, output);
+    if (!rawResult) {
+      return;
+    }
     const specRunResult = getCypressRunResultForSpec(spec.spec, rawResult);
     if (!specRunResult) {
       return;
     }
-    executionState.setInstanceResult(
-      configState,
-      spec.instanceId,
-      specRunResult
-    );
+    executionState.setInstanceResult(spec.instanceId, specRunResult);
   });
 
   resetCapture();
@@ -169,18 +186,16 @@ async function runBatch(
   return batch.specs;
 }
 
-function getSpecAbsolutePath(
-  allSpecs: SpecWithRelativeRoot[],
-  relative: string
-) {
-  const absolutePath = allSpecs.find((i) => i.relative === relative)?.absolute;
-  if (!absolutePath) {
-    warn(
-      'Cannot find absolute path for spec. Spec: "%s", candidates: %o',
-      relative,
-      allSpecs
-    );
-    throw new Error(`Cannot find absolute path for spec`);
-  }
-  return absolutePath;
+function getFakeSpecDescriptor(spec: string) {
+  return {
+    relative: spec,
+    absolute: spec,
+    relativeToCommonRoot: spec,
+    specFileExtension: path.extname(spec),
+    fileExtension: path.extname(spec),
+    baseName: path.basename(spec),
+    fileName: path.basename(spec),
+    name: path.basename(spec),
+    specType: "integration" as const,
+  };
 }

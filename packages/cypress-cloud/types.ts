@@ -99,6 +99,11 @@ export enum DebugMode {
   CommitInfo = "commit-info",
 }
 
+export type SpecRetryConfig = {
+  timeoutSeconds: number;
+  retries: number;
+};
+
 // Explicitly filter cypress record-related flags - prevent triggering recording mode to avoid confusion
 export type StrippedCypressModuleAPIOptions = Omit<
   Partial<CypressCommandLine.CypressRunOptions>,
@@ -135,6 +140,7 @@ export type CurrentsRunParameters = StrippedCypressModuleAPIOptions & {
 
   /** The URL of the currents server to use. If not specified, will use the one from currents.config.js */
   cloudServiceUrl?: string;
+
   /** The environment variables to use for the run */
   env?: object;
 
@@ -191,4 +197,5 @@ export interface ValidatedCurrentsParameters extends CurrentsRunParameters {
   readonly recordKey: string;
   readonly tag: string[];
   readonly autoCancelAfterFailures: number | false | undefined;
+  readonly experimentalSpecRetries: undefined | SpecRetryConfig;
 }
