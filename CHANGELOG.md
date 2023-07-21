@@ -1,5 +1,12 @@
 
 
+## [1.9.2](https://github.com/currents-dev/cypress-cloud/compare/v1.9.1...v1.9.2) (2023-07-21)
+
+
+### Bug Fixes
+
+* exit with status 1 when no spec files found ([#169](https://github.com/currents-dev/cypress-cloud/issues/169)) ([9c7bfd2](https://github.com/currents-dev/cypress-cloud/commit/9c7bfd2a9bc7201af5ee9178c5b7c92cf224955e)), closes [#165](https://github.com/currents-dev/cypress-cloud/issues/165)
+
 ## [1.9.1](https://github.com/currents-dev/cypress-cloud/compare/v1.9.0...v1.9.1) (2023-07-06)
 
 
