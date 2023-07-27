@@ -1,0 +1,27 @@
+{
+  "name": "example-frontend",
+  "description": "Tests a frontend app",
+  "devDependencies": {
+    "@babel/core": "^7.22.9",
+    "@cypress/code-coverage": "^3.11.0",
+    "babel-plugin-istanbul": "^6.1.1",
+    "check-code-coverage": "^1.10.5",
+    "nyc": "^15.1.0",
+    "parcel": "^2.9.3",
+    "start-server-and-test": "^2.0.0"
+  },
+  "scripts": {
+    "cy:run": "../../node_modules/.bin/cypress run",
+    "cy:open": "../../node_modules/.bin/cypress open",
+    "start": "../../node_modules/.bin/parcel serve --port 8080 --cache-dir ./.parcel-cache index.html",
+    "pretest": "rimraf .nyc_output .parcel-cache coverage dist",
+    "test": "../../node_modules/.bin/start-test 8080 cy:run",
+    "coverage:verify": "npx nyc report --check-coverage true --lines 100",
+    "coverage:check-files": "../../node_modules/.bin/check-coverage app.js && ../../node_modules/.bin/check-coverage about.js && ../../node_modules/.bin/check-coverage unit.js && ../../node_modules/.bin/only-covered app.js about.js unit.js",
+    "cypress:script": "node scripts/currents-script.js"
+  },
+  "dependencies": {
+    "cypress-cloud": "^1.9.2",
+    "lodash": "^4.17.21"
+  }
+}
