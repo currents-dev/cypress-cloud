@@ -30,6 +30,7 @@ import { shutdown } from "./shutdown";
 import { getSpecFiles } from "./specMatcher";
 import { ConfigState, ExecutionState } from "./state";
 import { startWSS } from "./ws";
+import { handleCoverageIfExists } from "./testCoverage";
 
 const debug = Debug("currents:run");
 
@@ -134,6 +135,8 @@ export async function run(params: CurrentsRunParameters = {}) {
     executionState.getResults(configState),
     config
   );
+
+  await handleCoverageIfExists(run.runId, _summary.config);
 
   title("white", "Cloud Run Finished");
   console.log(summaryTable(_summary));
