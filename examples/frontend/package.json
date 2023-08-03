@@ -15,7 +15,7 @@
     "cy:open": "../../node_modules/.bin/cypress open",
     "start": "../../node_modules/.bin/parcel serve --port 8888 --cache-dir ./.parcel-cache index.html",
     "pretest": "rimraf .nyc_output .parcel-cache coverage dist",
-    "test": "../../node_modules/.bin/start-test 8888 cy:run",
+    "test": "../../node_modules/.bin/start-test 8888 cli",
     "coverage:verify": "npx nyc report --check-coverage true --lines 100",
     "coverage:check-files": "../../node_modules/.bin/check-coverage app.js && ../../node_modules/.bin/check-coverage about.js && ../../node_modules/.bin/check-coverage unit.js && ../../node_modules/.bin/only-covered app.js about.js unit.js",
     "cli": "npx cypress-cloud run --ci-build-id $(date \"+%s\") --record --key DsDpjPk0ITxBLTmn"
