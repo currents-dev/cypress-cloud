@@ -1,5 +1,12 @@
 
 
+## [1.9.3](https://github.com/currents-dev/cypress-cloud/compare/v1.9.2...v1.9.3) (2023-07-27)
+
+
+### Bug Fixes
+
+* retry on ETIMEDOUT, add network req timeout ([#172](https://github.com/currents-dev/cypress-cloud/issues/172)) ([030ae70](https://github.com/currents-dev/cypress-cloud/commit/030ae7086eeb75397c729a79c8eefb9aa2e61d7a))
+
 ## [1.9.2](https://github.com/currents-dev/cypress-cloud/compare/v1.9.1...v1.9.2) (2023-07-21)
 
 
