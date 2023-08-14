@@ -7,7 +7,6 @@ import {
   CreateRunPayload,
   CreateRunResponse,
   SetInstanceTestsPayload,
-  SetRunCoveragePayload,
   UpdateInstanceResultsMergedPayload,
   UpdateInstanceResultsPayload,
   UpdateInstanceResultsResponse,
@@ -104,11 +103,4 @@ export const updateInstanceStdout = (instanceId: string, stdout: string) =>
     data: {
       stdout,
     },
-  });
-
-export const setRunCoverage = (runId: string, payload: SetRunCoveragePayload) =>
-  makeRequest<{}, SetRunCoveragePayload>({
-    method: "POST",
-    url: `runs/${runId}/cy/coverage`,
-    data: payload,
   });

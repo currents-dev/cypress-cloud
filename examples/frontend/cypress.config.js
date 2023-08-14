@@ -11,9 +11,12 @@ module.exports = defineConfig({
     supportFile: "cypress/support/e2e.js",
     specPattern: "cypress/*/**/*.cy.js",
     env: {
+      // @cypress/code-coverage config
       codeCoverage: {
         exclude: ["cypress/**/*.*"],
       },
+      // set custom coverage file for cypress-cloud
+      coverageFile: "./.nyc_output/out.json",
     },
   },
 });

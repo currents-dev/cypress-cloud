@@ -30,7 +30,7 @@ import { shutdown } from "./shutdown";
 import { getSpecFiles } from "./specMatcher";
 import { ConfigState, ExecutionState } from "./state";
 import { startWSS } from "./ws";
-import { handleCoverageIfExists } from "./testCoverage";
+import { getCoverageFilePath } from "./testCoverage";
 
 const debug = Debug("currents:run");
 
@@ -113,7 +113,11 @@ export async function run(params: CurrentsRunParameters = {}) {
   cutInitialOutput();
 
   await startWSS();
-  listenToSpecEvents(configState, executionState);
+  listenToSpecEvents(
+    configState,
+    executionState,
+    config.experimentalCoverageRecording
+  );
 
   await runTillDoneOrCancelled(
     executionState,
@@ -136,8 +140,6 @@ export async function run(params: CurrentsRunParameters = {}) {
     config
   );
 
-  await handleCoverageIfExists(run.runId, _summary.config);
-
   title("white", "Cloud Run Finished");
   console.log(summaryTable(_summary));
   info("🏁 Recorded Run:", bold(run.runUrl));
@@ -157,8 +159,10 @@ export async function run(params: CurrentsRunParameters = {}) {
 
 function listenToSpecEvents(
   configState: ConfigState,
-  executionState: ExecutionState
+  executionState: ExecutionState,
+  experimentalCoverageRecording?: boolean
 ) {
+  const config = configState.getConfig();
   pubsub.on("before:spec", async ({ spec }: { spec: Cypress.Spec }) => {
     debug("before:spec %o", spec);
     executionState.setSpecBefore(spec.relative);
@@ -170,6 +174,14 @@ function listenToSpecEvents(
       debug("after:spec %o %o", spec, results);
       executionState.setSpecAfter(spec.relative, results);
       executionState.setSpecOutput(spec.relative, getCapturedOutput());
+      if (experimentalCoverageRecording) {
+        const coverageFilePath = await getCoverageFilePath(
+          config?.env?.coverageFile
+        );
+        if (coverageFilePath) {
+          executionState.setSpecCoverage(spec.relative, coverageFilePath);
+        }
+      }
       createReportTaskSpec(configState, executionState, spec.relative);
     }
   );

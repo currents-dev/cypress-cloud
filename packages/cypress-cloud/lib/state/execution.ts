@@ -22,6 +22,7 @@ type InstanceExecutionState = {
   specAfter?: Date;
   specAfterResults?: SpecResult;
   reportStartedAt?: Date;
+  coverageFilePath?: string;
 };
 
 export class ExecutionState {
@@ -64,6 +65,17 @@ export class ExecutionState {
     }
 
     i.specBefore = new Date();
+  }
+
+  public setSpecCoverage(spec: string, coverageFilePath: string) {
+    const i = this.getSpec(spec);
+    if (!i) {
+      warn('Cannot find execution state for spec "%s"', spec);
+      return;
+    }
+
+    debug("Experimental: coverageFilePath was set");
+    i.coverageFilePath = coverageFilePath;
   }
 
   public setSpecAfter(spec: string, results: SpecResult) {

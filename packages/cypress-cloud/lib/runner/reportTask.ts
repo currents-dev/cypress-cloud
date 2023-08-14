@@ -30,7 +30,8 @@ export const createReportTask = (
     getReportResultsTask(
       instanceId,
       executionState.getInstanceResults(configState, instanceId),
-      instance.output ?? "no output captured"
+      instance.output ?? "no output captured",
+      instance.coverageFilePath
     ).catch(error)
   );
 };

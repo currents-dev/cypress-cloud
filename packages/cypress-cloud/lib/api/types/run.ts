@@ -1,6 +1,5 @@
 import { CiParams, CiProvider } from "cypress-cloud/lib/ciProvider";
 import { Platform, ValidatedCurrentsParameters } from "cypress-cloud/types";
-import { CoverageSummary } from "../../testCoverage";
 
 export type CreateRunPayload = {
   ci: {
@@ -37,8 +36,4 @@ export type CreateRunResponse = {
   runId: string;
   runUrl: string;
   isNewRun: boolean;
-};
-
-export type SetRunCoveragePayload = {
-  coverage: CoverageSummary["total"];
 };

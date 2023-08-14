@@ -16,20 +16,17 @@ const debug = Debug("currents:results");
 export async function getReportResultsTask(
   instanceId: string,
   results: CypressCommandLine.CypressRunResult,
-  stdout: string
+  stdout: string,
+  coverageFilePath?: string
 ) {
   const run = results.runs[0];
   if (!run) {
     throw new Error("No run found in Cypress results");
   }
-  const instanceResults = getInstanceResultPayload(run);
+  const instanceResults = getInstanceResultPayload(run, coverageFilePath);
   const instanceTests = getInstanceTestsPayload(run, results.config);
-
-  const { videoUploadUrl, screenshotUploadUrls, cloud } = await reportResults(
-    instanceId,
-    instanceTests,
-    instanceResults
-  );
+  const { videoUploadUrl, screenshotUploadUrls, coverageUploadUrl, cloud } =
+    await reportResults(instanceId, instanceTests, instanceResults);
 
   if (cloud?.shouldCancel) {
     debug("instance %s should cancel", instanceId);
@@ -39,6 +36,7 @@ export async function getReportResultsTask(
   debug("instance %s artifact upload instructions %o", instanceId, {
     videoUploadUrl,
     screenshotUploadUrls,
+    coverageUploadUrl,
   });
 
   return Promise.all([
@@ -47,6 +45,8 @@ export async function getReportResultsTask(
       videoPath: run.video,
       screenshotUploadUrls,
       screenshots: instanceResults.screenshots,
+      coverageUploadUrl,
+      coverageFilePath,
     }),
     uploadStdoutSafe(instanceId, getInitialOutput() + stdout),
   ]);

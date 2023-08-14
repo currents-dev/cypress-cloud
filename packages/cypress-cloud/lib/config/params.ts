@@ -182,6 +182,7 @@ export function getCypressRunAPIParams(
         "spec",
         "exit",
         "headless",
+        "experimentalCoverageRecording",
       ]),
       Boolean
     ),
