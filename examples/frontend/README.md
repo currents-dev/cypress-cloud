@@ -11,5 +11,5 @@ Tests `--experimental-coverage-recording` option.
 ## Development
 
 ```bash
-npm run test
+npm run cy2
 ```
