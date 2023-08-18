@@ -64,6 +64,7 @@ export async function run(params: CurrentsRunParameters = {}) {
     testingType,
     batchSize,
     autoCancelAfterFailures,
+    experimentalCoverageRecording,
   } = validatedParams;
 
   const config = await getMergedConfig(validatedParams);
@@ -106,6 +107,7 @@ export async function run(params: CurrentsRunParameters = {}) {
     testingType,
     batchSize,
     autoCancelAfterFailures,
+    coverageEnabled: experimentalCoverageRecording,
   });
 
   setRunId(run.runId);
