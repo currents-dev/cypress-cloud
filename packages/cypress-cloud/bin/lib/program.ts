@@ -125,7 +125,7 @@ ${getLegalNotice()}
     .addOption(
       new Option(
         `--experimental-coverage-recording [bool]`,
-        `Whether to record coverage results. Use "coverageFile" Cypress environment variable for a custom coverage file, default is "./.nyc_output/out.json"`
+        `Whether to record coverage results, specify the "coverageFile" Cypress environment variable for a custom coverage file, default is "./.nyc_output/out.json"`
       )
         .default(undefined)
         .argParser((i) => (i === "false" ? false : true))

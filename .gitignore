@@ -7,7 +7,7 @@ node_modules
 .yarn
 
 # testing
-coverage
+examples/coverage/coverage/*
 .nyc_output
 
 # next.js

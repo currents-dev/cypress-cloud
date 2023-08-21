@@ -30,7 +30,7 @@ import { shutdown } from "./shutdown";
 import { getSpecFiles } from "./specMatcher";
 import { ConfigState, ExecutionState } from "./state";
 import { startWSS } from "./ws";
-import { getCoverageFilePath } from "./testCoverage";
+import { getCoverageFilePath } from "./coverage";
 
 const debug = Debug("currents:run");
 
