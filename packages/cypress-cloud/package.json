@@ -90,7 +90,7 @@
       "./index.ts",
       "./bin/*.ts",
       "./plugin/*.ts",
-      "./support/*.ts "
+      "./support/*.ts"
     ],
     "external": [
       "cypress"
