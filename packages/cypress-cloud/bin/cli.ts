@@ -13,7 +13,7 @@ async function main() {
 main()
   .then((result) => {
     if (!result) {
-      process.exit(0);
+      process.exit(1);
     }
     if (result.status === "failed") {
       process.exit(1);
