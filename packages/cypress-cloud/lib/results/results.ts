@@ -52,7 +52,8 @@ export const getTestAttempt = (attempt: CypressCommandLine.AttemptResult) => {
 };
 
 export const getInstanceResultPayload = (
-  runResult: CypressCommandLine.RunResult
+  runResult: CypressCommandLine.RunResult,
+  coverageFilePath?: string
 ): UpdateInstanceResultsPayload => {
   return {
     stats: getStats(runResult.stats),
@@ -60,6 +61,7 @@ export const getInstanceResultPayload = (
     exception: runResult.error ?? null,
     video: !!runResult.video, // Did the instance generate a video?
     screenshots: getScreenshotsSummary(runResult.tests ?? []),
+    hasCoverage: !!coverageFilePath,
     tests:
       runResult.tests?.map((test, i) => ({
         displayError: test.displayError,

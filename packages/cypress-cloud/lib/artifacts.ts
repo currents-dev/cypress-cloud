@@ -3,19 +3,23 @@ import { ScreenshotArtifact, ScreenshotUploadInstruction } from "../types";
 import { updateInstanceStdout } from "./api";
 import { safe } from "./lang";
 import { warn } from "./log";
-import { uploadImage, uploadVideo } from "./upload";
+import { uploadImage, uploadJson, uploadVideo } from "./upload";
 const debug = Debug("currents:artifacts");
 interface UploadArtifacts {
   videoPath: string | null;
   videoUploadUrl?: string | null;
   screenshots: ScreenshotArtifact[];
   screenshotUploadUrls: ScreenshotUploadInstruction[];
+  coverageUploadUrl?: string | null;
+  coverageFilePath?: string | null;
 }
 export async function uploadArtifacts({
   videoPath,
   videoUploadUrl,
   screenshots,
   screenshotUploadUrls,
+  coverageFilePath,
+  coverageUploadUrl,
 }: UploadArtifacts) {
   // title("blue", "Uploading  Results");
 
@@ -24,6 +28,8 @@ export async function uploadArtifacts({
     videoUploadUrl,
     screenshots,
     screenshotUploadUrls,
+    coverageFilePath,
+    coverageUploadUrl,
   });
 
   const totalUploads = (videoPath ? 1 : 0) + screenshots.length;
@@ -68,6 +74,19 @@ export async function uploadArtifacts({
         )(screenshot.path, url);
       })
     );
+  }
+  // upload coverage
+  if (coverageUploadUrl && coverageFilePath) {
+    await safe(
+      uploadJson,
+      (e) =>
+        debug(
+          "failed uploading coverage file %s. Error: %o",
+          coverageFilePath,
+          e
+        ),
+      () => debug("success uploading", coverageFilePath)
+    )(coverageFilePath, coverageUploadUrl);
   }
 }
 

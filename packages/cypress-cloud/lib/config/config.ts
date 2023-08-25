@@ -113,6 +113,7 @@ export async function getMergedConfig(params: ValidatedCurrentsParameters) {
       cypressResolvedConfig?.resolved.excludeSpecPattern.value ?? [],
     additionalIgnorePattern,
     resolved: cypressResolvedConfig,
+    experimentalCoverageRecording: params.experimentalCoverageRecording,
   };
   debug("merged config: %O", result);
   return result;

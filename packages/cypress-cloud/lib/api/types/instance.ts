@@ -50,6 +50,7 @@ export interface InstanceResult {
   screenshots: Screenshot[];
   video: boolean;
   videoUrl?: string;
+  hasCoverage?: boolean;
 }
 
 export interface AssetUploadInstruction {
@@ -106,7 +107,7 @@ export type CreateInstancesResponse = {
 
 export type UpdateInstanceResultsPayload = Pick<
   InstanceResult,
-  "stats" | "exception" | "video"
+  "stats" | "exception" | "video" | "hasCoverage"
 > & {
   tests: Array<SetResultsTestsPayload> | null;
 } & {
@@ -123,6 +124,7 @@ export type UpdateInstanceResultsMergedPayload = {
 export interface UpdateInstanceResultsResponse {
   videoUploadUrl?: string | null;
   screenshotUploadUrls: ScreenshotUploadInstruction[];
+  coverageUploadUrl?: string | null;
   cloud?: {
     shouldCancel: false | string;
   };

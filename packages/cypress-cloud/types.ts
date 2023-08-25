@@ -176,6 +176,11 @@ export type CurrentsRunParameters = StrippedCypressModuleAPIOptions & {
    * Enable debug mode for cypress-cloud, this will print out logs for troubleshooting.
    */
   cloudDebug?: DebugMode | true | string | string[];
+
+  /**
+   * Whether to record coverage results. If set, must be a boolean, defaults to false.
+   */
+  experimentalCoverageRecording?: boolean;
 };
 
 // User-facing `run` interface
