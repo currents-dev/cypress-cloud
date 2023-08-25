@@ -18,7 +18,7 @@ import { maybePrintErrors } from "./printErrors";
 const debug = Debug("currents:api");
 
 const MAX_RETRIES = 3;
-
+const TIMEOUT_MS = 30 * 1000;
 let _client: AxiosInstance | null = null;
 
 export async function getClient() {
@@ -28,6 +28,7 @@ export async function getClient() {
   const currentsConfig = await getCurrentsConfig();
   _client = axios.create({
     baseURL: getAPIBaseUrl(),
+    timeout: TIMEOUT_MS,
   });
 
   _client.interceptors.request.use((config) => {
@@ -68,6 +69,7 @@ export async function getClient() {
       ..._.pick(req, "method", "url", "headers"),
       data: Buffer.isBuffer(req.data) ? "buffer" : req.data,
     });
+
     return req;
   });
 
@@ -77,6 +79,7 @@ export async function getClient() {
     retryDelay: getDelay,
     // @ts-ignore
     onRetry,
+    shouldResetTimeout: true,
   });
   return _client;
 }
@@ -99,10 +102,11 @@ export const setCurrentsVersion = (v: string) => {
 function onRetry(
   retryCount: number,
   err: AxiosError<{ message: string; errors?: string[] }>,
-  _config: AxiosRequestConfig
+  config: AxiosRequestConfig
 ) {
   warn(
-    "Network request failed: '%s'. Next attempt is in %s (%d/%d).",
+    "Network request '%s' failed: '%s'. Next attempt is in %s (%d/%d).",
+    `${config.method} ${config.url}`,
     err.message,
     prettyMilliseconds(getDelay(retryCount)),
     retryCount,
