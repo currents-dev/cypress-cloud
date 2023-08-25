@@ -1,12 +1,20 @@
 import { AxiosError, isAxiosError } from "axios";
 
 export const isRetriableError = (err: AxiosError): boolean => {
-  if (!isAxiosError(err)) {
-    return false;
+  if (err.code === "ECONNABORTED") {
+    return true;
   }
   if (err.code === "ECONNREFUSED") {
     return true;
   }
+  if (err.code === "ETIMEDOUT") {
+    return true;
+  }
+
+  if (!isAxiosError(err)) {
+    return false;
+  }
+
   return !!(
     err?.response?.status &&
     500 <= err.response.status &&
@@ -14,7 +22,7 @@ export const isRetriableError = (err: AxiosError): boolean => {
   );
 };
 
-export const getDelay = (i: number) => [15 * 1000, 30 * 1000, 60 * 1000][i - 1];
+export const getDelay = (i: number) => [5 * 1000, 10 * 1000, 30 * 1000][i - 1];
 
 let baseURL = "https://cy.currents.dev";
 export const getAPIBaseUrl = () => baseURL ?? "https://cy.currents.dev";
