@@ -159,6 +159,20 @@ const results = await run({
 
 ## Guides
 
+### Usage with `@cypress/grep`
+
+The package is compatible with [`@cypress/grep`](https://www.npmjs.com/package/@cypress/grep). Make sure to run `require("@cypress/grep/src/plugin")(config);` before `await currents(on, config);`, for example:
+
+```js
+setupNodeEvents(on, config) {
+  require("cypress-terminal-report/src/installLogsPrinter")(on);
+  require("@cypress/grep/src/plugin")(config);
+  return currents(on, config);
+}
+```
+
+Please refer to the [issue](https://github.com/currents-dev/cypress-cloud/issues/50#issuecomment-1645095284) for details.
+
 ### Setup with existing plugins
 
 `cypress-cloud/plugin` needs access to certain environment variables that are injected into the `config` parameter of `setupNodeEvents(on, config)`.
