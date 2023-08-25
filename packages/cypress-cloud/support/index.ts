@@ -1,2 +1,3 @@
 /// <reference types="Cypress" />
-export {};
+export { };
+
