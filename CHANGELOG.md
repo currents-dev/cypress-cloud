@@ -1,5 +1,12 @@
 
 
+# [1.10.0-beta.0](https://github.com/currents-dev/cypress-cloud/compare/v1.9.3...v1.10.0-beta.0) (2023-08-25)
+
+
+### Features
+
+* [CSR-213] Support Code Coverage ([#174](https://github.com/currents-dev/cypress-cloud/issues/174)) ([b29d738](https://github.com/currents-dev/cypress-cloud/commit/b29d738f9a5d54e3214dfd05b66fc053aa3194a8))
+
 ## [1.9.3](https://github.com/currents-dev/cypress-cloud/compare/v1.9.2...v1.9.3) (2023-07-27)
 
 
