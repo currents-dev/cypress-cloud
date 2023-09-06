@@ -57,6 +57,12 @@ module.exports = defineConfig({
 });
 ```
 
+Add `cypress-cloud/support` to Cypress Support file (matching your test type - e2e or component, or both)
+
+```ts
+import `cypress-cloud/support`
+```
+
 ## Usage
 
 ```sh
