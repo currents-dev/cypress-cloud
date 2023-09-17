@@ -2,10 +2,12 @@ import Debug from "debug";
 import { ScreenshotArtifact, ScreenshotUploadInstruction } from "../types";
 import { updateInstanceStdout } from "./api";
 import { safe } from "./lang";
-import { warn } from "./log";
+import { dim } from "./log";
+import { ExecutionState } from "./state";
 import { uploadImage, uploadJson, uploadVideo } from "./upload";
 const debug = Debug("currents:artifacts");
 interface UploadArtifacts {
+  executionState: ExecutionState;
   videoPath: string | null;
   videoUploadUrl?: string | null;
   screenshots: ScreenshotArtifact[];
@@ -14,6 +16,7 @@ interface UploadArtifacts {
   coverageFilePath?: string | null;
 }
 export async function uploadArtifacts({
+  executionState,
   videoPath,
   videoUploadUrl,
   screenshots,
@@ -21,8 +24,6 @@ export async function uploadArtifacts({
   coverageFilePath,
   coverageUploadUrl,
 }: UploadArtifacts) {
-  // title("blue", "Uploading  Results");
-
   debug("uploading artifacts: %o", {
     videoPath,
     videoUploadUrl,
@@ -33,9 +34,8 @@ export async function uploadArtifacts({
   });
 
   const totalUploads =
-    (videoPath ? 1 : 0) + screenshots.length + (coverageFilePath ? 1 : 0);
+    (videoPath ? 1 : 0) + screenshots.length + (coverageUploadUrl ? 1 : 0);
   if (totalUploads === 0) {
-    // info("Nothing to upload");
     return;
   }
 
@@ -43,7 +43,12 @@ export async function uploadArtifacts({
   if (videoUploadUrl && videoPath) {
     await safe(
       uploadVideo,
-      (e) => debug("failed uploading video %s. Error: %o", videoPath, e),
+      (e) => {
+        debug("failed uploading video %s. Error: %o", videoPath, e);
+        executionState.addWarning(
+          `Failed uploading video ${videoPath}.\n${dim(e)}`
+        );
+      },
       () => debug("success uploading", videoPath)
     )(videoPath, videoUploadUrl);
   }
@@ -60,17 +65,23 @@ export async function uploadArtifacts({
             screenshot,
             screenshotUploadUrls
           );
-          warn("Cannot find upload url for screenshot: %s", screenshot.path);
+          executionState.addWarning(
+            `No upload URL for screenshot ${screenshot.path}`
+          );
           return Promise.resolve();
         }
         return safe(
           uploadImage,
-          (e) =>
+          (e) => {
             debug(
               "failed uploading screenshot %s. Error: %o",
               screenshot.path,
               e
-            ),
+            );
+            executionState.addWarning(
+              `Failed uploading screenshot ${screenshot.path}.\n${dim(e)}`
+            );
+          },
           () => debug("success uploading", screenshot.path)
         )(screenshot.path, url);
       })
@@ -80,12 +91,18 @@ export async function uploadArtifacts({
   if (coverageUploadUrl && coverageFilePath) {
     await safe(
       uploadJson,
-      (e) =>
+      (e) => {
         debug(
           "failed uploading coverage file %s. Error: %o",
           coverageFilePath,
           e
-        ),
+        );
+
+        executionState.addWarning(
+          `Failed uploading coverage file ${coverageFilePath}.\n${dim(e)}`
+        );
+      },
+
       () => debug("success uploading", coverageFilePath)
     )(coverageFilePath, coverageUploadUrl);
   }
