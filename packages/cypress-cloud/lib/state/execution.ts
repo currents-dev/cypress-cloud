@@ -26,7 +26,16 @@ type InstanceExecutionState = {
 };
 
 export class ExecutionState {
+  private warnings = new Set<string>();
   private state: Record<InstanceId, InstanceExecutionState> = {};
+
+  public getWarnings() {
+    return this.warnings;
+  }
+
+  public addWarning(warning: string) {
+    this.warnings.add(warning);
+  }
 
   public getResults(configState: ConfigState) {
     return Object.values(this.state).map((i) =>

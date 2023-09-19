@@ -10,15 +10,18 @@ import { uploadArtifacts, uploadStdoutSafe } from "../artifacts";
 import { setCancellationReason } from "../cancellation";
 import { getInitialOutput } from "../capture";
 import { isCurrents } from "../env";
+import { ConfigState, ExecutionState } from "../state";
 import { getInstanceResultPayload, getInstanceTestsPayload } from "./results";
 const debug = Debug("currents:results");
 
 export async function getReportResultsTask(
   instanceId: string,
-  results: CypressCommandLine.CypressRunResult,
+  configState: ConfigState,
+  executionState: ExecutionState,
   stdout: string,
   coverageFilePath?: string
 ) {
+  const results = executionState.getInstanceResults(configState, instanceId);
   const run = results.runs[0];
   if (!run) {
     throw new Error("No run found in Cypress results");
@@ -41,6 +44,7 @@ export async function getReportResultsTask(
 
   return Promise.all([
     uploadArtifacts({
+      executionState,
       videoUploadUrl,
       videoPath: run.video,
       screenshotUploadUrls,
