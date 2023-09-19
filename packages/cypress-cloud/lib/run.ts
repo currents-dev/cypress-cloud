@@ -19,17 +19,7 @@ import { activateDebug } from "./debug";
 import { isCurrents } from "./env";
 import { getGitInfo } from "./git";
 import { setAPIBaseUrl, setRunId } from "./httpClient";
-import {
-  bold,
-  dim,
-  divider,
-  format,
-  info,
-  spacer,
-  title,
-  warn,
-  yellow,
-} from "./log";
+import { bold, dim, divider, info, spacer, title, warn, yellow } from "./log";
 import { getPlatform } from "./platform";
 import { pubsub } from "./pubsub";
 import { summarizeTestResults, summaryTable } from "./results";
@@ -199,7 +189,7 @@ function listenToSpecEvents(
           executionState.setSpecCoverage(spec.relative, path);
         } else {
           executionState.addWarning(
-            format(`Could not process coverage file "%s"\n${dim(error)}`, path)
+            `Could not process coverage file "${path}"\n${dim(error)}`
           );
         }
       }
