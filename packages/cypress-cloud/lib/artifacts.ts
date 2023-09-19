@@ -32,7 +32,8 @@ export async function uploadArtifacts({
     coverageUploadUrl,
   });
 
-  const totalUploads = (videoPath ? 1 : 0) + screenshots.length;
+  const totalUploads =
+    (videoPath ? 1 : 0) + screenshots.length + (coverageFilePath ? 1 : 0);
   if (totalUploads === 0) {
     // info("Nothing to upload");
     return;

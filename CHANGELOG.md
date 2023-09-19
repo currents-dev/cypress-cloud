@@ -1,5 +1,19 @@
 
 
+## [1.9.5](https://github.com/currents-dev/cypress-cloud/compare/v1.9.4...v1.9.5) (2023-09-13)
+
+
+### Bug Fixes
+
+* support coverage reports ([f7ff574](https://github.com/currents-dev/cypress-cloud/commit/f7ff5745e3ba428abcf0d80718d7493effe29a49))
+
+## [1.9.4](https://github.com/currents-dev/cypress-cloud/compare/v1.10.0-beta.0...v1.9.4) (2023-09-06)
+
+
+### Bug Fixes
+
+* export support file ([adf857e](https://github.com/currents-dev/cypress-cloud/commit/adf857e46bb0e0a45b3a447d26d8eabffabcf705))
+
 # [1.10.0-beta.0](https://github.com/currents-dev/cypress-cloud/compare/v1.9.3...v1.10.0-beta.0) (2023-08-25)
 
 

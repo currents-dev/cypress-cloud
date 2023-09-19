@@ -21,7 +21,7 @@
     "cli": "npx cypress-cloud run --ci-build-id $(date \"+%s\") --parallel --record --experimental-coverage-recording"
   },
   "dependencies": {
-    "cypress-cloud": "^1.9.2",
+    "cypress-cloud": "*",
     "lodash": "^4.17.21"
   }
 }
