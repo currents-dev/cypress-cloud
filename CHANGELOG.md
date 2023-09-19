@@ -1,5 +1,12 @@
 
 
+## [1.9.6](https://github.com/currents-dev/cypress-cloud/compare/v1.9.5...v1.9.6) (2023-09-19)
+
+
+### Bug Fixes
+
+* add post-run warnings ([#180](https://github.com/currents-dev/cypress-cloud/issues/180)) [CSR-601] ([e8d9354](https://github.com/currents-dev/cypress-cloud/commit/e8d93540d1aefb1235c0d478f4b39920d3267b9e))
+
 ## [1.9.5](https://github.com/currents-dev/cypress-cloud/compare/v1.9.4...v1.9.5) (2023-09-13)
 
 
