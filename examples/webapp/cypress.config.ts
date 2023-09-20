@@ -1,5 +1,7 @@
+import grepPlugin from "@cypress/grep/src/plugin";
 import { defineConfig } from "cypress";
-import currents from "cypress-cloud/plugin";
+import { cloudPlugin } from "cypress-cloud/plugin";
+import patchCypressOn from "cypress-on-fix";
 
 module.exports = defineConfig({
   e2e: {
@@ -10,17 +12,19 @@ module.exports = defineConfig({
     videoUploadOnPasses: false,
     supportFile: "cypress/support/e2e.ts",
     specPattern: "cypress/*/**/*.spec.js",
-    setupNodeEvents(on, config) {
-      require("@cypress/grep/src/plugin")(config);
-      require("cypress-terminal-report/src/installLogsPrinter")(on);
-      return currents(on, config);
+    async setupNodeEvents(cyOn, config) {
+      const on = patchCypressOn(cyOn);
+      grepPlugin(config);
+      const result = await cloudPlugin(on, config);
+      return result;
     },
   },
 
   component: {
     specPattern: ["pages/__tests__/*.spec.tsx"],
-    setupNodeEvents(on, config) {
-      return currents(on, config);
+    async setupNodeEvents(on, config) {
+      const result = await cloudPlugin(on, config);
+      return result;
     },
     devServer: {
       framework: "next",
