@@ -291,7 +291,7 @@ export default defineConfig({
       const on = patchCypressOn(cypressOn);
       // the rest of the plugins use the patched "on" function
       const configAlt = somePlugin(on, config);
-      const result = await cloudPlugin(on, configXconfigAlt);
+      const result = await cloudPlugin(on, configAlt);
       return result;
     },
   },
