@@ -77,6 +77,7 @@ import { defineConfig } from "cypress";
 import { cloudPlugin } from "cypress-cloud/plugin";
 export default defineConfig({
   e2e: {
+    video: true; // enable video for cypress@13+
     async setupNodeEvents(on, config) {
       const result = await cloudPlugin(on, config);
       return result;
