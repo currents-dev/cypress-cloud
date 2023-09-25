@@ -3,32 +3,32 @@ description: Create a report to help us improve cypress-cloud
 labels: bug
 
 body:
-  - type: checkboxes
-    attributes:
-      label: |
-        Please confirm:
-      options:
-        - label: I have searched for [duplicate or closed issues](https://github.com/currents-dev/cypress-cloud/issues) and [discussions](https://github.com/currents-dev/cypress-cloud/discussions).
-          required: true
-        - label: I will include a minimal, self-contained set of instructions for consistently reproducing the issue.
-          required: true
-        - label: 🔥 I will attach a **full debug log**, otherwise the issue will be closed with no response.
-          required: true
-
   - type: markdown
     attributes:
       value: |
         ## Before Opening a New Issue
 
-        Thanks you for taking the time to open an issue!
+        Thank you for taking the time to open an issue!
 
         `cypress-cloud` runs on various environments with different setups and configurations, we have to ask you to provide more information about your specific setup, otherwise we won't be able to help you.
 
         Here are a few resources that can help you:
 
-        - [Documentation](https://currents.dev/readme/integration-with-cypress) and 
-        - [Troubleshooting Fuide](https://currents.dev/readme/integration-with-cypress/troubleshooting) 
-        - [Common Setup Pitfalls](https://github.com/currents-dev/cypress-cloud#setup-with-existing-plugins_
+        - [`cypress-cloud` Documentation](https://currents.dev/readme/integration-with-cypress) and 
+        - [Troubleshooting Guide](https://currents.dev/readme/integration-with-cypress/troubleshooting) 
+        - [Common Configuration Pitfalls](https://github.com/currents-dev/cypress-cloud#setup-with-existing-plugins)
+
+  - type: checkboxes
+    attributes:
+      label: |
+        Please confirm
+      options:
+        - label: I have searched for [duplicate or closed issues](https://github.com/currents-dev/cypress-cloud/issues) and [discussions](https://github.com/currents-dev/cypress-cloud/discussions).
+          required: true
+        - label: I will include a minimal, self-contained set of instructions for consistently reproducing the issue.
+          required: true
+        - label: I will attach a **full debug log**, otherwise the issue will be closed with no response.
+          required: true
 
   - type: markdown
     attributes:
