@@ -14,7 +14,7 @@ body:
 
         Here are a few resources that can help you:
 
-        - [`cypress-cloud` Documentation](https://currents.dev/readme/integration-with-cypress) and 
+        - [`cypress-cloud` Documentation](https://currents.dev/readme/integration-with-cypress) 
         - [Troubleshooting Guide](https://currents.dev/readme/integration-with-cypress/troubleshooting) 
         - [Common Configuration Pitfalls](https://github.com/currents-dev/cypress-cloud#setup-with-existing-plugins)
 
