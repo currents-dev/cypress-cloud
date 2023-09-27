@@ -115,7 +115,7 @@ export async function run(params: CurrentsRunParameters = {}) {
   info("🎥 Run URL:", bold(run.runUrl));
   cutInitialOutput();
 
-  await startWSS();
+  startWSS();
   listenToSpecEvents(
     configState,
     executionState,
