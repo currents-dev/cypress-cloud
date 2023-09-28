@@ -84,25 +84,14 @@ async function runBatch(
     totalInstances: 0,
   };
 
-  if (isCurrents()) {
-    debug("Getting batched tasks: %d", params.batchSize);
-    batch = await createBatchedInstances({
-      ...runMeta,
-      batchSize: params.batchSize,
-    });
-    debug("Got batched tasks: %o", batch);
-  } else {
-    const response = await createInstance(runMeta);
+  debug("Getting batched tasks: %d", params.batchSize);
 
-    if (response.spec !== null && response.instanceId !== null) {
-      batch.specs.push({
-        spec: response.spec,
-        instanceId: response.instanceId,
-      });
-    }
-    batch.claimedInstances = response.claimedInstances;
-    batch.totalInstances = response.totalInstances;
-  }
+  batch = await createBatchedInstances({
+    ...runMeta,
+    batchSize: params.batchSize,
+  });
+
+  debug("Got batched tasks: %o", batch);
 
   if (batch.specs.length === 0) {
     return [];
