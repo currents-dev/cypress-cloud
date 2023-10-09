@@ -1,9 +1,9 @@
 {
-  "name": "@currents/cypress-monorepo",
+  "name": "@estefafdez/cypress-monorepo",
   "version": "1.0.0",
   "description": "",
   "private": true,
-  "author": "Currents Software Inc.",
+  "author": "Estefafdez",
   "license": "GPL-3.0-or-later",
   "workspaces": [
     "e2e/*",
