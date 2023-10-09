@@ -1,4 +1,4 @@
-import { require } from "../lib/require";
+import { require } from "./require";
 import "./stdout";
 import "./ws";
 
