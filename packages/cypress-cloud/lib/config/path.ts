@@ -3,9 +3,9 @@ import _ from "lodash";
 import path from "path";
 
 export const defaultFilenames = [
-  "currents.config.js",
-  "currents.config.cjs",
-  "currents.config.mjs",
+  "estefafdez.config.js",
+  "estefafdez.config.cjs",
+  "estefafdez.config.mjs",
 ];
 export function getConfigFilePath(
   projectRoot: string | null = null,

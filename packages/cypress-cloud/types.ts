@@ -127,13 +127,13 @@ export type CurrentsRunParameters = StrippedCypressModuleAPIOptions & {
   /** The CI build ID to use for the run */
   ciBuildId?: string;
 
-  /** The batch size defines how many spec files will be served in one orchestration "batch". If not specified, will use the projectId from currents.config.js, the default value is 1 (i.e. no batching) */
+  /** The batch size defines how many spec files will be served in one orchestration "batch". If not specified, will use the projectId from estefafdez.config.js, the default value is 1 (i.e. no batching) */
   batchSize?: number;
 
   /** Whether to activate record mode and connect to cloud orchestration service */
   record?: boolean;
 
-  /** The URL of the currents server to use. If not specified, will use the one from currents.config.js */
+  /** The URL of the estefafdez server to use. If not specified, will use the one from estefafdez.config.js */
   cloudServiceUrl?: string;
   /** The environment variables to use for the run */
   env?: object;
@@ -168,7 +168,7 @@ export type CurrentsRunParameters = StrippedCypressModuleAPIOptions & {
   headed?: boolean;
 
   /**
-   * Configuration file name or absolute path. Default value is 'currents.config.js', if specified, must be a string. The file will be resolved relative to the project root, unless it's an absolute path.
+   * Configuration file name or absolute path. Default value is 'estefafdez.config.js', if specified, must be a string. The file will be resolved relative to the project root, unless it's an absolute path.
    */
   cloudConfigFile?: string;
 

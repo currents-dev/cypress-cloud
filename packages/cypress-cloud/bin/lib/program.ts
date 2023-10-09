@@ -107,7 +107,7 @@ ${getLegalNotice()}
     .addOption(
       new Option(
         "--cloud-config-file <path>",
-        "Specify the config file for cypress-cloud, defaults to 'currents.config.js' and will be searched in the project root, unless an aboslue path is provided"
+        "Specify the config file for cypress-cloud, defaults to 'estefafdez.config.js' and will be searched in the project root, unless an aboslue path is provided"
       ).default(undefined)
     )
     .addOption(
