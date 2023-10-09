@@ -92,7 +92,7 @@ module.exports = {
           name: "cypress/e2e_smoke/smoke.spec.js",
           relative: "cypress/e2e_smoke/smoke.spec.js",
           absolute:
-            "/Users/agoldis/cypress-cloud/examples/webapp/cypress/e2e_smoke/smoke.spec.js",
+            "/Users/agoldis/estefafdez-cloud/examples/webapp/cypress/e2e_smoke/smoke.spec.js",
         },
         shouldUploadVideo: false,
       },
@@ -105,18 +105,18 @@ module.exports = {
     cypressVersion: "12.6.0",
     config: {
       configFile:
-        "/Users/agoldis/cypress-cloud/examples/webapp/cypress.config.ts",
+        "/Users/agoldis/estefafdez-cloud/examples/webapp/cypress.config.ts",
       testingType: "e2e",
       projectId: "l4zuz8",
       baseUrl: "https://todomvc.com/examples/vanillajs",
       videoUploadOnPasses: false,
       supportFile:
-        "/Users/agoldis/cypress-cloud/examples/webapp/cypress/support/e2e.ts",
+        "/Users/agoldis/estefafdez-cloud/examples/webapp/cypress/support/e2e.ts",
       specPattern: "cypress/*/*.spec.js",
       setupNodeEvents: "[Function setupNodeEvents]",
-      projectRoot: "/Users/agoldis/cypress-cloud/examples/webapp",
+      projectRoot: "/Users/agoldis/estefafdez-cloud/examples/webapp",
       projectName: "webapp",
-      repoRoot: "/Users/agoldis/cypress-cloud",
+      repoRoot: "/Users/agoldis/estefafdez-cloud",
       rawJson: {
         e2e: {
           projectId: "l4zuz8",
@@ -138,9 +138,9 @@ module.exports = {
         specPattern: "cypress/*/*.spec.js",
         setupNodeEvents: "[Function setupNodeEvents]",
         envFile: {},
-        projectRoot: "/Users/agoldis/cypress-cloud/examples/webapp",
+        projectRoot: "/Users/agoldis/estefafdez-cloud/examples/webapp",
         projectName: "webapp",
-        repoRoot: "/Users/agoldis/cypress-cloud",
+        repoRoot: "/Users/agoldis/estefafdez-cloud",
       },
       morgan: false,
       isTextTerminal: true,
@@ -154,7 +154,7 @@ module.exports = {
       clientCertificates: [],
       defaultCommandTimeout: 4000,
       downloadsFolder:
-        "/Users/agoldis/cypress-cloud/examples/webapp/cypress/downloads",
+        "/Users/agoldis/estefafdez-cloud/examples/webapp/cypress/downloads",
       env: { currents_ws: true },
       execTimeout: 60000,
       experimentalFetchPolyfill: false,
@@ -168,9 +168,9 @@ module.exports = {
       experimentalSingleTabRunMode: false,
       experimentalStudio: false,
       experimentalWebKitSupport: false,
-      fileServerFolder: "/Users/agoldis/cypress-cloud/examples/webapp",
+      fileServerFolder: "/Users/agoldis/estefafdez-cloud/examples/webapp",
       fixturesFolder:
-        "/Users/agoldis/cypress-cloud/examples/webapp/cypress/fixtures",
+        "/Users/agoldis/estefafdez-cloud/examples/webapp/cypress/fixtures",
       excludeSpecPattern: "*.hot-update.js",
       includeShadowDom: false,
       keystrokeDelay: 0,
@@ -189,18 +189,18 @@ module.exports = {
       retries: { runMode: 0, openMode: 0 },
       screenshotOnRunFailure: true,
       screenshotsFolder:
-        "/Users/agoldis/cypress-cloud/examples/webapp/cypress/screenshots",
+        "/Users/agoldis/estefafdez-cloud/examples/webapp/cypress/screenshots",
       slowTestThreshold: 10000,
       scrollBehavior: "top",
       supportFolder:
-        "/Users/agoldis/cypress-cloud/examples/webapp/cypress/support",
+        "/Users/agoldis/estefafdez-cloud/examples/webapp/cypress/support",
       taskTimeout: 60000,
       testIsolation: true,
       userAgent: null,
       video: true,
       videoCompression: 32,
       videosFolder:
-        "/Users/agoldis/cypress-cloud/examples/webapp/cypress/videos",
+        "/Users/agoldis/estefafdez-cloud/examples/webapp/cypress/videos",
       viewportHeight: 660,
       viewportWidth: 1000,
       waitForAnimations: true,
@@ -357,7 +357,7 @@ module.exports = {
         isInteractive: { value: true, from: "default" },
         configFile: {
           value:
-            "/Users/agoldis/cypress-cloud/examples/webapp/cypress.config.ts",
+            "/Users/agoldis/estefafdez-cloud/examples/webapp/cypress.config.ts",
           from: "plugin",
         },
         testingType: { value: "e2e", from: "plugin" },

@@ -1,7 +1,7 @@
 import {
   CurrentsRunParameters,
   ValidatedCurrentsParameters,
-} from "cypress-cloud/types";
+} from "estefafdez-cloud/types";
 import { MergedConfig } from "../config/config";
 import { warn } from "../log";
 import { findSpecs } from "./specMatcher";

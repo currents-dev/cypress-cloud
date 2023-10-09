@@ -1,6 +1,6 @@
 import { getBinPath } from "cy2";
-import { ValidatedCurrentsParameters } from "cypress-cloud/types";
 import Debug from "debug";
+import { ValidatedCurrentsParameters } from "estefafdez-cloud/types";
 import execa, { ExecaError } from "execa";
 import fs from "fs";
 import { ValidationError } from "../errors";
@@ -31,7 +31,7 @@ export const bootCypress = async (params: ValidatedCurrentsParameters) => {
   try {
     const f = fs.readFileSync(tempFilePath, "utf-8");
     if (!f) {
-      throw new Error("Is cypress-cloud/plugin installed?");
+      throw new Error("Is estefafdez-cloud/plugin installed?");
     }
     debug("cypress config '%s': '%s'", tempFilePath, f);
     return JSON.parse(f);
@@ -41,7 +41,7 @@ export const bootCypress = async (params: ValidatedCurrentsParameters) => {
     info(bold("Cypress stderr:\n"), stderr);
 
     throw new ValidationError(`Unable to resolve cypress configuration
-- make sure that 'cypress-cloud/plugin' is installed
+- make sure that 'estefafdez-cloud/plugin' is installed
 - report the issue together with cypress stdout and stderr
 `);
   }

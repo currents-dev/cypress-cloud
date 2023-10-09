@@ -3,7 +3,7 @@ import {
   CypressScreenshot,
   CypressTest,
   CypressTestAttempt,
-} from "cypress-cloud/types";
+} from "estefafdez-cloud/types";
 
 import * as SpecAfter from "../runner/spec.type";
 import { ConfigState } from "../state";

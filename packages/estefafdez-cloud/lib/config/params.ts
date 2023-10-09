@@ -1,9 +1,9 @@
+import Debug from "debug";
 import {
   CurrentsRunParameters,
   CypressRunParameters,
   ValidatedCurrentsParameters,
-} from "cypress-cloud/types";
-import Debug from "debug";
+} from "estefafdez-cloud/types";
 import _ from "lodash";
 import { ValidationError } from "../errors";
 import { error } from "../log";

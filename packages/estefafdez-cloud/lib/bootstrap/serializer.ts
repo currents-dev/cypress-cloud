@@ -1,8 +1,8 @@
+import Debug from "debug";
 import {
   CurrentsRunParameters,
   CypressRunParameters,
-} from "cypress-cloud/types";
-import Debug from "debug";
+} from "estefafdez-cloud/types";
 import _ from "lodash";
 import { customAlphabet } from "nanoid";
 import { getCypressRunAPIParams } from "../config";

@@ -1,4 +1,3 @@
-// https://github.com/currents-dev/cypress-cloud/issues/71
 // keep the local copy to prevent from importing
 // commander.js from the global node_modules
 import { getLegalNotice } from "../../legal";
@@ -7,10 +6,10 @@ import { Command, Option } from "./@commander-js/extra-typings";
 
 export const createProgram = (command: Command = new Command()) =>
   command
-    .name("cypress-cloud")
+    .name("estefafdez-cloud")
     .description(
       `
-Run Cypress tests on CI using https://currents.dev or https://sorry-cypress.dev as an orchestration and reporting service
+Run Cypress tests on CI using
 
 ${getLegalNotice()}
       `
@@ -107,13 +106,13 @@ ${getLegalNotice()}
     .addOption(
       new Option(
         "--cloud-config-file <path>",
-        "Specify the config file for cypress-cloud, defaults to 'estefafdez.config.js' and will be searched in the project root, unless an aboslue path is provided"
+        "Specify the config file for estefafdez-cloud, defaults to 'estefafdez.config.js' and will be searched in the project root, unless an aboslue path is provided"
       ).default(undefined)
     )
     .addOption(
       new Option(
         `--cloud-debug [true | string]`,
-        `Enable debug mode for cypress-cloud, this will print out logs for troubleshooting. Values: [true | ${Object.values(
+        `Enable debug mode for estefafdez-cloud, this will print out logs for troubleshooting. Values: [true | ${Object.values(
           DebugMode
         ).join(
           " | "

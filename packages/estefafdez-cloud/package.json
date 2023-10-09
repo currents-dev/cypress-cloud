@@ -1,12 +1,12 @@
 {
-  "name": "cypress-cloud",
+  "name": "cypress-estefafdez",
   "version": "1.9.6",
   "main": "./dist/index.js",
-  "author": "Currents Software Inc",
-  "homepage": "https://github.com/currents-dev/cypress-cloud",
+  "author": "E",
+  "homepage": "E",
   "bugs": {
-    "url": "https://github.com/currents-dev/cypress-cloud/issues",
-    "email": "support@currents.dev"
+    "url": "E",
+    "email": "e@gmail.com"
   },
   "license": "GPL-3.0-or-later",
   "engines": {
@@ -17,7 +17,7 @@
     "sorry-cypress",
     "ci",
     "e2e",
-    "cypress-cloud"
+    "estefafdez-cloud"
   ],
   "scripts": {
     "rm": "rimraf out",
@@ -81,7 +81,7 @@
     "cypress": ">=10.0.0"
   },
   "bin": {
-    "cypress-cloud": "./dist/bin/cli.js"
+    "estefafdez-cloud": "./dist/bin/cli.js"
   },
   "files": [
     "dist"

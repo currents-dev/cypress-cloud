@@ -1,5 +1,5 @@
-import { CypressResult, ScreenshotArtifact } from "cypress-cloud/types";
 import Debug from "debug";
+import { CypressResult, ScreenshotArtifact } from "estefafdez-cloud/types";
 import _ from "lodash";
 import { nanoid } from "nanoid";
 import {

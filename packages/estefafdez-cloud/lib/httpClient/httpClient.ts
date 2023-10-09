@@ -39,7 +39,7 @@ export async function getClient() {
       "x-cypress-request-attempt": config["axios-retry"]?.retryCount ?? 0,
       "x-cypress-version": _cypressVersion ?? "0.0.0",
       "x-ccy-version": ccyVerson,
-      "User-Agent": `cypress-cloud/${ccyVerson}`,
+      "User-Agent": `estefafdez-cloud/${ccyVerson}`,
     };
     if (_runId) {
       headers["x-cypress-run-id"] = _runId;

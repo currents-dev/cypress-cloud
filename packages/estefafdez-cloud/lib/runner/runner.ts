@@ -1,7 +1,7 @@
 import {
   SpecWithRelativeRoot,
   ValidatedCurrentsParameters,
-} from "cypress-cloud/types";
+} from "estefafdez-cloud/types";
 import { getCapturedOutput, resetCapture } from "../capture";
 
 import { getCypressRunResultForSpec } from "../results";

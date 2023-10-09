@@ -1,10 +1,10 @@
 import cypress from "cypress";
+import Debug from "debug";
 import {
   CurrentsRunParameters,
   CypressResult,
   ValidatedCurrentsParameters,
-} from "cypress-cloud/types";
-import Debug from "debug";
+} from "estefafdez-cloud/types";
 import _ from "lodash";
 import { getCypressRunAPIParams } from "../config";
 import { safe } from "../lang";

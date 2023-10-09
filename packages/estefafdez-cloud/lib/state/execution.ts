@@ -1,4 +1,4 @@
-import { InstanceId } from "cypress-cloud/types";
+import { InstanceId } from "estefafdez-cloud/types";
 import { error, warn } from "../log";
 import { getFailedDummyResult } from "../results";
 import {

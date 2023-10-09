@@ -4,7 +4,7 @@ import { activateDebug } from "../../lib/debug";
 import { sanitizeAndConvertNestedArgs } from "./parser";
 import { program } from "./program";
 
-const debug = Debug("currents:cli");
+const debug = Debug("estefafdez:cli");
 
 export function parseCLIOptions(
   _program: typeof program = program,

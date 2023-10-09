@@ -1,4 +1,4 @@
-import { CreateRunPayload, CreateRunResponse } from "cypress-cloud/lib/api/";
+import { CreateRunPayload, CreateRunResponse } from "estefafdez-cloud/lib/api/";
 
 export const createRunPayload: CreateRunPayload = {
   ci: {

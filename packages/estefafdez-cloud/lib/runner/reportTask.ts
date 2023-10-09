@@ -1,5 +1,5 @@
-import { InstanceId } from "cypress-cloud/types";
 import Debug from "debug";
+import { InstanceId } from "estefafdez-cloud/types";
 import { error } from "../log";
 import { getReportResultsTask } from "../results";
 import { ConfigState, ExecutionState } from "../state";

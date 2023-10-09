@@ -1,5 +1,5 @@
-import { CiParams, CiProvider } from "cypress-cloud/lib/ciProvider";
-import { Platform, ValidatedCurrentsParameters } from "cypress-cloud/types";
+import { CiParams, CiProvider } from "estefafdez-cloud/lib/ciProvider";
+import { Platform, ValidatedCurrentsParameters } from "estefafdez-cloud/types";
 
 export type CreateRunPayload = {
   ci: {

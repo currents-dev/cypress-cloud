@@ -12,12 +12,12 @@ import {
   UpdateInstanceResultsPayload,
   UpdateInstanceResultsResponse,
   updateInstanceStdout,
-} from "cypress-cloud/lib/api";
-import { getAPIBaseUrl } from "cypress-cloud/lib/httpClient/config";
+} from "estefafdez-cloud/lib/api";
+import { getAPIBaseUrl } from "estefafdez-cloud/lib/httpClient/config";
 import _ from "lodash";
 import nock from "nock";
 
-jest.mock("cypress-cloud/lib/httpClient/config", () => ({
+jest.mock("estefafdez-cloud/lib/httpClient/config", () => ({
   getAPIBaseUrl: jest.fn().mockReturnValue("http://localhost:1234"),
 }));
 
