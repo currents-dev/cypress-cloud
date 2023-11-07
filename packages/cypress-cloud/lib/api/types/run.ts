@@ -1,5 +1,9 @@
 import { CiParams, CiProvider } from "cypress-cloud/lib/ciProvider";
-import { Platform, ValidatedCurrentsParameters } from "cypress-cloud/types";
+import {
+  Platform,
+  TimeoutMode,
+  ValidatedCurrentsParameters,
+} from "cypress-cloud/types";
 
 export type CreateRunPayload = {
   ci: {
@@ -23,6 +27,7 @@ export type CreateRunPayload = {
   batchSize?: number;
   autoCancelAfterFailures: ValidatedCurrentsParameters["autoCancelAfterFailures"];
   coverageEnabled?: boolean;
+  timeoutMode?: TimeoutMode;
 };
 
 export type CloudWarning = {

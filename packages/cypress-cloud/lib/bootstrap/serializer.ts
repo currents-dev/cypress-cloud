@@ -67,7 +67,7 @@ function getCypressCLIParams(
         }
       : {};
   return {
-    ..._.omit(result, "testingType"),
+    ..._.omit(result, "testingType", "cloudTimeoutMode"),
     ...testingType,
   };
 }

@@ -2,6 +2,7 @@
 // keep the local copy to prevent from importing
 // commander.js from the global node_modules
 import { getLegalNotice } from "../../legal";
+import { ValidationError } from "../../lib/errors";
 import { DebugMode } from "../../types";
 import { Command, Option } from "./@commander-js/extra-typings";
 
@@ -124,14 +125,32 @@ ${getLegalNotice()}
     )
     .addOption(
       new Option(
-        `--experimental-coverage-recording [bool]`,
+        `--experimental-coverage-recording`,
         `Enable recording coverage results, specify the "coverageFile" Cypress environment variable for a custom coverage file, default is "./.nyc_output/out.json"`
+      ).default(false)
+    )
+    .addOption(
+      new Option(
+        `--cloud-timeout-mode <soft | hard>`,
+        `Enable ci runner to pass/fail but no error even if the run timed out`
       )
-        .default(undefined)
-        .argParser((i) => (i === "false" ? false : true))
+        .default("hard")
+        .argParser(parseTimeoutMode)
     );
 
 export const program = createProgram();
+
+function parseTimeoutMode(value: string) {
+  const validValues = ["soft", "hard"];
+  if (validValues.includes(value)) {
+    return value;
+  }
+  throw new ValidationError(
+    `Invalid argument --cloud-timeout-mode provided. Must be one of ${validValues.join(
+      ", "
+    )}`
+  );
+}
 
 function parseCommaSeparatedList(value: string, previous: string[] = []) {
   if (value) {
@@ -148,7 +167,7 @@ function parseAutoCancelFailures(value: string): number | false {
   const parsedValue = parseInt(value, 10);
 
   if (isNaN(parsedValue) || parsedValue < 1) {
-    throw new Error(
+    throw new ValidationError(
       "Invalid argument provided. Must be a positive integer or 'false'."
     );
   }

@@ -99,6 +99,8 @@ export enum DebugMode {
   CommitInfo = "commit-info",
 }
 
+export type TimeoutMode = "hard" | "soft";
+
 // Explicitly filter cypress record-related flags - prevent triggering recording mode to avoid confusion
 export type StrippedCypressModuleAPIOptions = Omit<
   Partial<CypressCommandLine.CypressRunOptions>,
@@ -181,6 +183,13 @@ export type CurrentsRunParameters = StrippedCypressModuleAPIOptions & {
    * Whether to record coverage results. If set, must be a boolean, defaults to false.
    */
   experimentalCoverageRecording?: boolean;
+
+  /**
+   * Set the timeout mode for the cloud orchestration service. If set, must be either "hard" or "soft", defaults to "hard".
+   * Hard mode - a timed out run will be marked as "failed" regardless of the test results.
+   * Soft mode - a timed out run will be marked as failed only if there are failed tests.
+   */
+  cloudTimeoutMode?: TimeoutMode;
 };
 
 // User-facing `run` interface
