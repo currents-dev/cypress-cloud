@@ -2,6 +2,18 @@
 import { commitInfo } from "@currents/commit-info";
 import { getCommitDefaults } from "./ciProvider";
 
+export type GhaEventData = {
+  headRef: string;
+  headSha: string;
+  baseRef: string;
+  baseSha: string;
+  issueUrl: string;
+  htmlUrl: string;
+  prTitle: string;
+  senderAvatarUrl: string;
+  senderHtmlUrl: string;
+};
+
 export const getGitInfo = async (projectRoot: string) => {
   const commit = await commitInfo();
   return getCommitDefaults({
@@ -11,5 +23,6 @@ export const getGitInfo = async (projectRoot: string) => {
     authorName: commit.author,
     message: commit.message,
     sha: commit.sha,
+    ghaEventData: commit.ghaEventData,
   });
 };
