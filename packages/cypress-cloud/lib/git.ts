@@ -14,7 +14,7 @@ export type GhaEventData = {
   senderHtmlUrl: string;
 };
 
-export const getGitInfo = async (projectRoot: string) => {
+export const getGitInfo = async () => {
   const commit = await commitInfo();
   return getCommitDefaults({
     branch: commit.branch,
