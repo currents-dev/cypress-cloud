@@ -27,6 +27,9 @@ jobs:
           node-version: "16"
           cache: "npm"
 
+      - name: Install alternative cypress binaries
+        run: CYPRESS_DOWNLOAD_MIRROR=https://cy-cdn.currents.dev npx cypress install --force
+
       - name: Install dependencies
         run: npm install
 

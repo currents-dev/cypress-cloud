@@ -20,6 +20,9 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
+      - name: Install alternative cypress binaries
+        run: CYPRESS_DOWNLOAD_MIRROR=https://cy-cdn.currents.dev npx cypress install --force
+
       - name: Install npm
         run: npm install -g npm@latest
 
