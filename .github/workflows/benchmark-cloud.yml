@@ -1,4 +1,4 @@
-name: Test Benchmark - @currents/cli
+name: Test Benchmark - cypress-cloud
 
 on:
   push:
@@ -28,7 +28,7 @@ jobs:
           cache: "npm"
 
       - name: Install alternative cypress binaries
-        run: CYPRESS_DOWNLOAD_MIRROR=https://cy-cdn.currents.dev npx cypress install --force
+        run: CYPRESS_DOWNLOAD_MIRROR=https://cy-cdn.currents.dev npx cypress install@12.17.4 --force
 
       - name: Install dependencies
         run: npm install
@@ -36,13 +36,18 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Run Cypress with @currents/cli
+      - name: Link
+        working-directory: ./packages/cypress-cloud
+        run: npm link
+
+      - name: Run Cypress with cypress-cloud
         working-directory: ./examples/webapp
         env:
+          DEBUG: "currents:*"
           FORCE_COLOR: 2 # for chalk tests
-          COMMIT_INFO_MESSAGE: "[@currents/cli] ${{ github.event.head_commit.message }}"
+          COMMIT_INFO_MESSAGE: "[cypress-cloud] ${{ github.event.head_commit.message }}"
         run: |
-          npm install @currents/cli
-          npx currents run --record --parallel \
+          npm link cypress-cloud
+          npx cypress-cloud run --record --parallel \
           --spec "./cypress/e2e*/*.spec.js" \
-          --browser chrome --key ${{ secrets.CURRENTS_RECORD_KEY }} \ --ci-build-id "cy-${{ github.repository }}-${{ github.run_id }}-${{ github.run_attempt}}" --tag currents-cli,gha
+          --browser chrome --key ${{ secrets.CURRENTS_RECORD_KEY }} \ --ci-build-id "cloud-${{ github.repository }}-${{ github.run_id }}-${{ github.run_attempt}}" --tag cypress-cloud,gha

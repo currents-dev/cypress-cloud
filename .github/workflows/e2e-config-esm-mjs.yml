@@ -1,10 +1,10 @@
-name: e2e-smoke-linux
+name: e2e-config-esm-mjs
 
 on:
   push:
 
 jobs:
-  e2e-smoke:
+  e2e-config-esm-mjs:
     if: "!contains(toJSON(github.event.commits.*.message), '[skip ci]')"
     runs-on: ubuntu-latest
     env:
@@ -16,14 +16,18 @@ jobs:
         ports:
           - 1234:1234
 
+    strategy:
+      matrix:
+        node-version: ["18"]
+
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: "16"
+          node-version: ${{ matrix.node-version }}
 
       - name: Install alternative cypress binaries
-        run: CYPRESS_DOWNLOAD_MIRROR=https://cy-cdn.currents.dev npx cypress install --force
+        run: CYPRESS_DOWNLOAD_MIRROR=https://cy-cdn.currents.dev npx cypress install@12.17.4 --force
 
       - name: Install dependencies
         run: npm ci
@@ -34,8 +38,8 @@ jobs:
       - name: Link monorepo packages
         run: npm install
 
-      - name: Run Cypress with cypress-cloud
-        working-directory: ./examples/webapp
+      - name: config-esm-mjs
+        working-directory: ./e2e/config-esm-mjs
         env:
           CURRENTS_API_URL: http://localhost:1234
         run: >
@@ -45,14 +49,5 @@ jobs:
           --key some-key
           --browser chrome
           --tag smoke,linux
-          --spec "./cypress/e2e_smoke/*.spec.js"
-          --ci-build-id "smoke-linux-${{ github.repository }}-${{ github.run_id }}-${{ github.run_attempt}}"
-
-      - name: Run in Offline mode
-        working-directory: ./examples/webapp
-        run: >
-          npx cypress-cloud run
-          --record false
-          --browser chrome
-          --tag smoke,linux
-          --spec "./cypress/e2e_smoke/*.spec.js"
+          --spec "./cypress/e2e/*.spec.js"
+          --ci-build-id "${{ github.repository }}-${{ github.run_id }}-${{ github.run_attempt}}"

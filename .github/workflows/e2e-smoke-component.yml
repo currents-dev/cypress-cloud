@@ -1,10 +1,10 @@
-name: e2e-config-esm-mjs
+name: e2e-smoke-component
 
 on:
   push:
 
 jobs:
-  e2e-config-esm-mjs:
+  e2e-smoke-component:
     if: "!contains(toJSON(github.event.commits.*.message), '[skip ci]')"
     runs-on: ubuntu-latest
     env:
@@ -16,18 +16,14 @@ jobs:
         ports:
           - 1234:1234
 
-    strategy:
-      matrix:
-        node-version: ["18"]
-
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: "16"
 
       - name: Install alternative cypress binaries
-        run: CYPRESS_DOWNLOAD_MIRROR=https://cy-cdn.currents.dev npx cypress install --force
+        run: CYPRESS_DOWNLOAD_MIRROR=https://cy-cdn.currents.dev npx cypress install@12.17.4 --force
 
       - name: Install dependencies
         run: npm ci
@@ -38,16 +34,20 @@ jobs:
       - name: Link monorepo packages
         run: npm install
 
-      - name: config-esm-mjs
-        working-directory: ./e2e/config-esm-mjs
+      - name: Run server for components tests
+        run: npm run start &
+
+      - name: Run Cypress with cypress-cloud
+        working-directory: ./examples/webapp
         env:
           CURRENTS_API_URL: http://localhost:1234
         run: >
-          npx cypress-cloud run
+          npx cypress-cloud run 
           --record
           --parallel
+          --component
           --key some-key
           --browser chrome
-          --tag smoke,linux
-          --spec "./cypress/e2e/*.spec.js"
-          --ci-build-id "${{ github.repository }}-${{ github.run_id }}-${{ github.run_attempt}}"
+          --tag smoke,component
+          --spec "pages/__tests__/smoke**"
+          --ci-build-id "smoke-component-${{ github.repository }}-${{ github.run_id }}-${{ github.run_attempt}}"
