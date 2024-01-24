@@ -1,0 +1,58 @@
+name: e2e-smoke-linux
+
+on:
+  push:
+
+jobs:
+  e2e-smoke:
+    if: "!contains(toJSON(github.event.commits.*.message), '[skip ci]')"
+    runs-on: ubuntu-latest
+    env:
+      DEBUG: currents:*
+
+    services:
+      director:
+        image: agoldis/sorry-cypress-director
+        ports:
+          - 1234:1234
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+
+      - name: Install alternative cypress binaries
+        run: CYPRESS_DOWNLOAD_MIRROR=https://cy-cdn.currents.dev npx cypress install --force
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Link monorepo packages
+        run: npm install
+
+      - name: Run Cypress with cypress-cloud
+        working-directory: ./examples/webapp
+        env:
+          CURRENTS_API_URL: http://localhost:1234
+        run: >
+          npx cypress-cloud run
+          --record
+          --parallel
+          --key some-key
+          --browser chrome
+          --tag smoke,linux
+          --spec "./cypress/e2e_smoke/*.spec.js"
+          --ci-build-id "smoke-linux-${{ github.repository }}-${{ github.run_id }}-${{ github.run_attempt}}"
+
+      - name: Run in Offline mode
+        working-directory: ./examples/webapp
+        run: >
+          npx cypress-cloud run
+          --record false
+          --browser chrome
+          --tag smoke,linux
+          --spec "./cypress/e2e_smoke/*.spec.js"
