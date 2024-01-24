@@ -41,7 +41,7 @@ jobs:
           key: v5-deps-{{ checksum "package-lock.json" }}
 
       - name: Install alternative cypress binaries
-        run: CYPRESS_DOWNLOAD_MIRROR=https://cy-cdn.currents.dev npx cypress install@12.17.4 --force
+        run: CYPRESS_DOWNLOAD_MIRROR=https://cy-cdn.currents.dev npx cypress@12.17.4 install --force
 
       - run: npm install
       - save_cache:
