@@ -28,6 +28,7 @@
     "node": ">=14.0.0"
   },
   "resolutions": {
-    "debug": "^4.3.4"
+    "debug": "^4.3.4",
+    "cypress": "12.17.4"
   }
 }
