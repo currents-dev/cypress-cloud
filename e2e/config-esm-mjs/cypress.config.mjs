@@ -5,7 +5,7 @@ import terminalPlugin from "cypress-terminal-report/src/installLogsPrinter";
 
 export default defineConfig({
   e2e: {
-    baseUrl: "https://todomvc.com/examples/vanillajs",
+    baseUrl: "https://todomvc.com/examples/backbone/dist",
     videoUploadOnPasses: false,
 
     supportFile: "cypress/support/e2e.mjs",
