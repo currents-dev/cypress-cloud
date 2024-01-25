@@ -1,60 +1,60 @@
-
-
-## [1.9.6](https://github.com/currents-dev/cypress-cloud/compare/v1.9.5...v1.9.6) (2023-09-19)
-
-
-### Bug Fixes
-
-* add post-run warnings ([#180](https://github.com/currents-dev/cypress-cloud/issues/180)) [CSR-601] ([e8d9354](https://github.com/currents-dev/cypress-cloud/commit/e8d93540d1aefb1235c0d478f4b39920d3267b9e))
-
-## [1.9.5](https://github.com/currents-dev/cypress-cloud/compare/v1.9.4...v1.9.5) (2023-09-13)
-
-
-### Bug Fixes
-
-* support coverage reports ([f7ff574](https://github.com/currents-dev/cypress-cloud/commit/f7ff5745e3ba428abcf0d80718d7493effe29a49))
-
-## [1.9.4](https://github.com/currents-dev/cypress-cloud/compare/v1.10.0-beta.0...v1.9.4) (2023-09-06)
-
-
-### Bug Fixes
-
-* export support file ([adf857e](https://github.com/currents-dev/cypress-cloud/commit/adf857e46bb0e0a45b3a447d26d8eabffabcf705))
-
-# [1.10.0-beta.0](https://github.com/currents-dev/cypress-cloud/compare/v1.9.3...v1.10.0-beta.0) (2023-08-25)
-
+# [1.10.0-alpha.0](https://github.com/currents-dev/cypress-cloud/compare/v1.9.6...v1.10.0-alpha.0) (2024-01-25)
 
 ### Features
 
-* [CSR-213] Support Code Coverage ([#174](https://github.com/currents-dev/cypress-cloud/issues/174)) ([b29d738](https://github.com/currents-dev/cypress-cloud/commit/b29d738f9a5d54e3214dfd05b66fc053aa3194a8))
+- better commit info detection for GitHub Actions ([84508203](https://github.com/currents-dev/cypress-cloud/commit/8450820366aa07d07cdc4ea1fff6bdbba3ca5837))
+
+### Bug Fixes
+
+- use block-free binary for ci tests ([6fb350f](https://github.com/currents-dev/cypress-cloud/commit/6fb350f959af6b9d6d21a842c3cefd2c327e8c1a))
+
+## [1.9.6](https://github.com/currents-dev/cypress-cloud/compare/v1.9.5...v1.9.6) (2023-09-19)
+
+### Bug Fixes
+
+- add post-run warnings ([#180](https://github.com/currents-dev/cypress-cloud/issues/180)) [CSR-601] ([e8d9354](https://github.com/currents-dev/cypress-cloud/commit/e8d93540d1aefb1235c0d478f4b39920d3267b9e))
+
+## [1.9.5](https://github.com/currents-dev/cypress-cloud/compare/v1.9.4...v1.9.5) (2023-09-13)
+
+### Bug Fixes
+
+- support coverage reports ([f7ff574](https://github.com/currents-dev/cypress-cloud/commit/f7ff5745e3ba428abcf0d80718d7493effe29a49))
+
+## [1.9.4](https://github.com/currents-dev/cypress-cloud/compare/v1.10.0-beta.0...v1.9.4) (2023-09-06)
+
+### Bug Fixes
+
+- export support file ([adf857e](https://github.com/currents-dev/cypress-cloud/commit/adf857e46bb0e0a45b3a447d26d8eabffabcf705))
+
+# [1.10.0-beta.0](https://github.com/currents-dev/cypress-cloud/compare/v1.9.3...v1.10.0-beta.0) (2023-08-25)
+
+### Features
+
+- [CSR-213] Support Code Coverage ([#174](https://github.com/currents-dev/cypress-cloud/issues/174)) ([b29d738](https://github.com/currents-dev/cypress-cloud/commit/b29d738f9a5d54e3214dfd05b66fc053aa3194a8))
 
 ## [1.9.3](https://github.com/currents-dev/cypress-cloud/compare/v1.9.2...v1.9.3) (2023-07-27)
 
-
 ### Bug Fixes
 
-* retry on ETIMEDOUT, add network req timeout ([#172](https://github.com/currents-dev/cypress-cloud/issues/172)) ([030ae70](https://github.com/currents-dev/cypress-cloud/commit/030ae7086eeb75397c729a79c8eefb9aa2e61d7a))
+- retry on ETIMEDOUT, add network req timeout ([#172](https://github.com/currents-dev/cypress-cloud/issues/172)) ([030ae70](https://github.com/currents-dev/cypress-cloud/commit/030ae7086eeb75397c729a79c8eefb9aa2e61d7a))
 
 ## [1.9.2](https://github.com/currents-dev/cypress-cloud/compare/v1.9.1...v1.9.2) (2023-07-21)
 
-
 ### Bug Fixes
 
-* exit with status 1 when no spec files found ([#169](https://github.com/currents-dev/cypress-cloud/issues/169)) ([9c7bfd2](https://github.com/currents-dev/cypress-cloud/commit/9c7bfd2a9bc7201af5ee9178c5b7c92cf224955e)), closes [#165](https://github.com/currents-dev/cypress-cloud/issues/165)
+- exit with status 1 when no spec files found ([#169](https://github.com/currents-dev/cypress-cloud/issues/169)) ([9c7bfd2](https://github.com/currents-dev/cypress-cloud/commit/9c7bfd2a9bc7201af5ee9178c5b7c92cf224955e)), closes [#165](https://github.com/currents-dev/cypress-cloud/issues/165)
 
 ## [1.9.1](https://github.com/currents-dev/cypress-cloud/compare/v1.9.0...v1.9.1) (2023-07-06)
 
-
 ### Bug Fixes
 
-* prevent shared execution state ([#157](https://github.com/currents-dev/cypress-cloud/issues/157)) ([48cf247](https://github.com/currents-dev/cypress-cloud/commit/48cf24712a5362f5557d3a689e891d25e1491638))
+- prevent shared execution state ([#157](https://github.com/currents-dev/cypress-cloud/issues/157)) ([48cf247](https://github.com/currents-dev/cypress-cloud/commit/48cf24712a5362f5557d3a689e891d25e1491638))
 
 ## [1.9.1-beta.0](https://github.com/currents-dev/cypress-cloud/compare/v1.9.0...v1.9.1-beta.0) (2023-07-06)
 
-
 ### Bug Fixes
 
-* prevent shared execution state ([f71ad89](https://github.com/currents-dev/cypress-cloud/commit/f71ad89b02df80d9bf5e9c0da7e4a2c0ad8212dc))
+- prevent shared execution state ([f71ad89](https://github.com/currents-dev/cypress-cloud/commit/f71ad89b02df80d9bf5e9c0da7e4a2c0ad8212dc))
 
 # [1.9.0](https://github.com/currents-dev/cypress-cloud/compare/v1.9.0-beta.0...v1.9.0) (2023-07-04)
 
