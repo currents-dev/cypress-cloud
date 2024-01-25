@@ -96,7 +96,7 @@ export async function run(params: CurrentsRunParameters = {}) {
   const run = await createRun({
     ci: getCI(ciBuildId),
     specs: specs.map((spec) => spec.relative),
-    commit: await getGitInfo(),
+    commit: await getGitInfo(config.projectRoot),
     group,
     platform,
     parallel: parallel ?? false,
