@@ -1,6 +1,6 @@
 {
   "name": "cypress-cloud",
-  "version": "1.9.5",
+  "version": "1.9.6",
   "main": "./dist/index.js",
   "author": "Currents Software Inc",
   "homepage": "https://github.com/currents-dev/cypress-cloud",
@@ -69,6 +69,7 @@
     "lil-http-terminator": "^1.2.3",
     "lodash": "^4.17.21",
     "nanoid": "^3.3.4",
+    "plur": "^4.0.0",
     "pretty-ms": "^7.0.1",
     "source-map-support": "^0.5.21",
     "table": "^6.8.1",

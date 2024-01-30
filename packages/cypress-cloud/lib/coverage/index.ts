@@ -1,6 +1,5 @@
-import { join } from "path";
 import fs from "fs/promises";
-import { warn } from "../log";
+import { join } from "path";
 
 export const getCoverageFilePath = async (
   coverageFile = "./.nyc_output/out.json"
@@ -9,12 +8,14 @@ export const getCoverageFilePath = async (
 
   try {
     await fs.access(path);
-    return path;
+    return {
+      path,
+      error: false,
+    };
   } catch (error) {
-    warn(
-      'Coverage file was not found at "%s". Coverage recording will be skipped.',
-      path
-    );
-    return null;
+    return {
+      path,
+      error,
+    };
   }
 };

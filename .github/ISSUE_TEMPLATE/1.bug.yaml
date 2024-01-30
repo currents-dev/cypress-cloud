@@ -3,16 +3,31 @@ description: Create a report to help us improve cypress-cloud
 labels: bug
 
 body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Before Opening a New Issue
+
+        Thank you for taking the time to open an issue!
+
+        `cypress-cloud` runs on various environments with different setups and configurations, we have to ask you to provide more information about your specific setup, otherwise we won't be able to help you.
+
+        Here are a few resources that can help you:
+
+        - [`cypress-cloud` Documentation](https://currents.dev/readme/integration-with-cypress) 
+        - [Troubleshooting Guide](https://currents.dev/readme/integration-with-cypress/troubleshooting) 
+        - [Common Configuration Pitfalls](https://github.com/currents-dev/cypress-cloud#setup-with-existing-plugins)
+
   - type: checkboxes
     attributes:
       label: |
-        Before opening, please confirm:
+        Please confirm
       options:
         - label: I have searched for [duplicate or closed issues](https://github.com/currents-dev/cypress-cloud/issues) and [discussions](https://github.com/currents-dev/cypress-cloud/discussions).
           required: true
-        - label: I have done my best to include a minimal, self-contained set of instructions for consistently reproducing the issue.
+        - label: I will include a minimal, self-contained set of instructions for consistently reproducing the issue.
           required: true
-        - label: I acknowledge that I will attach a **full debug log**, otherwise the issue will be closed with no response.
+        - label: I will attach a **full debug log**, otherwise the issue will be closed with no response.
           required: true
 
   - type: markdown
@@ -23,9 +38,9 @@ body:
     attributes:
       label: Environment information
       description: |
-        Please run the following command inside your project and copy/paste the output below.
+        We need to know what package versions you're using. Please run the following command inside your project and copy/paste the output below.
 
-         **👉🏻 Run the command in the right environment 👈🏻, e.g. if the problem is in CI environment, run it in the CI environment.
+         **👉🏻 Run the command in the right environment 👈🏻**, e.g. if the problem is in CI environment, run it in the CI environment.
 
         ```
         npx envinfo --system --binaries --browsers --npmPackages --duplicates --npmGlobalPackages
@@ -62,10 +77,10 @@ body:
 
   - type: textarea
     attributes:
-      label: Command and Setup
+      label: Setup and Command
       description: |
-        - The exact command or code snippet 
-        - Your cloud provider or sorry-cypress setup details
+        - Your `cypress.config.js` file, including standalone plugins configuration.
+        - The exact command or code snippet used to run the tests.
 
     validations:
       required: true
@@ -74,17 +89,18 @@ body:
     attributes:
       label: Full log and debug output
       description: |
-        Run in debug mode to provide more info - error messages and stack traces.
+        Enable the [debug mode](https://currents.dev/readme/integration-with-cypress/troubleshooting#enabling-debug-mode-for-cypress-cloud-1.9.0+) to provide more info - error messages and stack traces.
 
-        - **👉🏻 Include the full log 👈🏻 - starting from running the command till receiving an error.**
+        - Follow [the guide to enable debug mode](https://currents.dev/readme/integration-with-cypress/troubleshooting#enabling-debug-mode-for-cypress-cloud-1.9.0+)
+        - **👉🏻 Include the full log 👈🏻** - starting from running the command till receiving an error.
         - Attach a link / file for long outputs.
 
         Example:
 
-        - Linux: `DEBUG=currents:*,cypress:* cypress-cloud run ...`
-        - Windows: `cmd /V /C "set DEBUG=currents:*,cypress:* && cypress-cloud run ..."`
+        - `npx cypress-cloud run ... --cloud-debug`
 
-        **Be sure to remove any sensitive data.**
+        **Remove any sensitive data.**
+
       value: |
         <details>
 

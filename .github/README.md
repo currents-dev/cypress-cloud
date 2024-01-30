@@ -16,6 +16,33 @@ Integrate Cypress with alternative cloud services like Currents or Sorry Cypress
 
 </p>
 
+## Table of Contents
+
+- [Requirements](#requirements)
+- [Setup](#setup)
+- [Usage](#usage)
+- [Example](#example)
+- [Configuration](#configuration)
+  - [Configuration File Discovery](#configuration-file-discovery)
+  - [Configuration Overrides](#configuration-overrides)
+- [Batched Orchestration](#batched-orchestration)
+- [API](#api)
+  - [`run`](#run)
+- [Guides](#guides)
+  - [Usage with `@cypress/grep`](#usage-with-cypressgrep)
+  - [Setup with existing plugins](#setup-with-existing-plugins)
+    - [Preserving `config.env` values](#preserving-configenv-values)
+    - [Chaining `config`](#chaining-config)
+    - [Event callbacks for multiple plugins](#event-callbacks-for-multiple-plugins)
+- [Spec files discovery](#spec-files-discovery)
+- [Usage with ESM project](#usage-with-esm-project)
+- [Troubleshooting](#troubleshooting)
+- [Testing](#testing)
+- [Releasing](#releasing)
+  - [Beta channel](#beta-channel)
+  - [Latest channel](#latest-channel)
+  - [Localhost](#localhost)
+
 ## Requirements
 
 - Cypress version 10+
@@ -44,14 +71,17 @@ module.exports = {
 
 Add `cypress-cloud/plugin` to `cypress.config.{js|ts|mjs}`
 
-```js
+```ts
 // cypress.config.js
-const { defineConfig } = require("cypress");
-const { cloudPlugin } = require("cypress-cloud/plugin");
-module.exports = defineConfig({
+import { defineConfig } from "cypress";
+import { cloudPlugin } from "cypress-cloud/plugin";
+
+export default defineConfig({
   e2e: {
-    setupNodeEvents(on, config) {
-      return cloudPlugin(on, config);
+    video: true; // enable video for cypress@13+
+    async setupNodeEvents(on, config) {
+      const result = await cloudPlugin(on, config);
+      return result;
     },
   },
 });
@@ -60,7 +90,7 @@ module.exports = defineConfig({
 Add `cypress-cloud/support` to Cypress Support file (matching your test type - e2e or component, or both)
 
 ```ts
-import `cypress-cloud/support`
+import "cypress-cloud/support";
 ```
 
 ## Usage
@@ -89,7 +119,7 @@ module.exports = {
   networkHeaders: {
     "User-Agent": "Custom",
     "x-ms-blob-type": "BlockBlob"
-  }
+  },
   e2e: {
     batchSize: 3, // orchestration batch size for e2e tests (Currents only, read below)
   },
@@ -132,7 +162,7 @@ The configuration variables will resolve as follows:
 
 ## Batched Orchestration
 
-This package uses its own orchestration and reporting protocol that is independent of cypress native implementation. The new [orchestration protocol](https://currents.dev/readme/integration-with-cypress/cypress-cloud#batched-orchestration) uses cypress in "offline" mode and allows batching multiple spec files for better efficiency. You can adjust the batching configuration in `currents.config.js` and use different values for e2e and component tests.
+This package uses its own orchestration and reporting protocol that is independent of cypress native implementation. The new [orchestration protocol]([https://currents.dev/readme/integration-with-cypress/cypress-cloud#batched-orchestration](https://currents.dev/readme/integration-with-cypress/cypress-cloud/batched-orchestration)) uses cypress in "offline" mode and allows batching multiple spec files for better efficiency. You can adjust the batching configuration in `currents.config.js` and use different values for e2e and component tests.
 
 ## API
 
@@ -167,48 +197,108 @@ const results = await run({
 
 ### Usage with `@cypress/grep`
 
-The package is compatible with [`@cypress/grep`](https://www.npmjs.com/package/@cypress/grep). Make sure to run `require("@cypress/grep/src/plugin")(config);` before `await currents(on, config);`, for example:
+The package is compatible with [`@cypress/grep`](https://www.npmjs.com/package/@cypress/grep).
 
-```js
-setupNodeEvents(on, config) {
-  require("cypress-terminal-report/src/installLogsPrinter")(on);
-  require("@cypress/grep/src/plugin")(config);
-  return currents(on, config);
-}
+`@cypress/grep` modifies cypress configuration and alters `specPattern` property. Install `@cypress/grep` **before** `cypress-cloud/plugin` to apply the modified configuration. For example:
+
+```ts
+import { defineConfig } from "cypress";
+import grepPlugin from "@cypress/grep/src/plugin";
+import { cloudPlugin } from "cypress-cloud/plugin";
+
+export default defineConfig({
+  e2e: {
+    // ...
+    async setupNodeEvents(on, config) {
+      grepPlugin(config);
+      const result = await cloudPlugin(on, config);
+      return result;
+    },
+  },
+});
 ```
 
 Please refer to the [issue](https://github.com/currents-dev/cypress-cloud/issues/50#issuecomment-1645095284) for details.
 
 ### Setup with existing plugins
 
-`cypress-cloud/plugin` needs access to certain environment variables that are injected into the `config` parameter of `setupNodeEvents(on, config)`.
+#### Preserving `config.env` values
 
-Please make sure to preserve the original `config.env` parameters in case you are using additional plugins, e.g.:
+The `config` parameter of `setupNodeEvents(on, config)` has pre-defined `config.env` values. Please make sure to preserve the original `config.env` value when altering the property. For example:
 
-```js
-const { defineConfig } = require("cypress");
-const { cloudPlugin } = require("cypress-cloud/plugin");
+```ts
+import { defineConfig } from "cypress";
+import { cloudPlugin } from "cypress-cloud/plugin";
 
-module.exports = defineConfig({
+export default defineConfig({
   e2e: {
     // ...
-    setupNodeEvents(on, config) {
-      // alternative: activate the plugin first
-      // cloudPlugin(on, config)
+    async setupNodeEvents(on, config) {
       const enhancedConfig = {
         env: {
-          // preserve the original env
-          ...config.env,
+          ...config.env, // 👈🏻 preserve the original env
           customVariable: "value",
         },
       };
-      return cloudPlugin(on, enhancedConfig);
+      const result = await cloudPlugin(on, enhancedConfig);
+      return result;
     },
   },
 });
 ```
 
-As an alternative, you can activate the `cloudPlugin` first, and then implement the custom setup. Please contact our support if you have a complex plugin configuration to get assistance with the setup.
+#### Chaining `config`
+
+Certain plugins (e.g. `@cypress/grep`) modify or alter the `config` parameter and change the default Cypress behaviour. Make sure that `cypress-cloud` is initialized with the most recently updated `config`, e.g.:
+
+```ts
+import { defineConfig } from "cypress";
+import { cloudPlugin } from "cypress-cloud/plugin";
+
+export default defineConfig({
+  e2e: {
+    // ...
+    async setupNodeEvents(on, config) {
+      const configA = pluginA(on, config); // configA has the modified config from pluginA
+      const configB = pluginB(on, configA); // configA has the modified config from pluginA + pluginB
+      // ...
+      const configX = pluginX(on, configY); // configX has the modified config from all preceding plugins
+      const result = await cloudPlugin(on, configX); // cloudPlugin has the accumulated config from all plugins
+      return result;
+    },
+  },
+});
+```
+
+#### Event callbacks for multiple plugins
+
+`cypress-cloud/plugin` uses certain Cypress Plugin events. Unfortunately if there are mutliple listeners for an event, only the last listener is called (see the [GitHub issue](https://github.com/cypress-io/cypress/issues/22428)). Setups with multiple plugins can create conflicts - one plugin can replace listeners of others.
+
+The existing workaround is to patch the `on` function by using either of:
+
+- https://github.com/bahmutov/cypress-on-fix
+- https://github.com/elaichenkov/cypress-plugin-init
+
+For example:
+
+```ts
+import { defineConfig } from "cypress";
+import { cloudPlugin } from "cypress-cloud/plugin";
+import patchCypressOn from "cypress-on-fix";
+
+export default defineConfig({
+  e2e: {
+    // ...
+    async setupNodeEvents(cypressOn, config) {
+      const on = patchCypressOn(cypressOn);
+      // the rest of the plugins use the patched "on" function
+      const configAlt = somePlugin(on, config);
+      const result = await cloudPlugin(on, configAlt);
+      return result;
+    },
+  },
+});
+```
 
 ### Spec files discovery
 

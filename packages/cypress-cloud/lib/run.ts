@@ -1,6 +1,7 @@
 import "./init";
 
 import Debug from "debug";
+import plur from "plur";
 import { getLegalNotice } from "../legal";
 import { CurrentsRunParameters } from "../types";
 import { createRun } from "./api";
@@ -12,12 +13,13 @@ import {
   preprocessParams,
   validateParams,
 } from "./config";
+import { getCoverageFilePath } from "./coverage";
 import { runBareCypress } from "./cypress";
 import { activateDebug } from "./debug";
 import { isCurrents } from "./env";
 import { getGitInfo } from "./git";
 import { setAPIBaseUrl, setRunId } from "./httpClient";
-import { bold, divider, info, spacer, title } from "./log";
+import { bold, dim, divider, info, spacer, title, warn, yellow } from "./log";
 import { getPlatform } from "./platform";
 import { pubsub } from "./pubsub";
 import { summarizeTestResults, summaryTable } from "./results";
@@ -30,7 +32,6 @@ import { shutdown } from "./shutdown";
 import { getSpecFiles } from "./specMatcher";
 import { ConfigState, ExecutionState } from "./state";
 import { startWSS } from "./ws";
-import { getCoverageFilePath } from "./coverage";
 
 const debug = Debug("currents:run");
 
@@ -144,7 +145,10 @@ export async function run(params: CurrentsRunParameters = {}) {
 
   title("white", "Cloud Run Finished");
   console.log(summaryTable(_summary));
-  info("🏁 Recorded Run:", bold(run.runUrl));
+
+  printWarnings(executionState);
+
+  info("\n🏁 Recorded Run:", bold(run.runUrl));
 
   await shutdown();
 
@@ -176,15 +180,34 @@ function listenToSpecEvents(
       debug("after:spec %o %o", spec, results);
       executionState.setSpecAfter(spec.relative, results);
       executionState.setSpecOutput(spec.relative, getCapturedOutput());
+
       if (experimentalCoverageRecording) {
-        const coverageFilePath = await getCoverageFilePath(
+        const { path, error } = await getCoverageFilePath(
           config?.env?.coverageFile
         );
-        if (coverageFilePath) {
-          executionState.setSpecCoverage(spec.relative, coverageFilePath);
+        if (!error) {
+          executionState.setSpecCoverage(spec.relative, path);
+        } else {
+          executionState.addWarning(
+            `Could not process coverage file "${path}"\n${dim(error)}`
+          );
         }
       }
       createReportTaskSpec(configState, executionState, spec.relative);
     }
   );
+}
+
+function printWarnings(executionState: ExecutionState) {
+  const warnings = Array.from(executionState.getWarnings());
+  if (warnings.length > 0) {
+    warn(
+      `${warnings.length} ${plur(
+        "Warning",
+        warnings.length
+      )} encountered during the execution:\n${warnings
+        .map((w, i) => `\n${yellow(`[${i + 1}/${warnings.length}]`)} ${w}`)
+        .join("\n")}`
+    );
+  }
 }
