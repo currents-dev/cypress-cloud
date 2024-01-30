@@ -3,7 +3,7 @@ import currents from "cypress-cloud/plugin";
 
 module.exports = defineConfig({
   e2e: {
-    baseUrl: "https://todomvc.com/examples/vanillajs",
+    baseUrl: "https://todomvc.com/examples/backbone/dist",
     videoUploadOnPasses: false,
     supportFile: "cypress/support/e2e.ts",
     specPattern: "cypress/*/**/*.spec.js",

@@ -8,7 +8,7 @@ module.exports = defineConfig({
     projectId: !!(process.env.GITHUB_ACTION || process.env.CIRCLE_BRANCH)
       ? "Ij0RfK"
       : "l4zuz8",
-    baseUrl: "https://todomvc.com/examples/vanillajs",
+    baseUrl: "https://todomvc.com/examples/backbone/dist",
     videoUploadOnPasses: false,
     supportFile: "cypress/support/e2e.ts",
     specPattern: "cypress/*/**/*.spec.js",

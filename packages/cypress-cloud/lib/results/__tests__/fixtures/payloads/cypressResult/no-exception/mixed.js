@@ -108,7 +108,7 @@ module.exports = {
         "/Users/agoldis/cypress-cloud/examples/webapp/cypress.config.ts",
       testingType: "e2e",
       projectId: "l4zuz8",
-      baseUrl: "https://todomvc.com/examples/vanillajs",
+      baseUrl: "https://todomvc.com/examples/backbone/dist",
       videoUploadOnPasses: false,
       supportFile:
         "/Users/agoldis/cypress-cloud/examples/webapp/cypress/support/e2e.ts",
@@ -120,7 +120,7 @@ module.exports = {
       rawJson: {
         e2e: {
           projectId: "l4zuz8",
-          baseUrl: "https://todomvc.com/examples/vanillajs",
+          baseUrl: "https://todomvc.com/examples/backbone/dist",
           videoUploadOnPasses: false,
           supportFile: "cypress/support/e2e.ts",
           specPattern: "cypress/*/*.spec.js",
@@ -132,7 +132,7 @@ module.exports = {
           devServer: { framework: "next", bundler: "webpack" },
         },
         projectId: "l4zuz8",
-        baseUrl: "https://todomvc.com/examples/vanillajs",
+        baseUrl: "https://todomvc.com/examples/backbone/dist",
         videoUploadOnPasses: false,
         supportFile: "cypress/support/e2e.ts",
         specPattern: "cypress/*/*.spec.js",
@@ -254,7 +254,7 @@ module.exports = {
         animationDistanceThreshold: { value: 5, from: "default" },
         arch: { value: "arm64", from: "default" },
         baseUrl: {
-          value: "https://todomvc.com/examples/vanillajs",
+          value: "https://todomvc.com/examples/backbone/dist",
           from: "config",
         },
         blockHosts: { value: null, from: "default" },
@@ -528,7 +528,7 @@ module.exports = {
         "/Users/agoldis/cypress-cloud/examples/webapp/cypress.config.ts",
       testingType: "e2e",
       projectId: "l4zuz8",
-      baseUrl: "https://todomvc.com/examples/vanillajs",
+      baseUrl: "https://todomvc.com/examples/backbone/dist",
       videoUploadOnPasses: false,
       supportFile:
         "/Users/agoldis/cypress-cloud/examples/webapp/cypress/support/e2e.ts",
@@ -540,7 +540,7 @@ module.exports = {
       rawJson: {
         e2e: {
           projectId: "l4zuz8",
-          baseUrl: "https://todomvc.com/examples/vanillajs",
+          baseUrl: "https://todomvc.com/examples/backbone/dist",
           videoUploadOnPasses: false,
           supportFile: "cypress/support/e2e.ts",
           specPattern: "cypress/*/*.spec.js",
@@ -552,7 +552,7 @@ module.exports = {
           devServer: { framework: "next", bundler: "webpack" },
         },
         projectId: "l4zuz8",
-        baseUrl: "https://todomvc.com/examples/vanillajs",
+        baseUrl: "https://todomvc.com/examples/backbone/dist",
         videoUploadOnPasses: false,
         supportFile: "cypress/support/e2e.ts",
         specPattern: "cypress/*/*.spec.js",
@@ -674,7 +674,7 @@ module.exports = {
         animationDistanceThreshold: { value: 5, from: "default" },
         arch: { value: "arm64", from: "default" },
         baseUrl: {
-          value: "https://todomvc.com/examples/vanillajs",
+          value: "https://todomvc.com/examples/backbone/dist",
           from: "config",
         },
         blockHosts: { value: null, from: "default" },

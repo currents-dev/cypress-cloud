@@ -31,6 +31,7 @@ import debugFn from "debug";
 
 import _ from "lodash";
 import { ValidationError } from "./errors";
+import { GhaEventData } from "./git";
 
 const debug = debugFn("currents:ci");
 
@@ -650,6 +651,7 @@ type CiProviderData = {
   defaultBranch?: string;
   remoteBranch?: string;
   runAttempt?: string;
+  ghaEventData?: GhaEventData;
 };
 
 interface ProviderCommitParamsRes {
@@ -713,7 +715,7 @@ export function getCommitParams() {
 }
 
 export function getCI(ciBuildId?: string) {
-  const params = getCiParams();
+  const params = getCiParams() as CiParams;
   const provider = getCiProvider();
   if (!ciBuildId) checkForCiBuildFromCi(provider);
 
@@ -740,11 +742,14 @@ export function getCommitDefaults(existingInfo: CiProviderData) {
   const combined = _.transform(
     existingInfo,
     (
-      memo: { [memoKey: string]: string | null },
-      value: string,
+      memo: { [memoKey: string]: string | GhaEventData | null },
+      value: string | GhaEventData,
       key: string
     ) => {
-      return (memo[key] = _.defaultTo(value || commitParamsObj[key], null));
+      return (memo[key] = _.defaultTo(
+        value || commitParamsObj[key as keyof CiProvider],
+        null
+      ));
     }
   );
 
