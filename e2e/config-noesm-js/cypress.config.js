@@ -3,7 +3,7 @@ const { cloudPlugin } = require("cypress-cloud/plugin");
 
 module.exports = defineConfig({
   e2e: {
-    baseUrl: "https://todomvc.com/examples/vanillajs",
+    baseUrl: "https://todomvc.com/examples/backbone/dist",
     videoUploadOnPasses: false,
     supportFile: "cypress/support/e2e.js",
     specPattern: "cypress/*/**/*.spec.js",

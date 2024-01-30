@@ -1,5 +1,6 @@
 import { CiParams, CiProvider } from "cypress-cloud/lib/ciProvider";
 import { Platform, ValidatedCurrentsParameters } from "cypress-cloud/types";
+import { GhaEventData } from "../../git";
 
 export type CreateRunPayload = {
   ci: {
@@ -10,7 +11,7 @@ export type CreateRunPayload = {
   projectId: string;
   recordKey: string;
   commit: {
-    [memoKey: string]: string | null;
+    [memoKey: string]: string | GhaEventData | null;
   };
   specs: string[];
   group?: string;
