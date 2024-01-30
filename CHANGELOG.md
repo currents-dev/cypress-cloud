@@ -1,4 +1,4 @@
-# [1.10.0-alpha.0](https://github.com/currents-dev/cypress-cloud/compare/v1.9.6...v1.10.0-alpha.0) (2024-01-25)
+# [1.10.0](https://github.com/currents-dev/cypress-cloud/compare/v1.9.6...v1.10.0) (2024-01-30)
 
 ### Features
 
