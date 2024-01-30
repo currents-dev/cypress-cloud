@@ -75,6 +75,7 @@ Add `cypress-cloud/plugin` to `cypress.config.{js|ts|mjs}`
 // cypress.config.js
 import { defineConfig } from "cypress";
 import { cloudPlugin } from "cypress-cloud/plugin";
+
 export default defineConfig({
   e2e: {
     video: true; // enable video for cypress@13+
@@ -118,7 +119,7 @@ module.exports = {
   networkHeaders: {
     "User-Agent": "Custom",
     "x-ms-blob-type": "BlockBlob"
-  }
+  },
   e2e: {
     batchSize: 3, // orchestration batch size for e2e tests (Currents only, read below)
   },
