@@ -1,3 +1,12 @@
+
+
+## [1.10.1](https://github.com/currents-dev/cypress-cloud/compare/v1.10.0...v1.10.1) (2024-03-08)
+
+
+### Bug Fixes
+
+* fix teamcity ci resolution ([876267b](https://github.com/currents-dev/cypress-cloud/commit/876267b9667276473820badf6e72a8744c298c81))
+
 # [1.10.0](https://github.com/currents-dev/cypress-cloud/compare/v1.9.6...v1.10.0) (2024-01-30)
 
 ### Features
