@@ -743,11 +743,12 @@ export function getCommitDefaults(existingInfo: CiProviderData) {
     existingInfo,
     (
       memo: { [memoKey: string]: string | GhaEventData | null },
-      value: string | GhaEventData,
+      value: string | GhaEventData | null,
       key: string
     ) => {
       return (memo[key] = _.defaultTo(
-        value || commitParamsObj[key as keyof CiProvider],
+        value ||
+          (commitParamsObj ? commitParamsObj[key as keyof CiProvider] : null),
         null
       ));
     }
