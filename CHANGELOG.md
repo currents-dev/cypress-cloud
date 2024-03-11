@@ -1,5 +1,12 @@
 
 
+## [1.10.2](https://github.com/currents-dev/cypress-cloud/compare/v1.10.1...v1.10.2) (2024-03-11)
+
+
+### Bug Fixes
+
+* fix exports for getCI ([0dddc40](https://github.com/currents-dev/cypress-cloud/commit/0dddc40e24f7b880752814054d034a3784b7c87f))
+
 ## [1.10.1](https://github.com/currents-dev/cypress-cloud/compare/v1.10.0...v1.10.1) (2024-03-08)
 
 
