@@ -21,3 +21,5 @@ Connecting to cloud orchestration service...
 ```
 
 Note the use of [cypress-on-fix]() in [`cypress.config.ts`](examples/happo/cypress.config.ts) due to Cypress [bug](https://github.com/cypress-io/cypress/issues/5240)
+
+![currents-2024-08-30-14 04 10@2x](https://github.com/user-attachments/assets/35ed8b0b-3951-406b-a1bd-0b8e9382e355)
