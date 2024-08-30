@@ -1,6 +1,6 @@
 # Happo + Currents + Cypress
 
-An example showcasing seting up Happo with Currents.
+An example showcasing setting up Happo with Currents.
 
 ```sh
 export CURRENTS_RECORD_KEY=zzz
