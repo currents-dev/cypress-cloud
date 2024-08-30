@@ -14,20 +14,8 @@ module.exports = defineConfig({
     async setupNodeEvents(cyOn, config) {
       const on = patchCypressOn(cyOn);
       happoTask.register(on, config);
-      const result = await cloudPlugin(on, config);
-      return result;
+      return await cloudPlugin(on, config);
     },
   },
 
-  component: {
-    specPattern: ["pages/__tests__/*.spec.tsx"],
-    async setupNodeEvents(on, config) {
-      const result = await cloudPlugin(on, config);
-      return result;
-    },
-    devServer: {
-      framework: "next",
-      bundler: "webpack",
-    },
-  },
 });
