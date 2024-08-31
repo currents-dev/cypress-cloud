@@ -59,9 +59,10 @@ export async function runSpecFile(
 
   let retries = 0;
   const currentsConfig = await getCurrentsConfig();
+
   while (
     currentsConfig.retry &&
-    retries < currentsConfig.retry.hardFailureMaxRetries &&
+    retries < (currentsConfig.retry.hardFailureMaxRetries ?? 0) &&
     result.status === "failed"
   ) {
     warn("Cypress runner failed with message: %s", result.message);
