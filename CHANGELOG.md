@@ -1,18 +1,20 @@
+# [1.11.0](https://github.com/currents-dev/cypress-cloud/compare/v1.10.2...v1.11.0) (2024-08-31)
 
+### Features
+
+- add retries for hard failures ([#211](https://github.com/currents-dev/cypress-cloud/issues/211)) ([1629759](https://github.com/currents-dev/cypress-cloud/commit/16297593632a9418a7bdd04369981c6d5016a443))
 
 ## [1.10.2](https://github.com/currents-dev/cypress-cloud/compare/v1.10.1...v1.10.2) (2024-03-11)
 
-
 ### Bug Fixes
 
-* fix exports for getCI ([0dddc40](https://github.com/currents-dev/cypress-cloud/commit/0dddc40e24f7b880752814054d034a3784b7c87f))
+- fix exports for getCI ([0dddc40](https://github.com/currents-dev/cypress-cloud/commit/0dddc40e24f7b880752814054d034a3784b7c87f))
 
 ## [1.10.1](https://github.com/currents-dev/cypress-cloud/compare/v1.10.0...v1.10.1) (2024-03-08)
 
-
 ### Bug Fixes
 
-* fix teamcity ci resolution ([876267b](https://github.com/currents-dev/cypress-cloud/commit/876267b9667276473820badf6e72a8744c298c81))
+- fix teamcity ci resolution ([876267b](https://github.com/currents-dev/cypress-cloud/commit/876267b9667276473820badf6e72a8744c298c81))
 
 # [1.10.0](https://github.com/currents-dev/cypress-cloud/compare/v1.9.6...v1.10.0) (2024-01-30)
 
