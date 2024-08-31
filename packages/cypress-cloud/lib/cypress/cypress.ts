@@ -6,7 +6,7 @@ import {
 } from "cypress-cloud/types";
 import Debug from "debug";
 import _ from "lodash";
-import { getCypressRunAPIParams } from "../config";
+import { getCurrentsConfig, getCypressRunAPIParams } from "../config";
 import { safe } from "../lang";
 import { warn } from "../log";
 import { getWSSPort } from "../ws";
@@ -53,8 +53,38 @@ export async function runSpecFile(
     },
     spec,
   };
+
   debug("running cypress with options %o", options);
-  const result = await cypress.run(options);
+  let result = await cypress.run(options);
+
+  let retries = 0;
+  const currentsConfig = await getCurrentsConfig();
+  while (
+    currentsConfig.retry &&
+    retries < currentsConfig.retry.hardFailureMaxRetries &&
+    result.status === "failed"
+  ) {
+    warn("Cypress runner failed with message: %s", result.message);
+    warn(
+      "[retry %d/%d] Retrying the following spec files because of retry config: %s",
+      retries + 1,
+      currentsConfig.retry.hardFailureMaxRetries,
+      spec
+        .split(",")
+        .map((i) => `\n - ${i}`)
+        .join("")
+    );
+    result = await cypress.run(options);
+    retries++;
+  }
+
+  if (currentsConfig.retry && retries > 0) {
+    warn(
+      "Exhausted max retries: %d/%d",
+      retries,
+      currentsConfig.retry.hardFailureMaxRetries
+    );
+  }
 
   if (result.status === "failed") {
     warn('Cypress runner failed with message: "%s"', result.message);
@@ -66,6 +96,7 @@ export async function runSpecFile(
         .join("")
     );
   }
+
   debug("cypress run result %o", result);
   return result;
 }

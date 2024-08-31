@@ -14,6 +14,10 @@ export type E2EConfig = {
 export type ComponentConfig = {
   batchSize: number;
 };
+
+type RetryConfig = {
+  hardFailureMaxRetries: number;
+};
 export type CurrentsConfig = {
   projectId?: string;
   recordKey?: string;
@@ -21,6 +25,7 @@ export type CurrentsConfig = {
   e2e: E2EConfig;
   component: ComponentConfig;
   networkHeaders?: Record<string, string>;
+  retry?: RetryConfig;
 };
 
 let _config: CurrentsConfig | null = null;

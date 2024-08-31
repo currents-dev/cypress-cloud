@@ -9,5 +9,8 @@ module.exports = {
     ? "Ij0RfK"
     : "Ij0RfK",
   // cloudServiceUrl: "http://localhost:1234",
-  userAgent: "custom",
+  // userAgent: "custom",
+  retry: {
+    hardFailureMaxRetries: 2,
+  },
 };
