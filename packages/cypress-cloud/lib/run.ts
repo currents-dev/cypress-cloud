@@ -109,6 +109,7 @@ export async function run(params: CurrentsRunParameters = {}) {
     batchSize,
     autoCancelAfterFailures,
     coverageEnabled: experimentalCoverageRecording,
+    previousCiBuildId: process.env.CURRENTS_PREVIOUS_CI_BUILD_ID,
   });
 
   setRunId(run.runId);
