@@ -118,13 +118,16 @@ module.exports = {
   // Additional headers for network requests, undefined by default
   networkHeaders: {
     "User-Agent": "Custom",
-    "x-ms-blob-type": "BlockBlob"
+    "x-ms-blob-type": "BlockBlob",
   },
   e2e: {
     batchSize: 3, // orchestration batch size for e2e tests (Currents only, read below)
   },
   component: {
     batchSize: 5, // orchestration batch size for component tests (Currents only, read below)
+  },
+  retry: {
+    hardFailureMaxRetries: 2, // max retries for hard Cypress failures, a hard failure is when Cyrpess crashes and doesn't report back any results (see https://docs.cypress.io/guides/guides/module-api#Handling-errors)
   },
 };
 ```
@@ -162,7 +165,7 @@ The configuration variables will resolve as follows:
 
 ## Batched Orchestration
 
-This package uses its own orchestration and reporting protocol that is independent of cypress native implementation. The new [orchestration protocol]([https://currents.dev/readme/integration-with-cypress/cypress-cloud#batched-orchestration](https://currents.dev/readme/integration-with-cypress/cypress-cloud/batched-orchestration)) uses cypress in "offline" mode and allows batching multiple spec files for better efficiency. You can adjust the batching configuration in `currents.config.js` and use different values for e2e and component tests.
+This package uses its own orchestration and reporting protocol that is independent of cypress native implementation. The new [orchestration protocol](<[https://currents.dev/readme/integration-with-cypress/cypress-cloud#batched-orchestration](https://currents.dev/readme/integration-with-cypress/cypress-cloud/batched-orchestration)>) uses cypress in "offline" mode and allows batching multiple spec files for better efficiency. You can adjust the batching configuration in `currents.config.js` and use different values for e2e and component tests.
 
 ## API
 
