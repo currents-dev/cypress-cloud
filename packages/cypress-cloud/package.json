@@ -75,7 +75,7 @@
     "table": "^6.8.1",
     "tmp-promise": "^3.0.3",
     "ts-pattern": "^4.3.0",
-    "ws": "^8.13.0"
+    "ws": "^8.17.1"
   },
   "bin": {
     "cypress-cloud": "./dist/bin/cli.js"
