@@ -54,7 +54,7 @@
   },
   "dependencies": {
     "@currents/commit-info": "1.0.1-beta.0",
-    "axios": "^1.2.0",
+    "axios": "^1.7.4",
     "axios-retry": "^3.4.0",
     "bluebird": "^3.7.2",
     "chalk": "^4.1.2",
