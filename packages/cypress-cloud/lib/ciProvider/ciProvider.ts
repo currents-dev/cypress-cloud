@@ -28,10 +28,10 @@ SOFTWARE.
 */
 
 import debugFn from "debug";
-
 import _ from "lodash";
-import { ValidationError } from "./errors";
-import { GhaEventData } from "./git";
+
+import { ValidationError } from "../errors";
+import { GhaEventData } from "../git";
 
 const debug = debugFn("currents:ci");
 
@@ -641,7 +641,7 @@ const _providerCommitParams = (): ProviderCommitParamsRes => {
   };
 };
 
-type CiProviderData = {
+export type CiProviderData = {
   sha?: string;
   branch?: string;
   message?: string;
@@ -651,7 +651,7 @@ type CiProviderData = {
   defaultBranch?: string;
   remoteBranch?: string;
   runAttempt?: string;
-  ghaEventData?: GhaEventData;
+  ghaEventData?: GhaEventData | null;
 };
 
 interface ProviderCommitParamsRes {
@@ -725,36 +725,4 @@ export function getCI(ciBuildId?: string) {
     params,
     provider,
   };
-}
-
-export function getCommitDefaults(existingInfo: CiProviderData) {
-  debug("git commit existing info");
-  debug(existingInfo);
-
-  const commitParamsObj = getCommitParams();
-
-  debug("commit info from provider environment variables: %O", commitParamsObj);
-
-  // based on the existingInfo properties
-  // merge in the commitParams if null or undefined
-  // defaulting back to null if all fails
-  // NOTE: only properties defined in "existingInfo" will be returned
-  const combined = _.transform(
-    existingInfo,
-    (
-      memo: { [memoKey: string]: string | GhaEventData | null },
-      value: string | GhaEventData,
-      key: string
-    ) => {
-      return (memo[key] = _.defaultTo(
-        value || commitParamsObj[key as keyof CiProvider],
-        null
-      ));
-    }
-  );
-
-  debug("combined git and environment variables from provider");
-  debug(combined);
-
-  return combined;
 }

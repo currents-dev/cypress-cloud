@@ -24,6 +24,7 @@ export type CreateRunPayload = {
   batchSize?: number;
   autoCancelAfterFailures: ValidatedCurrentsParameters["autoCancelAfterFailures"];
   coverageEnabled?: boolean;
+  previousCiBuildId?: string;
 };
 
 export type CloudWarning = {
