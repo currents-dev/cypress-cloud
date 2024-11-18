@@ -110,10 +110,14 @@ export async function run(params: CurrentsRunParameters = {}) {
     autoCancelAfterFailures,
     coverageEnabled: experimentalCoverageRecording,
     previousCiBuildId: process.env.CURRENTS_PREVIOUS_CI_BUILD_ID,
+    providedMachineId: process.env.CURRENTS_MACHINE_ID,
   });
 
   setRunId(run.runId);
   info("🎥 Run URL:", bold(run.runUrl));
+  process.env.CURRENTS_MACHINE_ID
+    ? info("🤖 Machine ID:", bold(run.machineId))
+    : null;
   cutInitialOutput();
 
   await startWSS();
