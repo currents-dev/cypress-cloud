@@ -25,6 +25,7 @@ export type CreateRunPayload = {
   autoCancelAfterFailures: ValidatedCurrentsParameters["autoCancelAfterFailures"];
   coverageEnabled?: boolean;
   previousCiBuildId?: string;
+  providedMachineId?: string;
 };
 
 export type CloudWarning = {
