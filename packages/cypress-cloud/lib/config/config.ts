@@ -18,6 +18,14 @@ export type ComponentConfig = {
 type RetryConfig = {
   hardFailureMaxRetries: number;
 };
+
+/**
+ * This is the type for `currents.config.*s`. If you are not officially using TypeScript,
+ * you can still type the exported config in your IDE by adding the following as a block comment
+ * above `module.exports` / `export default`:
+ *
+ * `@type {import('cypress-cloud').CurrentsConfig}`
+ */
 export type CurrentsConfig = {
   projectId?: string;
   recordKey?: string;
@@ -43,7 +51,7 @@ const defaultConfig: CurrentsConfig = {
 
 export async function getCurrentsConfig(
   projectRoot?: string,
-  explicitConfigFilePath?: string
+  explicitConfigFilePath?: string,
 ): Promise<CurrentsConfig> {
   if (_config) {
     return _config;
@@ -70,7 +78,7 @@ export async function getCurrentsConfig(
 
   warn(
     "Failed to load config file, falling back to the default config. Attempted locations: %s",
-    configFilePath
+    configFilePath,
   );
   _config = defaultConfig;
   return _config;
