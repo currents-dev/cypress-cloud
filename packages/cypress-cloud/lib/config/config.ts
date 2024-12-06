@@ -1,12 +1,12 @@
-import Debug from 'debug';
+import Debug from "debug";
 
-import { P, match } from 'ts-pattern';
-import { DetectedBrowser, ValidatedCurrentsParameters } from '../../types';
-import { bootCypress } from '../bootstrap';
-import { info, warn } from '../log';
-import { getConfigFilePath } from './path';
+import { P, match } from "ts-pattern";
+import { DetectedBrowser, ValidatedCurrentsParameters } from "../../types";
+import { bootCypress } from "../bootstrap";
+import { info, warn } from "../log";
+import { getConfigFilePath } from "./path";
 
-const debug = Debug('currents:config');
+const debug = Debug("currents:config");
 
 export type E2EConfig = {
   batchSize: number;
@@ -45,13 +45,13 @@ const defaultConfig: CurrentsConfig = {
   component: {
     batchSize: 5,
   },
-  cloudServiceUrl: 'https://cy.currents.dev',
+  cloudServiceUrl: "https://cy.currents.dev",
   networkHeaders: undefined,
 };
 
 export async function getCurrentsConfig(
   projectRoot?: string,
-  explicitConfigFilePath?: string
+  explicitConfigFilePath?: string,
 ): Promise<CurrentsConfig> {
   if (_config) {
     return _config;
@@ -76,7 +76,10 @@ export async function getCurrentsConfig(
     }
   }
 
-  warn('Failed to load config file, falling back to the default config. Attempted locations: %s', configFilePath);
+  warn(
+    "Failed to load config file, falling back to the default config. Attempted locations: %s",
+    configFilePath,
+  );
   _config = defaultConfig;
   return _config;
 }
@@ -86,14 +89,14 @@ async function loadConfigFile(filepath: string) {
     debug("loading currents config file from '%s'", filepath);
     return await import(filepath);
   } catch (e) {
-    debug('failed loading config file from: %s', e);
+    debug("failed loading config file from: %s", e);
     return null;
   }
 }
 
 export type MergedConfig = Awaited<ReturnType<typeof getMergedConfig>>;
 export async function getMergedConfig(params: ValidatedCurrentsParameters) {
-  debug('resolving cypress config');
+  debug("resolving cypress config");
   const cypressResolvedConfig:
     | (Cypress.ResolvedConfigOptions & {
         projectRoot: string;
@@ -102,12 +105,12 @@ export async function getMergedConfig(params: ValidatedCurrentsParameters) {
       })
     | undefined = await bootCypress(params);
 
-  debug('cypress resolvedConfig: %O', cypressResolvedConfig);
+  debug("cypress resolvedConfig: %O", cypressResolvedConfig);
 
   // @ts-ignore
   const rawE2EPattern = cypressResolvedConfig.rawJson?.e2e?.specPattern;
   let additionalIgnorePattern: string[] = [];
-  if (params.testingType === 'component' && rawE2EPattern) {
+  if (params.testingType === "component" && rawE2EPattern) {
     // @ts-ignore
     additionalIgnorePattern = rawE2EPattern;
   }
@@ -117,7 +120,7 @@ export async function getMergedConfig(params: ValidatedCurrentsParameters) {
   const result = {
     projectRoot: cypressResolvedConfig?.projectRoot || process.cwd(),
     projectId: params.projectId,
-    specPattern: cypressResolvedConfig?.specPattern || '**/*.*',
+    specPattern: cypressResolvedConfig?.specPattern || "**/*.*",
     excludeSpecPattern:
       // @ts-ignore
       cypressResolvedConfig?.resolved.excludeSpecPattern.value ?? [],
@@ -125,6 +128,6 @@ export async function getMergedConfig(params: ValidatedCurrentsParameters) {
     resolved: cypressResolvedConfig,
     experimentalCoverageRecording: params.experimentalCoverageRecording,
   };
-  debug('merged config: %O', result);
+  debug("merged config: %O", result);
   return result;
 }
