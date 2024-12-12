@@ -1,5 +1,12 @@
 
 
+# [1.13.0](https://github.com/currents-dev/cypress-cloud/compare/v1.12.0...v1.13.0) (2024-12-12)
+
+
+### Features
+
+* **types:** export CurrentsConfig for typed config files ([aedfc04](https://github.com/currents-dev/cypress-cloud/commit/aedfc04b63ba2f2f139c9cc85b182d111181dc9d))
+
 # [1.12.0](https://github.com/currents-dev/cypress-cloud/compare/v1.11.0...v1.12.0) (2024-11-22)
 
 
