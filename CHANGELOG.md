@@ -1,12 +1,19 @@
 
 
+<<<<<<< HEAD
 # [1.12.0](https://github.com/currents-dev/cypress-cloud/compare/v1.11.0...v1.12.0) (2024-11-22)
+=======
+## [1.12.1](https://github.com/currents-dev/cypress-cloud/compare/v1.11.0...v1.12.1) (2024-12-12)
+>>>>>>> 50c40c9 (chore: relaese 1.12.1)
 
 
 ### Features
 
 * add previousCiBuildId to run creation ([d39614c](https://github.com/currents-dev/cypress-cloud/commit/d39614c0c7511701d3d431f37824a79cf40b561e))
+<<<<<<< HEAD
 * added env for machine id ([#218](https://github.com/currents-dev/cypress-cloud/issues/218)) ([34888c5](https://github.com/currents-dev/cypress-cloud/commit/34888c55ff2e39c1bfe9544b408dd3f8d6dd18fb))
+=======
+>>>>>>> 50c40c9 (chore: relaese 1.12.1)
 
 # [1.11.0](https://github.com/currents-dev/cypress-cloud/compare/v1.10.2...v1.11.0) (2024-08-31)
 
