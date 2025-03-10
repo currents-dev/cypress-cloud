@@ -3,13 +3,15 @@
   "version": "0.0.0",
   "private": true,
   "dependencies": {
-    "cypress": "12.17.4",
+    "cypress": "^14.1.0",
     "cypress-cloud": "*",
     "cypress-on-fix": "^1.0.2",
     "cypress-terminal-report": "^7.0.2",
+    "esbuild": "0.25.1",
     "happo-cypress": "^4.2.0",
     "happo-e2e": "^2.6.1",
-    "happo.io": "^10.1.2"
+    "happo.io": "^10.1.2",
+    "next": "15.2.1"
   },
   "devDependencies": {
     "tsconfig": "*",

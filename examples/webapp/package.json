@@ -10,11 +10,12 @@
     "cypress:script:esm": "node scripts/currents-script.mjs"
   },
   "dependencies": {
-    "cypress": "12.17.4",
+    "cypress": "^14.1.0",
     "cypress-cloud": "*",
     "cypress-on-fix": "^1.0.2",
     "cypress-terminal-report": "^5.3.3",
-    "next": "^13.2.1",
+    "esbuild": "0.25.1",
+    "next": "^15.2.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "ts-node": "^10.9.1"
