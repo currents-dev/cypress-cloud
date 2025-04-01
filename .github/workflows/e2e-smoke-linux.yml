@@ -17,10 +17,10 @@ jobs:
           - 1234:1234
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: "16"
+          node-version: "20"
 
       - name: Install alternative cypress binaries
         run: CYPRESS_DOWNLOAD_MIRROR=https://cy-cdn.currents.dev npx cypress@12.17.4 install --force
