@@ -6,5 +6,7 @@
   "dependencies": {
     "cypress-cloud": "*"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@cypress/grep": "*"
+  }
 }
