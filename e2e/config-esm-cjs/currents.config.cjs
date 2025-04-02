@@ -7,6 +7,6 @@ module.exports = {
   },
   projectId: !!(process.env.GITHUB_ACTION || process.env.CIRCLE_BRANCH)
     ? "Ij0RfK"
-    : "1OPP8c",
+    : "OISIi8",
   // cloudServiceUrl: "http://localhost:1234",
 };
