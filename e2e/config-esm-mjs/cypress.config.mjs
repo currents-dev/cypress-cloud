@@ -1,7 +1,7 @@
-import grepPlugin from "@cypress/grep/src/plugin";
+import grepPlugin from "@cypress/grep/src/plugin.js";
 import { defineConfig } from "cypress";
 import currents from "cypress-cloud/plugin";
-import terminalPlugin from "cypress-terminal-report/src/installLogsPrinter";
+import terminalPlugin from "cypress-terminal-report/src/installLogsPrinter.js";
 
 export default defineConfig({
   e2e: {
