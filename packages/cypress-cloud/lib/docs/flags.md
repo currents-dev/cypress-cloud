@@ -13,4 +13,4 @@ Run
 ⇣
 
 - config resolver (stripped, serialized)
-- cypress.run (stripped)
+- runPlaywright (stripped)
